@@ -158,7 +158,7 @@ function saveReal(){localStorage.setItem('qm2026_real',JSON.stringify(real));}
 
 /* ── SCORING ── */
 function scoreQ(q){
-  const R=real;
+  const R=real||{groups:{},thirds:[],picks:{},goleador:''};
   let r16q=0,r16b=0,r16e=0,qfq=0,qfb=0,qfe=0,cfq=0,cfb=0,cfe=0,sfq=0,sfb=0,sfe=0,fnq=0,fnb=0,fne=0,gol=0;
   // Real qualifiers to R16
   const realQ16=new Set(),realQ16pos={};
@@ -206,7 +206,7 @@ function scoreQ(q){
   return{r16q,r16b,r16e,qfq,qfb,qfe,cfq,cfb,cfe,sfq,sfb,sfe,fnq,fnb,fne,gol,total};
 }
 
-function hasReal(){return R.picks&&Object.keys(real.picks||{}).length>0||(real.groups&&Object.keys(real.groups).length>0);}
+function hasReal(){return real&&((real.picks&&Object.keys(real.picks||{}).length>0)||(real.groups&&Object.keys(real.groups).length>0));}
 
 /* ── RENDER ── */
 function render(){
