@@ -441,7 +441,7 @@ function rGol(){
       <input type="text" id="gi" placeholder="Nombre del goleador…" value="${!SCORERS.includes(ST.goleador)?e(ST.goleador):''}" oninput="ST.goleador=this.value">
     </div>
   </div></div>
-  ${navRow(!ST.goleador)}`;
+  ${navRow(false)}`;
 }
 
 function setSc(n){
@@ -456,8 +456,9 @@ function setSc(n){
     document.getElementById('otro-input').style.display='none';
     document.querySelectorAll('.scorer-btn').forEach(b=>b.classList.toggle('selected',b.textContent===n));
   }
-  // update next button
-  const nb=APP.querySelector('.btn-gold,.btn-g[onclick="next()"]');
+  // Enable save button immediately
+  const nb=document.querySelector('.btn-gold');
+  if(nb)nb.disabled=!ST.goleador;
 }
 
 // ── NAV ──
