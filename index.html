@@ -430,36 +430,44 @@ function rGol(){
   ${t34?`<div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:10px 16px;margin-bottom:1rem;font-size:.85rem;display:flex;align-items:center;gap:8px"><span>🥉</span><span>3° lugar: <strong>${t34.f} ${e(t34.n)}</strong></span></div>`:''}
   <div class="card"><div class="card-hdr"><h2>👟 Goleador del torneo</h2></div>
   <div class="card-body">
-    <p style="font-size:.8rem;color:#718096;margin-bottom:10px">Selecciona o escribe el nombre del goleador:</p>
-    <div class="scorer-grid" id="scorer-grid">${SCORERS.map(s=>{
-      const sel=ST.goleador===s;
-      return`<button class="scorer-btn${sel?' selected':''}" onclick="setSc('${e(s)}')">${e(s)}</button>`;
-    }).join('')}
-    <button class="scorer-btn${!SCORERS.includes(ST.goleador)&&ST.goleador?' selected':''}" onclick="setSc('otro')" id="otro-btn">✏️ Otro jugador</button>
+    <p style="font-size:.8rem;color:#718096;margin-bottom:10px">Toca un jugador para seleccionarlo:</p>
+    <div class="scorer-grid">
+      ${SCORERS.map(s=>{
+        const sel=ST.goleador===s;
+        return`<button class="scorer-btn${sel?' selected':''}" onclick="pickScorer('${e(s)}')">${e(s)}</button>`;
+      }).join('')}
+      <button class="scorer-btn${ST.goleador&&!SCORERS.includes(ST.goleador)?' selected':''}" onclick="pickScorer('__otro__')">✏️ Otro jugador</button>
     </div>
-    <div id="otro-input" style="display:${!SCORERS.includes(ST.goleador)&&ST.goleador?'block':'none'};margin-top:10px">
-      <input type="text" id="gi" placeholder="Nombre del goleador…" value="${!SCORERS.includes(ST.goleador)?e(ST.goleador):''}" oninput="ST.goleador=this.value">
+    <div id="otro-input" style="display:${ST.goleador&&!SCORERS.includes(ST.goleador)?'block':'none'};margin-top:10px">
+      <input type="text" id="gi" placeholder="Escribe el nombre del goleador…"
+        value="${ST.goleador&&!SCORERS.includes(ST.goleador)?e(ST.goleador):''}"
+        oninput="ST.goleador=this.value.trim()">
     </div>
+    ${ST.goleador?`<div style="margin-top:12px;padding:10px 14px;background:#f0fff4;border:1.5px solid #c6f6d5;border-radius:8px;font-size:.85rem;color:#276749;font-weight:600">✅ Seleccionado: ${e(ST.goleador)}</div>`:''}
   </div></div>
-  ${navRow(false)}`;
+  <div class="nav-row">
+    <button class="btn btn-o" onclick="prev()">← Atrás</button>
+    <button class="btn btn-gold" id="btn-save" onclick="save()" ${!ST.goleador?'disabled':''}>💾 Guardar quiniela</button>
+  </div>`;
 }
 
-function setSc(n){
-  if(n==='otro'){
-    ST.goleador='';
-    document.getElementById('otro-input').style.display='block';
-    document.getElementById('gi').focus();
-    document.querySelectorAll('.scorer-btn').forEach(b=>b.classList.remove('selected'));
-    document.getElementById('otro-btn').classList.add('selected');
+function pickScorer(n){
+  if(n==='__otro__'){
+    // Toggle: if already in "otro" mode keep it, else clear and show input
+    if(ST.goleador&&!SCORERS.includes(ST.goleador)){
+      // already in otro mode, do nothing
+    } else {
+      ST.goleador='';
+    }
+    rGol();
+    setTimeout(()=>{const gi=document.getElementById('gi');if(gi)gi.focus();},50);
   } else {
     ST.goleador=n;
-    document.getElementById('otro-input').style.display='none';
-    document.querySelectorAll('.scorer-btn').forEach(b=>b.classList.toggle('selected',b.textContent===n));
+    rGol();
   }
-  // Enable save button immediately
-  const nb=document.querySelector('.btn-gold');
-  if(nb)nb.disabled=!ST.goleador;
 }
+
+
 
 // ── NAV ──
 function next(){
@@ -483,8 +491,10 @@ function prev(){
 
 // ── SAVE ──
 async function save(){
+  // ST.goleador is already set by pickScorer or input oninput
+  // Only read input field if "otro" mode is active
   const gi=document.getElementById('gi');
-  if(gi&&gi.value.trim())ST.goleador=gi.value.trim();
+  if(gi&&gi.value.trim()&&!SCORERS.includes(gi.value.trim()))ST.goleador=gi.value.trim();
   if(!ST.goleador){alert('Elige o escribe el nombre del goleador');return;}
   const ov=document.createElement('div');ov.className='saving-overlay';
   ov.innerHTML='<div class="saving-box"><span class="spin">⚽</span>Guardando tu quiniela…</div>';
