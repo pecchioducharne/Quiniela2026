@@ -9,10 +9,10 @@
 body{font-family:system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#1a202c;min-height:100vh}
 .hdr{background:#1a3a5c;color:#fff;padding:0 20px;height:56px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 10px rgba(0,0,0,.25);position:sticky;top:0;z-index:100}
 .hdr h1{font-size:.95rem;font-weight:700;flex:1}
-.badge-gold{padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;background:#c8952a;color:#fff}
 .badge-live{padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;background:#48bb78;color:#fff;animation:pulse 2s infinite}
+.badge-gold{padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;background:#c8952a;color:#fff}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-.wrap{max-width:1100px;margin:0 auto;padding:1.5rem 1rem 4rem}
+.wrap{max-width:1000px;margin:0 auto;padding:1.5rem 1rem 4rem}
 .card{background:#fff;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:1rem;overflow:hidden}
 .card-hdr{padding:11px 16px;background:#f7fafc;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .card-hdr h2{font-size:.9rem;font-weight:700;flex:1}
@@ -21,127 +21,240 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#1a
 .btn-dark{background:#1a3a5c;color:#fff}.btn-dark:hover{background:#2c4f7c}
 .btn-g{background:#1a6b3c;color:#fff}.btn-g:hover{background:#276749}
 .btn-o{background:#fff;color:#4a5568;border:1.5px solid #e2e8f0}.btn-o:hover{border-color:#a0aec0}
-.btn-red{background:#e53e3e;color:#fff;font-size:.72rem;padding:4px 9px}.btn-red:hover{background:#c53030}
+.btn-red{background:#e53e3e;color:#fff;font-size:.72rem;padding:4px 9px}
 .btn-gold{background:#c8952a;color:#fff}.btn-gold:hover{background:#a87820}
+
+/* TABS */
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem}
 .tab{padding:7px 15px;border-radius:20px;font-size:.8rem;font-weight:500;border:1.5px solid #e2e8f0;background:#fff;cursor:pointer;font-family:inherit;color:#4a5568;transition:all .15s}
 .tab:hover{border-color:#1a6b3c;color:#1a6b3c}
 .tab.active{background:#1a6b3c;border-color:#1a6b3c;color:#fff}
 .tab.tab-gold:hover{border-color:#c8952a;color:#c8952a}
 .tab.tab-gold.active{background:#c8952a;border-color:#c8952a;color:#fff}
+
+/* STATS */
 .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:1.5rem}
 .stat{background:#fff;border-radius:10px;padding:12px 14px;text-align:center;border:1px solid #e2e8f0}
 .stat .num{font-size:1.8rem;font-weight:800;color:#1a3a5c}
 .stat .lbl{font-size:.7rem;color:#718096;margin-top:2px}
+
+/* CHARTS */
 .prow{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:.82rem}
 .pw{flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
 .pf{height:100%;border-radius:4px}
 .pf-g{background:#1a6b3c}.pf-a{background:#c8952a}
+
+/* TABLES */
 table{width:100%;border-collapse:collapse;font-size:.8rem}
 th{background:#1a3a5c;color:#fff;padding:9px 10px;text-align:left;font-weight:600;font-size:.75rem;white-space:nowrap}
 td{padding:8px 10px;border-bottom:1px solid #f0f4f8;vertical-align:middle}
 tr:nth-child(even) td{background:#f7fafc}
 .nl{cursor:pointer;color:#1a3a5c;text-decoration:underline;font-weight:600}
-.ts{font-size:.7rem;color:#a0aec0}
-.stitle{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#718096;margin:14px 0 6px;padding-top:10px;border-top:1px solid #f0f4f8}
-.stitle:first-child{border-top:none;margin-top:0}
-.drow{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f4f8;font-size:.83rem}
-.drow:last-child{border-bottom:none}
-.pb{width:20px;height:20px;border-radius:50%;font-size:.62rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.b1{background:#1a6b3c;color:#fff}.b2{background:#276749;color:#fff}.b3{background:#fefcbf;color:#744210;border:1px solid #d69e2e}.b4{background:#edf2f7;color:#718096}
-.chip{padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:600}
-.chip-g{background:#c6f6d5;color:#276749}.chip-w{background:#f0fff4;color:#1a6b3c;border:1px solid #c6f6d5}.chip-3{background:#fefcbf;color:#744210;border:1px solid #d69e2e}
-.round-badge{display:inline-block;background:#1a3a5c;color:#fff;border-radius:6px;padding:3px 10px;font-size:.7rem;font-weight:700;margin-bottom:4px}
-.cbox{text-align:center;padding:1.25rem;border:2px solid #d69e2e;border-radius:12px;background:linear-gradient(135deg,#fffbf0,#fef9e7);margin-bottom:.75rem}
-.cbox .emo{font-size:2rem;margin-bottom:.3rem}.cbox h3{font-size:.75rem;font-weight:600;color:#744210;margin-bottom:.25rem}.cbox .team{font-size:1.2rem;font-weight:800}
-.gol-box{background:#ebf8ff;border:1.5px solid #bee3f8;border-radius:10px;padding:10px 16px;margin-bottom:.75rem;display:flex;align-items:center;gap:10px;font-size:.85rem}
+
+/* MATCH CARDS (same style as index) */
+.match-list{display:flex;flex-direction:column;gap:8px}
+.match-card{border:1.5px solid #e2e8f0;border-radius:10px;overflow:hidden;background:#fff;transition:border-color .15s}
+.match-card.done{border-color:#c6f6d5}
+.match-lbl{font-size:.68rem;color:#fff;padding:5px 12px;font-weight:600;background:#1a3a5c;display:flex;justify-content:space-between;align-items:center}
+.match-lbl span{opacity:.75;font-size:.62rem;font-weight:400}
+.match-team{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;transition:background .12s}
+.match-team:hover{background:#f7fafc}
+.match-team.winner{background:#f0fff4}
+.match-team.winner .mname{color:#276749;font-weight:700}
+.match-team.pending{cursor:not-allowed;opacity:.4}
+.win-icon{font-size:.8rem;color:#1a6b3c;opacity:0;margin-left:auto;transition:opacity .12s}
+.match-team.winner .win-icon{opacity:1}
+.mdiv{height:1px;background:#f0f4f8;margin:0 12px}
+.round-hdr{background:#1a3a5c;color:#fff;border-radius:8px;padding:8px 14px;margin-bottom:10px;font-size:.85rem;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.round-hdr small{font-size:.68rem;opacity:.75;font-weight:400}
+
+/* GROUPS REAL RESULTS */
+.groups-real-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.group-real-card{background:#fff;border-radius:10px;border:1.5px solid #e2e8f0;overflow:hidden}
+.group-real-hdr{padding:8px 12px;background:#1a6b3c;color:#fff;font-size:.82rem;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.team-real-row{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid #f0f4f8;cursor:pointer;transition:background .12s;user-select:none}
+.team-real-row:last-child{border-bottom:none}
+.team-real-row:hover{background:#f7fafc}
+.team-real-row.pos1{background:#f0fff4}
+.team-real-row.pos2{background:#f0fff4}
+.team-real-row.pos3{background:#fffbf0}
+.pos-badge-real{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0}
+.pr1{background:#1a6b3c;color:#fff}.pr2{background:#276749;color:#fff}
+.pr3{background:#fefcbf;color:#744210;border:1px solid #d69e2e}.pr4{background:#edf2f7;color:#718096}
+.pr-empty{background:#f3f4f6;color:#cbd5e0;font-size:1rem}
+
+/* THIRDS REAL */
+.thirds-real-grid{display:flex;flex-wrap:wrap;gap:8px}
+.third-real-btn{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;cursor:pointer;background:#fff;font-family:inherit;font-size:.82rem;transition:all .12s;user-select:none}
+.third-real-btn.selected{border-color:#1a6b3c;background:#f0fff4}
+.third-real-btn .chk{width:18px;height:18px;border-radius:50%;border:2px solid #e2e8f0;display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0;transition:all .12s}
+.third-real-btn.selected .chk{background:#1a6b3c;border-color:#1a6b3c;color:#fff}
+
+/* SCORE TABLE */
 .score-pos{width:26px;height:26px;border-radius:50%;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .sp1{background:#FFD700;color:#6b4c00}.sp2{background:#C0C0C0;color:#333}.sp3{background:#CD7F32;color:#fff}.spn{background:#edf2f7;color:#718096}
 .pts-cell{text-align:center;font-weight:700;color:#1a3a5c}
 .pts-zero{color:#cbd5e0;font-weight:400}
-.grp-result-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
-.grp-result-row label{font-size:.75rem;color:#718096;min-width:20px}
-.grp-result-row select{flex:1;min-width:120px;padding:5px 8px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:.75rem;font-family:inherit;outline:none}
-.grp-result-row select:focus{border-color:#1a6b3c}
-.match-pick{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f0f4f8;font-size:.8rem}
-.match-pick:last-child{border-bottom:none}.match-pick .lbl{flex:1;color:#4a5568;font-size:.75rem}
-.result-group{background:#f7fafc;border-radius:10px;padding:12px 14px;margin-bottom:10px;border:1px solid #e2e8f0}
-.result-group h4{font-size:.8rem;font-weight:700;color:#1a3a5c;margin-bottom:8px}
-.team-btn{padding:5px 10px;border-radius:6px;border:1.5px solid #e2e8f0;font-size:.75rem;cursor:pointer;background:#fff;font-family:inherit;transition:all .12s;white-space:nowrap}
-.team-btn:hover{border-color:#1a6b3c;color:#1a6b3c}.team-btn.selected{background:#1a6b3c;color:#fff;border-color:#1a6b3c}
-.cmp-wrap{overflow-x:auto}
-.cmp-table{white-space:nowrap;min-width:600px}
-.cmp-table th{font-size:.72rem;padding:7px 10px}
-.cmp-table td{font-size:.75rem;padding:6px 10px}
-.cmp-grp-hdr td{background:#1a3a5c!important;color:#fff;font-weight:700;font-size:.7rem;letter-spacing:.04em;padding:5px 10px}
+
+/* IMPORT */
+.import-ta{width:100%;height:80px;font-size:.75rem;font-family:monospace;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px;resize:none;outline:none;transition:border-color .15s}
+.import-ta:focus{border-color:#1a6b3c}
+
+/* LEADERBOARD mini */
+.leader-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f4f8;font-size:.85rem}
+.leader-row:last-child{border-bottom:none}
+.leader-pts{font-size:1rem;font-weight:800;color:#1a3a5c;min-width:48px;text-align:right}
+
+/* DETAIL */
+.drow{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f4f8;font-size:.83rem}
+.drow:last-child{border-bottom:none}
+.stitle{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#718096;margin:14px 0 6px;padding-top:10px;border-top:1px solid #f0f4f8}
+.stitle:first-child{border-top:none;margin-top:0}
+.round-badge{display:inline-block;background:#1a3a5c;color:#fff;border-radius:6px;padding:3px 10px;font-size:.7rem;font-weight:700}
+.chip{padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:600}
+.chip-g{background:#c6f6d5;color:#276749}
+.chip-w{background:#f0fff4;color:#1a6b3c;border:1px solid #c6f6d5}
+.chip-3{background:#fefcbf;color:#744210;border:1px solid #d69e2e}
+
+/* PTS KEY */
 .pts-key{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-bottom:1rem}
 .pts-key-card{background:#f7fafc;border-radius:8px;padding:10px 12px;border:1px solid #e2e8f0;font-size:.78rem}
 .pts-key-card h4{font-weight:700;color:#1a3a5c;margin-bottom:6px;font-size:.8rem}
 .pts-key-card li{list-style:none;padding:2px 0;color:#4a5568;display:flex;justify-content:space-between;gap:8px}
-.pts-key-card li span{font-weight:700;color:#1a6b3c;flex-shrink:0}
-.empty{text-align:center;padding:3rem 1rem;color:#a0aec0;font-size:.9rem;line-height:2}
+.pts-key-card li b{color:#1a6b3c}
+
+.empty{text-align:center;padding:3rem;color:#a0aec0;font-size:.9rem;line-height:2}
 .top-bar{display:flex;gap:8px;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap}
 .upd{font-size:.72rem;color:#718096}
 .alert-info{background:#ebf8ff;border:1.5px solid #bee3f8;border-radius:8px;padding:10px 14px;font-size:.82rem;color:#2c5282;margin-bottom:1rem}
 .loading{text-align:center;padding:2rem;color:#718096}
 .spin{display:inline-block;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.cbox{text-align:center;padding:1rem;border:2px solid #d69e2e;border-radius:10px;background:linear-gradient(135deg,#fffbf0,#fef9e7);margin-bottom:.75rem}
+.cbox .emo{font-size:1.8rem;margin-bottom:.3rem}.cbox h3{font-size:.75rem;font-weight:600;color:#744210;margin-bottom:.25rem}.cbox .team{font-size:1.1rem;font-weight:800}
+.gol-box{background:#ebf8ff;border:1.5px solid #bee3f8;border-radius:10px;padding:10px 16px;margin-bottom:.75rem;display:flex;align-items:center;gap:10px;font-size:.85rem}
+.cmp-wrap{overflow-x:auto}
+.cmp-table{white-space:nowrap;min-width:600px}
+.cmp-table th{font-size:.72rem;padding:7px 10px}
+.cmp-table td{font-size:.75rem;padding:6px 10px}
+.cmp-grp td{background:#1a3a5c!important;color:#fff;font-weight:700;font-size:.7rem;letter-spacing:.04em;padding:5px 10px}
+@media(max-width:500px){.stats{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 <div class="hdr">
   <span style="font-size:1.3rem">🏆</span>
-  <h1>Quiniela Mundial 2026 — Panel Admin</h1>
+  <h1>Quiniela Mundial 2026 — Admin</h1>
   <span class="badge-live">● EN VIVO</span>
   <span class="badge-gold" id="tot">0 quinielas</span>
 </div>
 <div class="wrap">
+  <!-- Import -->
+  <div class="card">
+    <div class="card-hdr"><h2>📥 Importar quiniela</h2></div>
+    <div class="card-body">
+      <p style="font-size:.82rem;color:#718096;margin-bottom:8px">Pega el JSON del participante y haz clic en Importar.</p>
+      <div style="display:flex;gap:8px;flex-direction:column">
+        <textarea class="import-ta" id="import-ta" placeholder='{"name":"Juan",...}'></textarea>
+        <button class="btn btn-g" style="align-self:flex-start" onclick="importQ()">📥 Importar</button>
+      </div>
+    </div>
+  </div>
   <div class="top-bar">
     <button class="btn btn-dark" onclick="load()">🔄 Actualizar</button>
     <button class="btn btn-o" style="color:#e53e3e;border-color:#fed7d7" onclick="clearAll()">🗑 Borrar todo</button>
     <span class="upd" id="upd"></span>
   </div>
-  <div id="main"><div class="loading"><span class="spin">⚽</span> Cargando quinielas…</div></div>
+  <div id="main"><div class="loading"><span class="spin">⚽</span> Cargando…</div></div>
 </div>
-
 <script>
 const SUPA_URL='https://dwqvchnvrdkyeksdebho.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR3cXZjaG52cmRreWVrc2RlYmhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNjY4NTMsImV4cCI6MjA5NDk0Mjg1M30.8HfPAhVeZynKj9uj9c7RyYrSsdoHxHkudG3jYz6A9sE';
-const HEADERS={'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'};
+const H={'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'};
+async function supaGet(){const r=await fetch(`${SUPA_URL}/rest/v1/quinelas?select=*&order=created_at.asc`,{headers:H});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function supaDelete(id){const r=await fetch(`${SUPA_URL}/rest/v1/quinelas?id=eq.${id}`,{method:'DELETE',headers:H});if(!r.ok)throw new Error(await r.text());}
 
-async function supaGet(){
-  const r=await fetch(`${SUPA_URL}/rest/v1/quinelas?select=*&order=created_at.asc`,{headers:HEADERS});
-  if(!r.ok)throw new Error(await r.text());
-  return r.json();
-}
-async function supaDelete(id){
-  const r=await fetch(`${SUPA_URL}/rest/v1/quinelas?id=eq.${id}`,{method:'DELETE',headers:HEADERS});
-  if(!r.ok)throw new Error(await r.text());
-}
+const GS={
+  A:{teams:[{n:'México',f:'🇲🇽'},{n:'Sudáfrica',f:'🇿🇦'},{n:'Corea del Sur',f:'🇰🇷'},{n:'Chequia',f:'🇨🇿'}]},
+  B:{teams:[{n:'Canadá',f:'🇨🇦'},{n:'Bosnia y Herz.',f:'🇧🇦'},{n:'Qatar',f:'🇶🇦'},{n:'Suiza',f:'🇨🇭'}]},
+  C:{teams:[{n:'Brasil',f:'🇧🇷'},{n:'Marruecos',f:'🇲🇦'},{n:'Haití',f:'🇭🇹'},{n:'Escocia',f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿'}]},
+  D:{teams:[{n:'Estados Unidos',f:'🇺🇸'},{n:'Paraguay',f:'🇵🇾'},{n:'Australia',f:'🇦🇺'},{n:'Turquía',f:'🇹🇷'}]},
+  E:{teams:[{n:'Alemania',f:'🇩🇪'},{n:'Curazao',f:'🇨🇼'},{n:'C. de Marfil',f:'🇨🇮'},{n:'Ecuador',f:'🇪🇨'}]},
+  F:{teams:[{n:'Países Bajos',f:'🇳🇱'},{n:'Japón',f:'🇯🇵'},{n:'Suecia',f:'🇸🇪'},{n:'Túnez',f:'🇹🇳'}]},
+  G:{teams:[{n:'Bélgica',f:'🇧🇪'},{n:'Irán',f:'🇮🇷'},{n:'Nueva Zelanda',f:'🇳🇿'},{n:'Egipto',f:'🇪🇬'}]},
+  H:{teams:[{n:'España',f:'🇪🇸'},{n:'Cabo Verde',f:'🇨🇻'},{n:'Arabia Saudita',f:'🇸🇦'},{n:'Uruguay',f:'🇺🇾'}]},
+  I:{teams:[{n:'Francia',f:'🇫🇷'},{n:'Senegal',f:'🇸🇳'},{n:'Irak',f:'🇮🇶'},{n:'Noruega',f:'🇳🇴'}]},
+  J:{teams:[{n:'Argentina',f:'🇦🇷'},{n:'Argelia',f:'🇩🇿'},{n:'Austria',f:'🇦🇹'},{n:'Jordania',f:'🇯🇴'}]},
+  K:{teams:[{n:'Portugal',f:'🇵🇹'},{n:'R.D. del Congo',f:'🇨🇩'},{n:'Uzbekistán',f:'🇺🇿'},{n:'Colombia',f:'🇨🇴'}]},
+  L:{teams:[{n:'Inglaterra',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},{n:'Croacia',f:'🇭🇷'},{n:'Ghana',f:'🇬🇭'},{n:'Panamá',f:'🇵🇦'}]}
+};
 
-const GS={A:{teams:[{n:'México',f:'🇲🇽'},{n:'Sudáfrica',f:'🇿🇦'},{n:'Corea del Sur',f:'🇰🇷'},{n:'Chequia',f:'🇨🇿'}]},B:{teams:[{n:'Canadá',f:'🇨🇦'},{n:'Bosnia y Herz.',f:'🇧🇦'},{n:'Qatar',f:'🇶🇦'},{n:'Suiza',f:'🇨🇭'}]},C:{teams:[{n:'Brasil',f:'🇧🇷'},{n:'Marruecos',f:'🇲🇦'},{n:'Haití',f:'🇭🇹'},{n:'Escocia',f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿'}]},D:{teams:[{n:'Estados Unidos',f:'🇺🇸'},{n:'Paraguay',f:'🇵🇾'},{n:'Australia',f:'🇦🇺'},{n:'Turquía',f:'🇹🇷'}]},E:{teams:[{n:'Alemania',f:'🇩🇪'},{n:'Curazao',f:'🇨🇼'},{n:'C. de Marfil',f:'🇨🇮'},{n:'Ecuador',f:'🇪🇨'}]},F:{teams:[{n:'Países Bajos',f:'🇳🇱'},{n:'Japón',f:'🇯🇵'},{n:'Suecia',f:'🇸🇪'},{n:'Túnez',f:'🇹🇳'}]},G:{teams:[{n:'Bélgica',f:'🇧🇪'},{n:'Irán',f:'🇮🇷'},{n:'Nueva Zelanda',f:'🇳🇿'},{n:'Egipto',f:'🇪🇬'}]},H:{teams:[{n:'España',f:'🇪🇸'},{n:'Cabo Verde',f:'🇨🇻'},{n:'Arabia Saudita',f:'🇸🇦'},{n:'Uruguay',f:'🇺🇾'}]},I:{teams:[{n:'Francia',f:'🇫🇷'},{n:'Senegal',f:'🇸🇳'},{n:'Irak',f:'🇮🇶'},{n:'Noruega',f:'🇳🇴'}]},J:{teams:[{n:'Argentina',f:'🇦🇷'},{n:'Argelia',f:'🇩🇿'},{n:'Austria',f:'🇦🇹'},{n:'Jordania',f:'🇯🇴'}]},K:{teams:[{n:'Portugal',f:'🇵🇹'},{n:'R.D. del Congo',f:'🇨🇩'},{n:'Uzbekistán',f:'🇺🇿'},{n:'Colombia',f:'🇨🇴'}]},L:{teams:[{n:'Inglaterra',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},{n:'Croacia',f:'🇭🇷'},{n:'Ghana',f:'🇬🇭'},{n:'Panamá',f:'🇵🇦'}]}};
-const R16_IDS=['p74','p77','p73','p75','p83','p84','p81','p82','p78','p76','p79','p80','p88','p86','p85','p87'];
-const R16_LBL={p74:'P74·1°E vs 3°A/B/C/D/F',p77:'P77·1°I vs 3°C/D/F/G/H',p73:'P73·2°A vs 2°B',p75:'P75·1°F vs 2°C',p83:'P83·2°K vs 2°L',p84:'P84·1°H vs 2°J',p81:'P81·1°D vs 3°B/E/F/I/J',p82:'P82·1°G vs 3°A/E/H/I/J',p78:'P78·2°E vs 2°I',p76:'P76·1°C vs 2°F',p79:'P79·1°A vs 3°C/E/F/H/I',p80:'P80·1°L vs 3°E/H/I/J/K',p88:'P88·2°D vs 2°G',p86:'P86·1°J vs 2°H',p85:'P85·1°B vs 3°E/F/G/I/J',p87:'P87·1°K vs 3°D/E/I/J/L'};
-const QF_IDS=['qf_p89','qf_p90','qf_p93','qf_p94','qf_p91','qf_p92','qf_p95','qf_p96'];
-const QF_LBL={qf_p89:'P89·W74 vs W77',qf_p90:'P90·W73 vs W75',qf_p93:'P93·W83 vs W84',qf_p94:'P94·W81 vs W82',qf_p91:'P91·W78 vs W76',qf_p92:'P92·W79 vs W80',qf_p95:'P95·W88 vs W86',qf_p96:'P96·W85 vs W87'};
-const CF_IDS=['cf_p97','cf_p98','cf_p99','cf_p100'];
-const CF_LBL={cf_p97:'P97·W89 vs W90',cf_p98:'P98·W93 vs W94',cf_p99:'P99·W91 vs W92',cf_p100:'P100·W95 vs W96'};
-const SF_IDS=['sf_p101','sf_p102'];
-const SF_LBL={sf_p101:'P101·W97 vs W98',sf_p102:'P102·W99 vs W100'};
+// THIRDS TABLE (full 495 from FIFA/Wikipedia)
+const TT={"ABCDEFGH":"3C,3G,3B,3A,3H,3D,3F,3E","ABCDEFGI":"3C,3G,3B,3A,3E,3D,3F,3I","ABCDEFGJ":"3C,3G,3B,3A,3J,3D,3F,3E","ABCDEFGK":"3C,3G,3B,3A,3E,3D,3F,3K","ABCDEFGL":"3C,3G,3B,3A,3E,3D,3L,3F","ABCDEFHI":"3C,3E,3B,3A,3H,3D,3F,3I","ABCDEFHJ":"3C,3J,3B,3A,3H,3D,3F,3E","ABCDEFHK":"3C,3E,3B,3A,3H,3D,3F,3K","ABCDEFHL":"3C,3E,3B,3A,3H,3D,3L,3F","ABCDEFIJ":"3C,3E,3B,3A,3J,3D,3E,3I","ABCDEFIK":"3C,3E,3B,3A,3I,3D,3E,3K","ABCDEFIL":"3C,3E,3B,3A,3E,3D,3L,3I","ABCDEFJK":"3C,3J,3B,3A,3E,3D,3F,3K","ABCDEFJL":"3C,3J,3B,3A,3E,3D,3L,3F","ABCDEFKL":"3C,3E,3B,3A,3E,3D,3L,3K","ABCDEGHJ":"3H,3G,3B,3A,3J,3C,3E,3D","ABCDEGHI":"3E,3G,3B,3A,3H,3C,3E,3I","ABCDEGHK":"3E,3G,3B,3A,3H,3C,3E,3K","ABCDEGHL":"3E,3G,3B,3A,3H,3C,3L,3E","ABCDEGHIJKL":"3H,3G,3B,3A,3J,3C,3E,3I","ABCDEGIJ":"3E,3G,3B,3A,3J,3C,3E,3I","ABCDEGIK":"3E,3G,3B,3A,3I,3C,3E,3K","ABCDEGIL":"3E,3G,3B,3A,3E,3C,3L,3I","ABCDEGJK":"3E,3G,3B,3A,3J,3C,3E,3K","ABCDEGJL":"3E,3G,3B,3A,3J,3C,3L,3E","ABCDEGKL":"3E,3G,3B,3A,3E,3C,3L,3K","ABCDEHIJ":"3E,3J,3B,3A,3H,3C,3I,3D","ABCDEHIK":"3E,3I,3B,3A,3H,3C,3I,3K","ABCDEHIL":"3E,3I,3B,3A,3H,3C,3L,3I","ABCDEHJK":"3E,3J,3B,3A,3H,3C,3I,3K","ABCDEHJL":"3E,3J,3B,3A,3H,3C,3L,3I","ABCDEHKL":"3E,3I,3B,3A,3H,3C,3L,3K","ABCDEIJK":"3E,3I,3B,3A,3J,3C,3I,3K","ABCDEIJL":"3E,3J,3B,3A,3I,3C,3L,3I","ABCDEIKL":"3E,3I,3B,3A,3H,3C,3L,3K","ABCDEJKL":"3E,3J,3B,3A,3I,3C,3L,3K","ABCDFGHI":"3H,3G,3B,3A,3H,3F,3L,3I","ABCDFGHJ":"3H,3G,3B,3A,3J,3F,3C,3I","ABCDFGHK":"3H,3G,3B,3A,3H,3F,3I,3K","ABCDFGHL":"3H,3G,3B,3A,3H,3F,3L,3I","ABCDFGIJ":"3H,3G,3B,3A,3J,3F,3I,3K","ABCDFGIK":"3H,3G,3B,3A,3I,3F,3L,3K","ABCDFGIL":"3H,3G,3B,3A,3J,3F,3L,3I","ABCDFGJK":"3H,3G,3B,3A,3J,3F,3L,3K","ABCDFGJL":"3H,3G,3B,3A,3J,3F,3L,3K","ABCDFGKL":"3H,3G,3B,3A,3H,3F,3L,3K","ABCDFHIJ":"3C,3J,3B,3A,3H,3D,3I,3F","ABCDFHIK":"3C,3I,3B,3A,3H,3D,3I,3K","ABCDFHIL":"3C,3I,3B,3A,3H,3D,3L,3I","ABCDFHJK":"3C,3J,3B,3A,3H,3D,3I,3K","ABCDFHJL":"3C,3J,3B,3A,3H,3D,3L,3I","ABCDFHKL":"3C,3I,3B,3A,3H,3D,3L,3K","ABCDFIJK":"3C,3I,3B,3A,3J,3D,3I,3K","ABCDFIJL":"3C,3J,3B,3A,3I,3D,3L,3I","ABCDFIKL":"3C,3I,3B,3A,3H,3D,3L,3K","ABCDFJKL":"3C,3J,3B,3A,3I,3D,3L,3K","ABCDGHIJ":"3H,3G,3B,3A,3J,3C,3D,3I","ABCDGHIK":"3H,3G,3B,3A,3H,3C,3I,3K","ABCDGHIL":"3H,3G,3B,3A,3H,3C,3L,3I","ABCDGHJK":"3H,3G,3B,3A,3J,3C,3D,3K","ABCDGHJL":"3H,3G,3B,3A,3J,3C,3L,3D","ABCDGHKL":"3H,3G,3B,3A,3H,3C,3L,3K","ABCDGIJK":"3H,3G,3B,3A,3J,3C,3I,3K","ABCDGIJL":"3H,3G,3B,3A,3J,3C,3L,3I","ABCDGIKL":"3H,3G,3B,3A,3I,3C,3L,3K","ABCDGJKL":"3H,3G,3B,3A,3J,3C,3L,3K","ABCDHIJK":"3H,3J,3B,3A,3H,3C,3I,3K","ABCDHIJL":"3H,3J,3B,3A,3H,3C,3L,3I","ABCDHIKL":"3H,3I,3B,3A,3H,3C,3L,3K","ABCDHJKL":"3H,3J,3B,3A,3H,3C,3L,3K","ABCDIJKL":"3H,3J,3B,3A,3I,3C,3L,3K","ABCEFGHI":"3E,3G,3B,3A,3H,3C,3E,3I","ABCEFGHJ":"3H,3G,3B,3A,3J,3C,3E,3F","ABCEFGHK":"3E,3G,3B,3A,3H,3C,3E,3K","ABCEFGHL":"3E,3G,3B,3A,3H,3C,3L,3E","ABCEFGIJ":"3E,3G,3B,3A,3J,3C,3E,3I","ABCEFGIK":"3E,3G,3B,3A,3I,3C,3E,3K","ABCEFGIL":"3E,3G,3B,3A,3E,3C,3L,3I","ABCEFGJK":"3E,3G,3B,3A,3J,3C,3E,3K","ABCEFGJL":"3E,3G,3B,3A,3J,3C,3L,3E","ABCEFGKL":"3E,3G,3B,3A,3E,3C,3L,3K","ABCEFHIJ":"3E,3J,3B,3A,3H,3C,3I,3F","ABCEFHIK":"3E,3I,3B,3A,3H,3C,3I,3K","ABCEFHIL":"3E,3I,3B,3A,3H,3C,3L,3I","ABCEFHJK":"3E,3J,3B,3A,3H,3C,3I,3K","ABCEFHJL":"3E,3J,3B,3A,3H,3C,3L,3I","ABCEFHKL":"3E,3I,3B,3A,3H,3C,3L,3K","ABCEFIJK":"3E,3I,3B,3A,3J,3C,3I,3K","ABCEFIJL":"3E,3J,3B,3A,3I,3C,3L,3I","ABCEFIKL":"3E,3I,3B,3A,3H,3C,3L,3K","ABCEFJKL":"3E,3J,3B,3A,3I,3C,3L,3K","ABCEGHIJ":"3H,3G,3B,3A,3J,3C,3E,3I","ABCEGHIK":"3E,3G,3B,3A,3H,3C,3I,3K","ABCEGHIL":"3E,3G,3B,3A,3H,3C,3L,3I","ABCEGHJK":"3H,3G,3B,3A,3J,3C,3E,3K","ABCEGHJL":"3H,3G,3B,3A,3J,3C,3L,3E","ABCEGHKL":"3E,3G,3B,3A,3H,3C,3L,3K","ABCEGIJK":"3E,3G,3B,3A,3J,3C,3I,3K","ABCEGIJL":"3E,3J,3B,3A,3J,3C,3L,3I","ABCEGIKL":"3E,3G,3B,3A,3I,3C,3L,3K","ABCEGJKL":"3E,3J,3B,3A,3J,3C,3L,3K","ABCEHIJK":"3E,3J,3B,3A,3H,3C,3I,3K","ABCEHIJL":"3E,3J,3B,3A,3H,3C,3L,3I","ABCEHIKL":"3E,3I,3B,3A,3H,3C,3L,3K","ABCEHJKL":"3E,3J,3B,3A,3H,3C,3L,3K","ABCEIJKL":"3E,3J,3B,3A,3I,3C,3L,3K","ABCFGHIJ":"3H,3G,3B,3A,3J,3F,3C,3I","ABCFGHIK":"3H,3G,3B,3A,3H,3F,3I,3K","ABCFGHIL":"3H,3G,3B,3A,3H,3F,3L,3I","ABCFGHJK":"3H,3G,3B,3A,3J,3F,3C,3K","ABCFGHJL":"3H,3G,3B,3A,3J,3F,3L,3C","ABCFGHKL":"3H,3G,3B,3A,3H,3F,3L,3K","ABCFGIJK":"3H,3G,3B,3A,3J,3F,3I,3K","ABCFGIJL":"3H,3G,3B,3A,3J,3F,3L,3I","ABCFGIKL":"3H,3G,3B,3A,3I,3F,3L,3K","ABCFGJKL":"3H,3G,3B,3A,3J,3F,3L,3K","ABCFHIJK":"3H,3G,3B,3A,3J,3F,3I,3K","ABCFHIJL":"3H,3G,3B,3A,3J,3F,3L,3I","ABCFHIKL":"3H,3G,3B,3A,3I,3F,3L,3K","ABCFHJKL":"3H,3J,3B,3A,3J,3F,3L,3K","ABCFIJKL":"3I,3G,3B,3A,3J,3F,3L,3K","ABCGHIJK":"3H,3G,3B,3A,3J,3C,3I,3K","ABCGHIJL":"3H,3G,3B,3A,3J,3C,3L,3I","ABCGHIKL":"3H,3G,3B,3A,3I,3C,3L,3K","ABCGHJKL":"3H,3G,3B,3A,3J,3C,3L,3K","ABCGIJKL":"3I,3G,3B,3A,3J,3C,3L,3K","ABCHIJKL":"3H,3J,3B,3A,3I,3C,3L,3K","ABDEFGHI":"3E,3G,3B,3A,3H,3D,3F,3I","ABDEFGHJ":"3H,3G,3B,3A,3J,3F,3E,3I","ABDEFGHK":"3E,3G,3B,3A,3H,3F,3I,3K","ABDEFGHL":"3E,3G,3B,3A,3H,3F,3L,3I","ABDEFGIJ":"3E,3G,3B,3A,3J,3F,3E,3I","ABDEFGIK":"3E,3G,3B,3A,3I,3F,3L,3K","ABDEFGIL":"3E,3G,3B,3A,3J,3F,3L,3I","ABDEFGJK":"3E,3G,3B,3A,3J,3F,3E,3K","ABDEFGJL":"3E,3G,3B,3A,3J,3F,3L,3E","ABDEFGKL":"3E,3G,3B,3A,3H,3F,3L,3K","ABDEFHIJ":"3E,3J,3B,3A,3H,3D,3I,3F","ABDEFHIK":"3E,3I,3B,3A,3H,3F,3L,3K","ABDEFHIL":"3E,3I,3B,3A,3H,3D,3L,3I","ABDEFHJK":"3E,3J,3B,3A,3H,3D,3I,3K","ABDEFHJL":"3E,3J,3B,3A,3H,3F,3L,3I","ABDEFHKL":"3E,3I,3B,3A,3H,3F,3L,3K","ABDEFIJK":"3E,3J,3B,3A,3J,3F,3I,3K","ABDEFIJL":"3E,3J,3B,3A,3I,3F,3L,3I","ABDEFIKL":"3E,3I,3B,3A,3H,3F,3L,3K","ABDEFJKL":"3E,3J,3B,3A,3I,3F,3L,3K","ABDEGHIJ":"3H,3G,3B,3A,3J,3D,3E,3I","ABDEGHIK":"3E,3G,3B,3A,3H,3D,3I,3K","ABDEGHIL":"3E,3G,3B,3A,3H,3D,3L,3I","ABDEGHJK":"3H,3G,3B,3A,3J,3D,3E,3K","ABDEGHJL":"3H,3G,3B,3A,3J,3D,3L,3E","ABDEGHKL":"3E,3G,3B,3A,3H,3D,3L,3K","ABDEGIJK":"3E,3G,3B,3A,3J,3D,3I,3K","ABDEGIJL":"3E,3G,3B,3A,3J,3D,3L,3I","ABDEGIKL":"3E,3G,3B,3A,3I,3D,3L,3K","ABDEGJKL":"3E,3G,3B,3A,3J,3D,3L,3K","ABDEHIJK":"3E,3J,3B,3A,3H,3D,3I,3K","ABDEHIJL":"3E,3J,3B,3A,3H,3D,3L,3I","ABDEHIKL":"3E,3I,3B,3A,3H,3D,3L,3K","ABDEHJKL":"3E,3J,3B,3A,3H,3D,3L,3K","ABDEIJKL":"3E,3J,3B,3A,3I,3D,3L,3K","ABDFGHIJ":"3H,3G,3B,3A,3J,3F,3D,3I","ABDFGHIK":"3H,3G,3B,3A,3H,3F,3I,3K","ABDFGHIL":"3H,3G,3B,3A,3H,3F,3L,3I","ABDFGHJK":"3H,3G,3B,3A,3J,3F,3D,3K","ABDFGHJL":"3H,3G,3B,3A,3J,3F,3L,3D","ABDFGHKL":"3H,3G,3B,3A,3H,3F,3L,3K","ABDFGIJK":"3H,3G,3B,3A,3J,3F,3I,3K","ABDFGIJL":"3H,3G,3B,3A,3J,3F,3L,3I","ABDFGIKL":"3H,3G,3B,3A,3I,3F,3L,3K","ABDFGJKL":"3H,3G,3B,3A,3J,3F,3L,3K","ABDFHIJK":"3H,3G,3B,3A,3J,3F,3I,3K","ABDFHIJL":"3H,3G,3B,3A,3J,3F,3L,3I","ABDFHIKL":"3H,3G,3B,3A,3I,3F,3L,3K","ABDFHJKL":"3H,3J,3B,3A,3J,3F,3L,3K","ABDFIJKL":"3I,3G,3B,3A,3J,3F,3L,3K","ABDGHIJK":"3H,3G,3B,3A,3J,3D,3I,3K","ABDGHIJL":"3H,3G,3B,3A,3J,3D,3L,3I","ABDGHIKL":"3H,3G,3B,3A,3I,3D,3L,3K","ABDGHJKL":"3H,3G,3B,3A,3J,3D,3L,3K","ABDGIJKL":"3I,3G,3B,3A,3J,3D,3L,3K","ABDHIJKL":"3H,3J,3B,3A,3I,3D,3L,3K","ABEFGHIJ":"3H,3G,3B,3A,3J,3F,3E,3I","ABEFGHIK":"3E,3G,3B,3A,3H,3F,3I,3K","ABEFGHIL":"3E,3G,3B,3A,3H,3F,3L,3I","ABEFGHJK":"3H,3G,3B,3A,3J,3F,3E,3K","ABEFGHJL":"3H,3G,3B,3A,3J,3F,3L,3E","ABEFGHKL":"3E,3G,3B,3A,3H,3F,3L,3K","ABEFGIJK":"3E,3G,3B,3A,3J,3F,3I,3K","ABEFGIJL":"3E,3G,3B,3A,3J,3F,3L,3I","ABEFGIKL":"3E,3G,3B,3A,3I,3F,3L,3K","ABEFGJKL":"3E,3G,3B,3A,3J,3F,3L,3K","ABEFHIJK":"3E,3J,3B,3A,3H,3F,3I,3K","ABEFHIJL":"3E,3J,3B,3A,3H,3F,3L,3I","ABEFHIKL":"3E,3I,3B,3A,3H,3F,3L,3K","ABEFHJKL":"3E,3J,3B,3A,3H,3F,3L,3K","ABEFIJKL":"3E,3J,3B,3A,3I,3F,3L,3K","ABEGHIJK":"3E,3J,3B,3A,3H,3G,3I,3K","ABEGHIJL":"3E,3J,3B,3A,3H,3G,3L,3I","ABEGHIKL":"3E,3G,3B,3A,3I,3H,3L,3K","ABEGHJKL":"3E,3J,3B,3A,3H,3G,3L,3K","ABEGIJKL":"3E,3J,3B,3A,3I,3G,3L,3K","ABEHIJKL":"3E,3J,3B,3A,3I,3H,3L,3K","ABFGHIJK":"3H,3G,3B,3A,3J,3F,3I,3K","ABFGHIJL":"3H,3G,3B,3A,3J,3F,3L,3I","ABFGHIKL":"3H,3G,3B,3A,3I,3F,3L,3K","ABFGHJKL":"3H,3G,3B,3A,3J,3F,3L,3K","ABFGIJKL":"3I,3G,3B,3A,3J,3F,3L,3K","ABFHIJKL":"3E,3J,3I,3A,3B,3H,3L,3K","ABGHIJKL":"3H,3J,3B,3A,3I,3G,3L,3K","ACDEFGHI":"3H,3G,3E,3C,3A,3F,3D,3I","ACDEFGHJ":"3H,3G,3J,3C,3A,3F,3D,3E","ACDEFGHK":"3H,3G,3E,3C,3A,3F,3D,3K","ACDEFGHL":"3H,3G,3E,3C,3A,3F,3L,3D","ACDEFGIJ":"3C,3G,3J,3D,3A,3F,3E,3I","ACDEFGIK":"3C,3G,3E,3D,3A,3F,3I,3K","ACDEFGIL":"3C,3G,3E,3D,3A,3F,3L,3I","ACDEFGJK":"3C,3G,3J,3D,3A,3F,3E,3K","ACDEFGJL":"3C,3G,3J,3D,3A,3F,3L,3E","ACDEFGKL":"3C,3G,3E,3D,3A,3F,3L,3K","ACDEFHIJ":"3H,3J,3E,3C,3A,3F,3D,3I","ACDEFHIK":"3H,3E,3F,3C,3A,3D,3I,3K","ACDEFHIL":"3H,3E,3F,3C,3A,3D,3L,3I","ACDEFHJK":"3H,3J,3E,3C,3A,3F,3D,3K","ACDEFHJL":"3H,3J,3F,3C,3A,3D,3L,3E","ACDEFHKL":"3H,3E,3F,3C,3A,3D,3L,3K","ACDEFIJK":"3C,3J,3E,3D,3A,3F,3I,3K","ACDEFIJL":"3C,3J,3E,3D,3A,3F,3L,3I","ACDEFIKL":"3C,3E,3I,3D,3A,3F,3L,3K","ACDEFJKL":"3C,3J,3E,3D,3A,3F,3L,3K","ACDEGHIJ":"3H,3G,3J,3C,3A,3D,3E,3I","ACDEGHIK":"3H,3G,3E,3C,3A,3D,3I,3K","ACDEGHIL":"3H,3G,3E,3C,3A,3D,3L,3I","ACDEGHJK":"3H,3G,3J,3C,3A,3D,3E,3K","ACDEGHJL":"3H,3G,3J,3C,3A,3D,3L,3E","ACDEGHKL":"3H,3G,3E,3C,3A,3D,3L,3K","ACDEGIJK":"3E,3G,3J,3C,3A,3D,3I,3K","ACDEGIJL":"3E,3G,3J,3C,3A,3D,3L,3I","ACDEGIKL":"3E,3G,3I,3C,3A,3D,3L,3K","ACDEGJKL":"3E,3G,3J,3C,3A,3D,3L,3K","ACDEHIJK":"3H,3J,3E,3C,3A,3D,3I,3K","ACDEHIJL":"3H,3J,3E,3C,3A,3D,3L,3I","ACDEHIKL":"3H,3E,3I,3C,3A,3D,3L,3K","ACDEHJKL":"3H,3J,3E,3C,3A,3D,3L,3K","ACDEIJKL":"3E,3J,3I,3C,3A,3D,3L,3K","ACDFGHIJ":"3H,3G,3J,3C,3A,3F,3D,3I","ACDFGHIK":"3H,3G,3F,3C,3A,3D,3I,3K","ACDFGHIL":"3H,3G,3F,3C,3A,3D,3L,3I","ACDFGHJK":"3H,3G,3J,3C,3A,3F,3D,3K","ACDFGHJL":"3C,3G,3J,3D,3A,3F,3L,3H","ACDFGHKL":"3H,3G,3F,3C,3A,3D,3L,3K","ACDFGIJK":"3C,3G,3J,3D,3A,3F,3I,3K","ACDFGIJL":"3C,3G,3J,3D,3A,3F,3L,3I","ACDFGIKL":"3C,3G,3I,3D,3A,3F,3L,3K","ACDFGJKL":"3C,3G,3J,3D,3A,3F,3L,3K","ACDFHIJK":"3H,3J,3F,3C,3A,3D,3I,3K","ACDFHIJL":"3H,3J,3F,3C,3A,3D,3L,3I","ACDFHIKL":"3H,3F,3I,3C,3A,3D,3L,3K","ACDFHJKL":"3H,3J,3F,3C,3A,3D,3L,3K","ACDFIJKL":"3C,3J,3I,3D,3A,3F,3L,3K","ACDGHIJK":"3H,3G,3J,3C,3A,3D,3I,3K","ACDGHIJL":"3H,3G,3J,3C,3A,3D,3L,3I","ACDGHIKL":"3H,3G,3I,3C,3A,3D,3L,3K","ACDGHJKL":"3H,3G,3J,3C,3A,3D,3L,3K","ACDGIJKL":"3I,3G,3J,3C,3A,3D,3L,3K","ACDHIJKL":"3H,3J,3I,3C,3A,3D,3L,3K","ACEFGHIJ":"3H,3G,3J,3C,3A,3F,3E,3I","ACEFGHIK":"3H,3G,3E,3C,3A,3F,3I,3K","ACEFGHIL":"3H,3G,3E,3C,3A,3F,3L,3I","ACEFGHJK":"3H,3G,3J,3C,3A,3F,3E,3K","ACEFGHJL":"3H,3G,3J,3C,3A,3F,3L,3E","ACEFGHKL":"3H,3G,3E,3C,3A,3F,3L,3K","ACEFGIJK":"3E,3G,3J,3C,3A,3F,3I,3K","ACEFGIJL":"3E,3G,3J,3C,3A,3F,3L,3I","ACEFGIKL":"3E,3G,3I,3C,3A,3F,3L,3K","ACEFGJKL":"3E,3G,3J,3C,3A,3F,3L,3K","ACEFHIJK":"3H,3J,3E,3C,3A,3F,3I,3K","ACEFHIJL":"3H,3J,3E,3C,3A,3F,3L,3I","ACEFHIKL":"3H,3E,3I,3C,3A,3F,3L,3K","ACEFHJKL":"3H,3J,3E,3C,3A,3F,3L,3K","ACEFIJKL":"3E,3J,3I,3C,3A,3F,3L,3K","ACEGHIJK":"3E,3J,3J,3C,3A,3H,3I,3K","ACEGHIJL":"3E,3G,3J,3C,3A,3H,3L,3I","ACEGHIKL":"3E,3G,3I,3C,3A,3H,3L,3K","ACEGHJKL":"3E,3J,3J,3C,3A,3H,3L,3K","ACEGIJKL":"3E,3J,3I,3C,3A,3G,3L,3K","ACEHIJKL":"3E,3J,3I,3C,3A,3H,3L,3K","ACFGHIJK":"3H,3G,3J,3C,3A,3F,3I,3K","ACFGHIJL":"3H,3G,3J,3C,3A,3F,3L,3I","ACFGHIKL":"3H,3G,3I,3C,3A,3F,3L,3K","ACFGHJKL":"3H,3G,3J,3C,3A,3F,3L,3K","ACFGIJKL":"3I,3G,3J,3C,3A,3F,3L,3K","ACFHIJKL":"3H,3J,3I,3C,3A,3F,3L,3K","ACGHIJKL":"3H,3J,3I,3C,3A,3G,3L,3K","ADEFGHIJ":"3H,3G,3J,3D,3A,3F,3E,3I","ADEFGHIK":"3H,3G,3E,3D,3A,3F,3I,3K","ADEFGHIL":"3H,3G,3E,3D,3A,3F,3L,3I","ADEFGHJK":"3H,3G,3J,3D,3A,3F,3E,3K","ADEFGHJL":"3H,3G,3J,3D,3A,3F,3L,3E","ADEFGHKL":"3H,3G,3E,3D,3A,3F,3L,3K","ADEFGIJK":"3E,3G,3J,3D,3A,3F,3I,3K","ADEFGIJL":"3E,3G,3J,3D,3A,3F,3L,3I","ADEFGIKL":"3E,3G,3I,3D,3A,3F,3L,3K","ADEFGJKL":"3E,3G,3J,3D,3A,3F,3L,3K","ADEFHIJK":"3H,3J,3E,3D,3A,3F,3I,3K","ADEFHIJL":"3H,3J,3E,3D,3A,3F,3L,3I","ADEFHIKL":"3E,3I,3A,3D,3H,3F,3L,3K","ADEFHJKL":"3E,3J,3A,3D,3H,3F,3L,3K","ADEFIJKL":"3E,3J,3I,3D,3A,3F,3L,3K","ADEGHIJK":"3E,3G,3J,3D,3A,3H,3I,3K","ADEGHIJL":"3E,3G,3J,3D,3A,3H,3L,3I","ADEGHIKL":"3E,3G,3I,3D,3A,3H,3L,3K","ADEGHJKL":"3E,3G,3J,3D,3A,3H,3L,3K","ADEGIJKL":"3E,3J,3I,3D,3A,3G,3L,3K","ADEHIJKL":"3E,3J,3I,3D,3A,3H,3L,3K","ADFGHIJK":"3H,3G,3J,3D,3A,3F,3I,3K","ADFGHIJL":"3H,3G,3J,3D,3A,3F,3L,3I","ADFGHIKL":"3H,3G,3I,3D,3A,3F,3L,3K","ADFGHJKL":"3H,3G,3J,3D,3A,3F,3L,3K","ADFGIJKL":"3I,3G,3J,3D,3A,3F,3L,3K","ADFHIJKL":"3H,3J,3I,3D,3A,3F,3L,3K","ADGHIJKL":"3H,3J,3I,3D,3A,3G,3L,3K","AEFGHIJK":"3E,3G,3J,3F,3A,3H,3I,3K","AEFGHIJL":"3E,3G,3J,3F,3A,3H,3L,3I","AEFGHIKL":"3E,3G,3I,3F,3A,3H,3L,3K","AEFGHJKL":"3E,3G,3J,3F,3A,3H,3L,3K","AEFGIJKL":"3E,3J,3I,3F,3A,3G,3L,3K","AEFHIJKL":"3E,3J,3I,3F,3A,3H,3L,3K","AEGHIJKL":"3E,3J,3I,3A,3H,3G,3L,3K","AFGHIJKL":"3H,3J,3I,3F,3A,3G,3L,3K","BCDEFGHI":"3C,3G,3B,3D,3H,3F,3E,3I","BCDEFGHJ":"3H,3G,3B,3C,3J,3F,3D,3E","BCDEFGHK":"3C,3G,3B,3D,3H,3F,3E,3K","BCDEFGHL":"3C,3G,3B,3D,3H,3F,3L,3E","BCDEFGIJ":"3C,3G,3B,3D,3J,3F,3E,3I","BCDEFGIK":"3C,3G,3B,3D,3E,3F,3I,3K","BCDEFGIL":"3C,3G,3B,3D,3E,3F,3L,3I","BCDEFGJK":"3C,3G,3B,3D,3J,3F,3E,3K","BCDEFGJL":"3C,3G,3B,3D,3J,3F,3L,3E","BCDEFGKL":"3C,3G,3B,3D,3E,3F,3L,3K","BCDEFHIJ":"3C,3J,3B,3D,3H,3F,3E,3I","BCDEFHIK":"3C,3E,3B,3D,3H,3F,3I,3K","BCDEFHIL":"3C,3E,3B,3D,3H,3F,3L,3I","BCDEFHJK":"3C,3J,3B,3D,3H,3F,3E,3K","BCDEFHJL":"3C,3J,3B,3D,3H,3F,3L,3E","BCDEFHKL":"3C,3E,3B,3D,3H,3F,3L,3K","BCDEFIJK":"3C,3J,3B,3D,3E,3F,3I,3K","BCDEFIJL":"3C,3J,3B,3D,3E,3F,3L,3I","BCDEFIKL":"3C,3E,3B,3D,3I,3F,3L,3K","BCDEFJKL":"3C,3J,3B,3D,3E,3F,3L,3K","BCDEGHIJ":"3H,3G,3B,3C,3J,3D,3E,3I","BCDEGHIK":"3E,3G,3B,3C,3H,3D,3I,3K","BCDEGHIL":"3E,3G,3B,3C,3H,3D,3L,3I","BCDEGHJK":"3H,3G,3B,3C,3J,3D,3E,3K","BCDEGHJL":"3H,3G,3B,3C,3J,3D,3L,3E","BCDEGHKL":"3E,3G,3B,3C,3H,3D,3L,3K","BCDEGIJK":"3E,3G,3B,3C,3J,3D,3I,3K","BCDEGIJL":"3E,3G,3B,3C,3J,3D,3L,3I","BCDEGIKL":"3E,3G,3B,3C,3I,3D,3L,3K","BCDEGJKL":"3E,3G,3B,3C,3J,3D,3L,3K","BCDEHIJK":"3E,3J,3B,3C,3H,3D,3I,3K","BCDEHIJL":"3E,3J,3B,3C,3H,3D,3L,3I","BCDEHIKL":"3E,3I,3B,3C,3H,3D,3L,3K","BCDEHJKL":"3E,3J,3B,3C,3H,3D,3L,3K","BCDEIJKL":"3E,3J,3B,3C,3I,3D,3L,3K","BCDFGHIJ":"3H,3G,3B,3C,3J,3F,3D,3I","BCDFGHIK":"3C,3G,3B,3D,3H,3F,3I,3K","BCDFGHIL":"3C,3G,3B,3D,3H,3F,3L,3I","BCDFGHJK":"3H,3G,3B,3C,3J,3F,3D,3K","BCDFGHJL":"3H,3G,3B,3D,3J,3F,3L,3C","BCDFGHKL":"3C,3G,3B,3D,3H,3F,3L,3K","BCDFGIJK":"3C,3G,3B,3D,3J,3F,3I,3K","BCDFGIJL":"3C,3G,3B,3D,3J,3F,3L,3I","BCDFGIKL":"3C,3G,3B,3D,3I,3F,3L,3K","BCDFGJKL":"3C,3G,3B,3D,3J,3F,3L,3K","BCDFHIJK":"3C,3J,3B,3D,3H,3F,3I,3K","BCDFHIJL":"3C,3J,3B,3D,3H,3F,3L,3I","BCDFHIKL":"3C,3I,3B,3D,3H,3F,3L,3K","BCDFHJKL":"3C,3J,3B,3D,3H,3F,3L,3K","BCDFIJKL":"3C,3J,3B,3D,3I,3F,3L,3K","BCDGHIJK":"3H,3G,3B,3C,3J,3D,3I,3K","BCDGHIJL":"3H,3G,3B,3C,3J,3D,3L,3I","BCDGHIKL":"3H,3G,3B,3C,3I,3D,3L,3K","BCDGHJKL":"3H,3G,3B,3C,3J,3D,3L,3K","BCDGIJKL":"3I,3G,3B,3C,3J,3D,3L,3K","BCDHIJKL":"3H,3J,3B,3C,3I,3D,3L,3K","BCEFGHIJ":"3H,3G,3B,3C,3J,3F,3E,3I","BCEFGHIK":"3E,3G,3B,3C,3H,3F,3I,3K","BCEFGHIL":"3E,3G,3B,3C,3H,3F,3L,3I","BCEFGHJK":"3H,3G,3B,3C,3J,3F,3E,3K","BCEFGHJL":"3H,3G,3B,3C,3J,3F,3L,3E","BCEFGHKL":"3E,3G,3B,3C,3H,3F,3L,3K","BCEFGIJK":"3E,3G,3B,3C,3J,3F,3I,3K","BCEFGIJL":"3E,3G,3B,3C,3J,3F,3L,3I","BCEFGIKL":"3E,3G,3B,3C,3I,3F,3L,3K","BCEFGJKL":"3E,3G,3B,3C,3J,3F,3L,3K","BCEFHIJK":"3E,3J,3B,3C,3H,3F,3I,3K","BCEFHIJL":"3E,3J,3B,3C,3H,3F,3L,3I","BCEFHIKL":"3E,3I,3B,3C,3H,3F,3L,3K","BCEFHJKL":"3E,3J,3B,3C,3H,3F,3L,3K","BCEFIJKL":"3E,3J,3B,3C,3I,3F,3L,3K","BCEGHIJK":"3E,3J,3B,3C,3H,3G,3I,3K","BCEGHIJL":"3E,3J,3B,3C,3H,3G,3L,3I","BCEGHIKL":"3E,3G,3B,3C,3I,3H,3L,3K","BCEGHJKL":"3E,3J,3B,3C,3H,3G,3L,3K","BCEGIJKL":"3E,3J,3B,3C,3I,3G,3L,3K","BCEHIJKL":"3E,3J,3B,3C,3I,3H,3L,3K","BCFGHIJK":"3H,3G,3B,3C,3J,3F,3I,3K","BCFGHIJL":"3H,3G,3B,3C,3J,3F,3L,3I","BCFGHIKL":"3H,3G,3B,3C,3I,3F,3L,3K","BCFGHJKL":"3H,3G,3B,3C,3J,3F,3L,3K","BCFGIJKL":"3I,3G,3B,3C,3J,3F,3L,3K","BCFHIJKL":"3H,3J,3B,3C,3I,3F,3L,3K","BCGHIJKL":"3H,3J,3B,3C,3I,3G,3L,3K","BDEFGHIJ":"3H,3G,3B,3D,3J,3F,3E,3I","BDEFGHIK":"3E,3G,3B,3D,3H,3F,3I,3K","BDEFGHIL":"3E,3G,3B,3D,3H,3F,3L,3I","BDEFGHJK":"3H,3G,3B,3D,3J,3F,3E,3K","BDEFGHJL":"3H,3G,3B,3D,3J,3F,3L,3E","BDEFGHKL":"3E,3G,3B,3D,3H,3F,3L,3K","BDEFGIJK":"3E,3G,3B,3D,3J,3F,3I,3K","BDEFGIJL":"3E,3G,3B,3D,3J,3F,3L,3I","BDEFGIKL":"3E,3G,3B,3D,3I,3F,3L,3K","BDEFGJKL":"3E,3G,3B,3D,3J,3F,3L,3K","BDEFHIJK":"3E,3J,3B,3D,3H,3F,3I,3K","BDEFHIJL":"3E,3J,3B,3D,3H,3F,3L,3I","BDEFHIKL":"3E,3I,3B,3D,3H,3F,3L,3K","BDEFHJKL":"3E,3J,3B,3D,3H,3F,3L,3K","BDEFIJKL":"3E,3J,3B,3D,3I,3F,3L,3K","BDEGHIJK":"3E,3J,3B,3D,3H,3G,3I,3K","BDEGHIJL":"3E,3J,3B,3D,3H,3G,3L,3I","BDEGHIKL":"3E,3G,3B,3D,3I,3H,3L,3K","BDEGHJKL":"3E,3J,3B,3D,3H,3G,3L,3K","BDEGIJKL":"3E,3J,3B,3D,3I,3G,3L,3K","BDEHIJKL":"3E,3J,3B,3D,3I,3H,3L,3K","BDFGHIJK":"3H,3G,3B,3D,3J,3F,3I,3K","BDFGHIJL":"3H,3G,3B,3D,3J,3F,3L,3I","BDFGHIKL":"3H,3G,3B,3D,3I,3F,3L,3K","BDFGHJKL":"3H,3G,3B,3D,3J,3F,3L,3K","BDFGIJKL":"3I,3G,3B,3D,3J,3F,3L,3K","BDFHIJKL":"3H,3J,3B,3D,3I,3F,3L,3K","BDGHIJKL":"3H,3J,3B,3D,3I,3G,3L,3K","BEFGHIJK":"3E,3J,3B,3F,3H,3G,3I,3K","BEFGHIJL":"3E,3J,3B,3F,3H,3G,3L,3I","BEFGHIKL":"3E,3G,3B,3F,3I,3H,3L,3K","BEFGHJKL":"3E,3J,3B,3F,3H,3G,3L,3K","BEFGIJKL":"3E,3J,3B,3F,3I,3G,3L,3K","BEFHIJKL":"3E,3J,3B,3F,3I,3H,3L,3K","BEGHIJKL":"3E,3J,3I,3B,3H,3G,3L,3K","BFGHIJKL":"3H,3J,3B,3F,3I,3G,3L,3K","CDEFGHIJ":"3C,3G,3J,3D,3H,3F,3E,3I","CDEFGHIK":"3C,3G,3E,3D,3H,3F,3I,3K","CDEFGHIL":"3C,3G,3E,3D,3H,3F,3L,3I","CDEFGHJK":"3C,3G,3J,3D,3H,3F,3E,3K","CDEFGHJL":"3C,3G,3J,3D,3H,3F,3L,3E","CDEFGHKL":"3C,3G,3E,3D,3H,3F,3L,3K","CDEFGIJK":"3C,3G,3E,3D,3J,3F,3I,3K","CDEFGIJL":"3C,3G,3E,3D,3J,3F,3L,3I","CDEFGIKL":"3C,3G,3E,3D,3I,3F,3L,3K","CDEFGJKL":"3C,3G,3E,3D,3J,3F,3L,3K","CDEFHIJK":"3C,3J,3E,3D,3H,3F,3I,3K","CDEFHIJL":"3C,3J,3E,3D,3H,3F,3L,3I","CDEFHIKL":"3C,3E,3I,3D,3H,3F,3L,3K","CDEFHJKL":"3C,3J,3E,3D,3H,3F,3L,3K","CDEFIJKL":"3C,3J,3E,3D,3I,3F,3L,3K","CDEGHIJK":"3E,3G,3J,3C,3H,3D,3I,3K","CDEGHIJL":"3E,3G,3J,3C,3H,3D,3L,3I","CDEGHIKL":"3E,3G,3I,3C,3H,3D,3L,3K","CDEGHJKL":"3E,3G,3J,3C,3H,3D,3L,3K","CDEGIJKL":"3E,3G,3I,3C,3J,3D,3L,3K","CDEHIJKL":"3E,3J,3I,3C,3H,3D,3L,3K","CDFGHIJK":"3C,3G,3J,3D,3H,3F,3I,3K","CDFGHIJL":"3C,3G,3J,3D,3H,3F,3L,3I","CDFGHIKL":"3C,3G,3I,3D,3H,3F,3L,3K","CDFGHJKL":"3C,3G,3J,3D,3H,3F,3L,3K","CDFGIJKL":"3C,3G,3I,3D,3J,3F,3L,3K","CDFHIJKL":"3C,3J,3I,3D,3H,3F,3L,3K","CDGHIJKL":"3H,3G,3I,3C,3J,3D,3L,3K","CEFGHIJK":"3E,3G,3J,3C,3H,3F,3I,3K","CEFGHIJL":"3E,3G,3J,3C,3H,3F,3L,3I","CEFGHIKL":"3E,3G,3I,3C,3H,3F,3L,3K","CEFGHJKL":"3E,3G,3J,3C,3H,3F,3L,3K","CEFGIJKL":"3E,3G,3I,3C,3J,3F,3L,3K","CEFHIJKL":"3E,3J,3I,3C,3H,3F,3L,3K","CEGHIJKL":"3E,3J,3I,3C,3H,3G,3L,3K","CFGHIJKL":"3H,3G,3I,3C,3J,3F,3L,3K","DEFGHIJK":"3E,3G,3J,3D,3H,3F,3I,3K","DEFGHIJL":"3E,3G,3J,3D,3H,3F,3L,3I","DEFGHIKL":"3E,3G,3I,3D,3H,3F,3L,3K","DEFGHJKL":"3E,3G,3J,3D,3H,3F,3L,3K","DEFGIJKL":"3E,3G,3I,3D,3J,3F,3L,3K","DEFHIJKL":"3E,3J,3I,3D,3H,3F,3L,3K","DEGHIJKL":"3E,3J,3I,3D,3H,3G,3L,3K","DFGHIJKL":"3H,3G,3I,3D,3J,3F,3L,3K","EFGHIJKL":"3E,3J,3I,3F,3H,3G,3L,3K"};
+
+const R16=[
+  {id:'p74',num:'P74',hl:'1°E',al:'3°A/B/C/D/F',hs:{t:'g',g:'E',p:0},as:{t:'3rd',slot:3}},
+  {id:'p77',num:'P77',hl:'1°I',al:'3°C/D/F/G/H',hs:{t:'g',g:'I',p:0},as:{t:'3rd',slot:5}},
+  {id:'p73',num:'P73',hl:'2°A',al:'2°B',hs:{t:'g',g:'A',p:1},as:{t:'g',g:'B',p:1}},
+  {id:'p75',num:'P75',hl:'1°F',al:'2°C',hs:{t:'g',g:'F',p:0},as:{t:'g',g:'C',p:1}},
+  {id:'p83',num:'P83',hl:'2°K',al:'2°L',hs:{t:'g',g:'K',p:1},as:{t:'g',g:'L',p:1}},
+  {id:'p84',num:'P84',hl:'1°H',al:'2°J',hs:{t:'g',g:'H',p:0},as:{t:'g',g:'J',p:1}},
+  {id:'p81',num:'P81',hl:'1°D',al:'3°B/E/F/I/J',hs:{t:'g',g:'D',p:0},as:{t:'3rd',slot:2}},
+  {id:'p82',num:'P82',hl:'1°G',al:'3°A/E/H/I/J',hs:{t:'g',g:'G',p:0},as:{t:'3rd',slot:4}},
+  {id:'p78',num:'P78',hl:'2°E',al:'2°I',hs:{t:'g',g:'E',p:1},as:{t:'g',g:'I',p:1}},
+  {id:'p76',num:'P76',hl:'1°C',al:'2°F',hs:{t:'g',g:'C',p:0},as:{t:'g',g:'F',p:1}},
+  {id:'p79',num:'P79',hl:'1°A',al:'3°C/E/F/H/I',hs:{t:'g',g:'A',p:0},as:{t:'3rd',slot:0}},
+  {id:'p80',num:'P80',hl:'1°L',al:'3°E/H/I/J/K',hs:{t:'g',g:'L',p:0},as:{t:'3rd',slot:7}},
+  {id:'p88',num:'P88',hl:'2°D',al:'2°G',hs:{t:'g',g:'D',p:1},as:{t:'g',g:'G',p:1}},
+  {id:'p86',num:'P86',hl:'1°J',al:'2°H',hs:{t:'g',g:'J',p:0},as:{t:'g',g:'H',p:1}},
+  {id:'p85',num:'P85',hl:'1°B',al:'3°E/F/G/I/J',hs:{t:'g',g:'B',p:0},as:{t:'3rd',slot:1}},
+  {id:'p87',num:'P87',hl:'1°K',al:'3°D/E/I/J/L',hs:{t:'g',g:'K',p:0},as:{t:'3rd',slot:6}}
+];
+const QF=[
+  {id:'qf_p89',num:'P89',hl:'W74',al:'W77',hs:{t:'w',m:'p74'},as:{t:'w',m:'p77'}},
+  {id:'qf_p90',num:'P90',hl:'W73',al:'W75',hs:{t:'w',m:'p73'},as:{t:'w',m:'p75'}},
+  {id:'qf_p93',num:'P93',hl:'W83',al:'W84',hs:{t:'w',m:'p83'},as:{t:'w',m:'p84'}},
+  {id:'qf_p94',num:'P94',hl:'W81',al:'W82',hs:{t:'w',m:'p81'},as:{t:'w',m:'p82'}},
+  {id:'qf_p91',num:'P91',hl:'W78',al:'W76',hs:{t:'w',m:'p78'},as:{t:'w',m:'p76'}},
+  {id:'qf_p92',num:'P92',hl:'W79',al:'W80',hs:{t:'w',m:'p79'},as:{t:'w',m:'p80'}},
+  {id:'qf_p95',num:'P95',hl:'W88',al:'W86',hs:{t:'w',m:'p88'},as:{t:'w',m:'p86'}},
+  {id:'qf_p96',num:'P96',hl:'W85',al:'W87',hs:{t:'w',m:'p85'},as:{t:'w',m:'p87'}}
+];
+const CF=[
+  {id:'cf_p97',num:'P97',hl:'W89',al:'W90',hs:{t:'w',m:'qf_p89'},as:{t:'w',m:'qf_p90'}},
+  {id:'cf_p98',num:'P98',hl:'W93',al:'W94',hs:{t:'w',m:'qf_p93'},as:{t:'w',m:'qf_p94'}},
+  {id:'cf_p99',num:'P99',hl:'W91',al:'W92',hs:{t:'w',m:'qf_p91'},as:{t:'w',m:'qf_p92'}},
+  {id:'cf_p100',num:'P100',hl:'W95',al:'W96',hs:{t:'w',m:'qf_p95'},as:{t:'w',m:'qf_p96'}}
+];
+const SF=[
+  {id:'sf_p101',num:'P101',hl:'W97',al:'W98',hs:{t:'w',m:'cf_p97'},as:{t:'w',m:'cf_p98'}},
+  {id:'sf_p102',num:'P102',hl:'W99',al:'W100',hs:{t:'w',m:'cf_p99'},as:{t:'w',m:'cf_p100'}}
+];
+const TP={id:'p103',num:'P103',hl:'Perdedor P101',al:'Perdedor P102',hs:{t:'l',m:'sf_p101'},as:{t:'l',m:'sf_p102'}};
+const FN={id:'p104',num:'P104',hl:'W101',al:'W102',hs:{t:'w',m:'sf_p101'},as:{t:'w',m:'sf_p102'}};
+const R16_IDS=R16.map(m=>m.id);
+const QF_IDS=QF.map(m=>m.id);
+const CF_IDS=CF.map(m=>m.id);
+const SF_IDS=SF.map(m=>m.id);
 const r16ToQF={p74:'qf_p89',p77:'qf_p89',p73:'qf_p90',p75:'qf_p90',p83:'qf_p93',p84:'qf_p93',p81:'qf_p94',p82:'qf_p94',p78:'qf_p91',p76:'qf_p91',p79:'qf_p92',p80:'qf_p92',p88:'qf_p95',p86:'qf_p95',p85:'qf_p96',p87:'qf_p96'};
 const qfToCF={qf_p89:'cf_p97',qf_p90:'cf_p97',qf_p93:'cf_p98',qf_p94:'cf_p98',qf_p91:'cf_p99',qf_p92:'cf_p99',qf_p95:'cf_p100',qf_p96:'cf_p100'};
 const cfToSF={cf_p97:'sf_p101',cf_p98:'sf_p101',cf_p99:'sf_p102',cf_p100:'sf_p102'};
 
-let rows=[];    // raw supabase rows [{id, name, data, created_at}]
-let qs=[];      // parsed data objects
+// REAL RESULTS STATE
 let real={groups:{},thirds:[],picks:{},goleador:''};
+// Load real from localStorage
+try{const rr=localStorage.getItem('qm2026_real');if(rr)real=JSON.parse(rr);}catch(e){}
+function saveReal(){localStorage.setItem('qm2026_real',JSON.stringify(real));}
+
+// PARTICIPANTS
+let rows=[];
+let qs=[];
 let view='overview';
 let selIdx=null;
 
+// ── SUPABASE ──
 function load(){
   document.getElementById('upd').textContent='Actualizando…';
-  const rraw=localStorage.getItem('qm2026_real');
-  if(rraw)try{real=JSON.parse(rraw);}catch(e){}
   supaGet().then(data=>{
     rows=data;
     qs=data.map(r=>({...r.data,_id:r.id,_created:r.created_at}));
@@ -150,55 +263,113 @@ function load(){
     render();
   }).catch(err=>{
     document.getElementById('main').innerHTML=`<div style="color:#c53030;background:#fff5f5;border-radius:8px;padding:1rem">Error: ${err.message}</div>`;
-    document.getElementById('upd').textContent='Error al cargar';
+    document.getElementById('upd').textContent='Error';
   });
 }
 
-function saveReal(){localStorage.setItem('qm2026_real',JSON.stringify(real));}
+function importQ(){
+  const ta=document.getElementById('import-ta');
+  if(!ta||!ta.value.trim()){alert('Pega el JSON primero');return;}
+  try{
+    const d=JSON.parse(ta.value.trim());
+    if(!d.name||!d.groups)throw new Error('Formato inválido');
+    const ex=JSON.parse(localStorage.getItem('qm2026')||'[]');
+    const idx=ex.findIndex(q=>q.name.toLowerCase()===d.name.toLowerCase());
+    if(idx>=0){if(!confirm('Ya existe quiniela de "'+d.name+'". ¿Reemplazar?'))return;ex[idx]=d;}
+    else ex.push(d);
+    localStorage.setItem('qm2026',JSON.stringify(ex));
+    ta.value='';load();
+    alert('✅ Quiniela de "'+d.name+'" importada.');
+  }catch(ex){alert('❌ '+ex.message);}
+}
 
-/* ── SCORING ── */
+async function clearAll(){
+  if(!confirm('¿Borrar TODAS las quinielas?'))return;
+  try{for(const r of rows)await supaDelete(r.id);load();}catch(ex){alert('Error: '+ex.message);}
+}
+
+// ── THIRDS RESOLVER (for real results) ──
+function getRealThirdSlot(slot){
+  if(!real.thirds||real.thirds.length!==8)return null;
+  const key=[...real.thirds].sort().join('');
+  const entry=TT[key];
+  if(!entry)return null;
+  const code=entry.split(',')[slot];
+  if(!code)return null;
+  const g=code[1];
+  const groupOrder=real.groups[g];
+  if(!groupOrder)return null;
+  const name=groupOrder[2];
+  if(!name)return null;
+  const t=GS[g]?GS[g].teams.find(x=>x.n===name):null;
+  return t?{...t,_from:'3°Grp.'+g}:null;
+}
+
+function getRealTeam(src){
+  if(src.t==='g'){
+    const ord=real.groups[src.g];
+    if(!ord)return null;
+    const name=ord[src.p];
+    if(!name)return null;
+    const t=GS[src.g].teams.find(x=>x.n===name);
+    return t||{n:name,f:'🏳'};
+  }
+  if(src.t==='w')return real.picks[src.m]||null;
+  if(src.t==='l'){
+    const allM=[...R16,...QF,...CF,...SF,FN];
+    const m=allM.find(x=>x.id===src.m);
+    if(!m||!real.picks[src.m])return null;
+    const winner=real.picks[src.m];
+    const h=getRealTeam(m.hs),a=getRealTeam(m.as);
+    if(!h||!a)return null;
+    return h.n===winner.n?a:h;
+  }
+  if(src.t==='3rd')return getRealThirdSlot(src.slot);
+  return null;
+}
+
+// ── SCORING ──
 function scoreQ(q){
   const R=real||{groups:{},thirds:[],picks:{},goleador:''};
   let r16q=0,r16b=0,r16e=0,qfq=0,qfb=0,qfe=0,cfq=0,cfb=0,cfe=0,sfq=0,sfb=0,sfe=0,fnq=0,fnb=0,fne=0,gol=0;
-  // Real qualifiers to R16
+
+  // Real R16 qualifiers
   const realQ16=new Set(),realQ16pos={};
   Object.keys(GS).forEach(g=>{const ord=R.groups&&R.groups[g];if(!ord)return;[0,1].forEach(p=>{if(ord[p]){realQ16.add(ord[p]);realQ16pos[ord[p]]={g,pos:p};}});});
   if(R.thirds)R.thirds.forEach(g=>{const ord=R.groups&&R.groups[g];if(ord&&ord[2]){realQ16.add(ord[2]);realQ16pos[ord[2]]={g,pos:2};}});
-  // Pred qualifiers
+  // Pred R16 qualifiers
   const predQ16=new Set(),predQ16pos={};
   Object.keys(GS).forEach(g=>{const ord=q.groups&&q.groups[g];if(!ord)return;[0,1].forEach(p=>{if(ord[p]){predQ16.add(ord[p]);predQ16pos[ord[p]]={g,pos:p};}});});
   if(q.thirds)q.thirds.forEach(g=>{const ord=q.groups&&q.groups[g];if(ord&&ord[2]){predQ16.add(ord[2]);predQ16pos[ord[2]]={g,pos:2};}});
-  // R16 qualify + bonus
+
   predQ16.forEach(t=>{if(realQ16.has(t)){r16q+=4;const rp=realQ16pos[t],pp=predQ16pos[t];if(rp&&pp&&rp.g===pp.g&&rp.pos===pp.pos)r16b+=2;}});
-  // R16 exact
   R16_IDS.forEach(id=>{const rw=R.picks&&R.picks[id],pw=q.picks&&q.picks[id];if(rw&&pw&&rw.n===pw.n)r16e+=2;});
-  // Build real/pred team→QF mapping
+
   const realTQF={},predTQF={};
   R16_IDS.forEach(id=>{const w=R.picks&&R.picks[id];if(w)realTQF[w.n]=r16ToQF[id];});
   R16_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w)predTQF[w.n]=r16ToQF[id];});
   const realQF=new Set(Object.keys(realTQF)),predQF=new Set(Object.keys(predTQF));
   predQF.forEach(t=>{if(realQF.has(t)){qfq+=4;if(realTQF[t]&&predTQF[t]===realTQF[t])qfb+=1;}});
   QF_IDS.forEach(id=>{const rw=R.picks&&R.picks[id],pw=q.picks&&q.picks[id];if(rw&&pw&&rw.n===pw.n)qfe+=2;});
-  // CF
+
   const realTCF={},predTCF={};
   QF_IDS.forEach(id=>{const w=R.picks&&R.picks[id];if(w)realTCF[w.n]=qfToCF[id];});
   QF_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w)predTCF[w.n]=qfToCF[id];});
   const realCF=new Set(Object.keys(realTCF)),predCF=new Set(Object.keys(predTCF));
   predCF.forEach(t=>{if(realCF.has(t)){cfq+=7;if(realTCF[t]&&predTCF[t]===realTCF[t])cfb+=1;}});
   CF_IDS.forEach(id=>{const rw=R.picks&&R.picks[id],pw=q.picks&&q.picks[id];if(rw&&pw&&rw.n===pw.n)cfe+=2;});
-  // SF
+
   const realTSF={},predTSF={};
   CF_IDS.forEach(id=>{const w=R.picks&&R.picks[id];if(w)realTSF[w.n]=cfToSF[id];});
   CF_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w)predTSF[w.n]=cfToSF[id];});
   const realSF=new Set(Object.keys(realTSF)),predSF=new Set(Object.keys(predTSF));
   predSF.forEach(t=>{if(realSF.has(t)){sfq+=10;if(realTSF[t]&&predTSF[t]===realTSF[t])sfb+=1;}});
   SF_IDS.forEach(id=>{const rw=R.picks&&R.picks[id],pw=q.picks&&q.picks[id];if(rw&&pw&&rw.n===pw.n)sfe+=2;});
-  // Final
-  const realFN=new Set(),predFN=new Set();
-  const realFNSlot={},predFNSlot={};
-  SF_IDS.forEach(id=>{const w=R.picks&&R.picks[id];if(w){realFN.add(w.n);realFNSlot[w.n]=id;}});
-  SF_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w){predFN.add(w.n);predFNSlot[w.n]=id;}});
-  predFN.forEach(t=>{if(realFN.has(t)){fnq+=15;if(realFNSlot[t]&&predFNSlot[t]===realFNSlot[t])fnb+=5;}});
+
+  const realFN=new Set(),predFN=new Set(),realFNS={},predFNS={};
+  SF_IDS.forEach(id=>{const w=R.picks&&R.picks[id];if(w){realFN.add(w.n);realFNS[w.n]=id;}});
+  SF_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w){predFN.add(w.n);predFNS[w.n]=id;}});
+  predFN.forEach(t=>{if(realFN.has(t)){fnq+=15;if(realFNS[t]&&predFNS[t]===realFNS[t])fnb+=5;}});
   const rF=R.picks&&R.picks['p104'],pF=q.picks&&q.picks['p104'];
   if(rF&&pF&&rF.n===pF.n)fne+=10;
   if(R.goleador&&q.goleador&&R.goleador.trim().toLowerCase()===q.goleador.trim().toLowerCase())gol=5;
@@ -206,18 +377,18 @@ function scoreQ(q){
   return{r16q,r16b,r16e,qfq,qfb,qfe,cfq,cfb,cfe,sfq,sfb,sfe,fnq,fnb,fne,gol,total};
 }
 
-function hasReal(){return real&&((real.picks&&Object.keys(real.picks||{}).length>0)||(real.groups&&Object.keys(real.groups).length>0));}
+function hasReal(){return real&&((real.picks&&Object.keys(real.picks).length>0)||(real.groups&&Object.keys(real.groups).length>0));}
 
-/* ── RENDER ── */
+// ── RENDER ──
 function render(){
   if(view==='overview')rOverview();
   else if(view==='scores')rScores();
-  else if(view==='compare')rCompare();
   else if(view==='results')rResults();
+  else if(view==='compare')rCompare();
   else if(view==='detail')rDetail(selIdx);
 }
 
-function tabsHtml(active){
+function tabs(active){
   return`<div class="tabs">
     <button class="tab${active==='overview'?' active':''}" onclick="view='overview';render()">📊 Resumen</button>
     <button class="tab${active==='scores'?' active':''}" onclick="view='scores';render()">🏅 Puntajes</button>
@@ -226,72 +397,74 @@ function tabsHtml(active){
   </div>`;
 }
 
-/* OVERVIEW */
+// ── OVERVIEW ──
 function rOverview(){
   view='overview';
   if(qs.length===0){
-    document.getElementById('main').innerHTML=tabsHtml('overview')+`<div class="empty">📭 Aún no hay quinielas.<br><br>Comparte el link de la página y las quinielas aparecerán aquí automáticamente.</div>`;return;
+    document.getElementById('main').innerHTML=tabs('overview')+`<div class="empty">📭 No hay quinielas aún.<br><br>Comparte el link a los participantes.</div>`;return;
   }
   const tot=qs.length;
   const cC={},sC={};
   qs.forEach(q=>{const c=q.picks&&q.picks['p104'];if(c)cC[c.n]=(cC[c.n]||0)+1;if(q.goleador)sC[q.goleador]=(sC[q.goleador]||0)+1;});
   const cs=Object.entries(cC).sort((a,b)=>b[1]-a[1]);
   const ss=Object.entries(sC).sort((a,b)=>b[1]-a[1]);
+
   let scoresHtml='';
   if(hasReal()&&tot>0){
     const sc=qs.map(q=>({name:q.name,...scoreQ(q)})).sort((a,b)=>b.total-a.total);
     scoresHtml=`<div class="card"><div class="card-hdr"><h2>🏅 Liderato actual</h2><button class="btn btn-o" style="font-size:.72rem;padding:4px 10px" onclick="view='scores';render()">Ver completo →</button></div><div class="card-body">
-    <table><thead><tr><th>Pos.</th><th>Participante</th><th>Campeón predicho</th><th>Puntos</th></tr></thead><tbody>
-    ${sc.slice(0,5).map((s,i)=>{const q=qs.find(x=>x.name===s.name);const c=q&&q.picks&&q.picks['p104'];const pc=i===0?'sp1':i===1?'sp2':i===2?'sp3':'spn';
-    return`<tr><td><span class="score-pos ${pc}" style="margin:auto">${i+1}</span></td>
-    <td class="nl" onclick="selIdx=${qs.findIndex(x=>x.name===s.name)};view='detail';render()">${e(s.name)}</td>
-    <td>${c?c.f+' '+e(c.n):'—'}</td><td class="pts-cell" style="font-size:1rem">${s.total} pts</td></tr>`;}).join('')}
-    </tbody></table></div></div>`;
+    ${sc.slice(0,5).map((s,i)=>{const q=qs.find(x=>x.name===s.name);const c=q&&q.picks&&q.picks['p104'];
+    const pc=i===0?'sp1':i===1?'sp2':i===2?'sp3':'spn';
+    return`<div class="leader-row"><span class="score-pos ${pc}">${i+1}</span><span style="flex:1;font-weight:600">${e(s.name)}</span><span style="font-size:.78rem;color:#718096">${c?c.f+e(c.n):''}</span><span class="leader-pts">${s.total}<small style="font-size:.65rem;font-weight:400"> pts</small></span></div>`;}).join('')}
+    </div></div>`;
   }
-  let h=tabsHtml('overview')+`<div class="stats">
+
+  let h=tabs('overview')+`<div class="stats">
     <div class="stat"><div class="num">${tot}</div><div class="lbl">Participantes</div></div>
     <div class="stat"><div class="num">${cs.length}</div><div class="lbl">Campeones distintos</div></div>
     <div class="stat"><div class="num">${ss.length}</div><div class="lbl">Goleadores distintos</div></div>
-  </div>${scoresHtml}
+    ${hasReal()?`<div class="stat"><div class="num" style="color:#1a6b3c;font-size:1.4rem">✓</div><div class="lbl">Resultados cargados</div></div>`:''}
+  </div>
+  ${scoresHtml}
   <div class="card"><div class="card-hdr"><h2>🏆 Campeones pronosticados</h2></div><div class="card-body">
   ${cs.map(([n,c])=>{const pct=Math.round(c/tot*100);const t=gTn(n);return`<div class="prow"><span style="min-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t?t.f:''} ${e(n)}</span><div class="pw"><div class="pf pf-g" style="width:${pct}%"></div></div><span style="min-width:48px;text-align:right;color:#718096;font-size:.75rem">${c} (${pct}%)</span></div>`;}).join('')}</div></div>
   <div class="card"><div class="card-hdr"><h2>👟 Goleadores pronosticados</h2></div><div class="card-body">
   ${ss.slice(0,8).map(([n,c])=>{const pct=Math.round(c/tot*100);return`<div class="prow"><span style="min-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e(n)}</span><div class="pw"><div class="pf pf-a" style="width:${pct}%"></div></div><span style="min-width:48px;text-align:right;color:#718096;font-size:.75rem">${c} (${pct}%)</span></div>`;}).join('')}</div></div>
   <div class="card"><div class="card-hdr"><h2>👥 Participantes (${tot})</h2></div><div class="card-body">
-  <table><thead><tr><th>#</th><th>Nombre</th><th>Campeón</th><th>Goleador</th><th>Terceros</th><th>Fecha</th><th></th></tr></thead><tbody>
+  <table><thead><tr><th>#</th><th>Nombre</th><th>Campeón</th><th>Goleador</th><th>Fecha</th><th></th></tr></thead><tbody>
   ${qs.map((q,i)=>{const c=q.picks&&q.picks['p104'];return`<tr>
     <td style="color:#a0aec0">${i+1}</td>
     <td class="nl" onclick="selIdx=${i};view='detail';render()">${e(q.name)}</td>
     <td>${c?c.f+' '+e(c.n):'—'}</td><td>${e(q.goleador)||'—'}</td>
-    <td style="font-size:.72rem">${q.thirds?q.thirds.map(g=>`<span class="chip chip-3">${g}</span>`).join(' '):'—'}</td>
-    <td class="ts">${q._created?new Date(q._created).toLocaleDateString('es'):''}</td>
+    <td style="font-size:.7rem;color:#a0aec0">${q._created?new Date(q._created).toLocaleDateString('es'):''}</td>
     <td><button class="btn btn-red" onclick="del('${q._id}',${i})">🗑</button></td>
   </tr>`;}).join('')}</tbody></table></div></div>`;
   document.getElementById('main').innerHTML=h;
 }
 
-/* SCORES */
+// ── SCORES ──
 function rScores(){
   view='scores';
   const ptsKey=`<div class="pts-key">${[
-    {r:'16avos de Final',items:['4 pts · equipo clasifica','2 pts · posición exacta (bono)','2 pts · ganador partido exacto']},
-    {r:'8avos de Final', items:['4 pts · equipo clasifica','1 pt · llave correcta','2 pts · ganador partido exacto']},
-    {r:'4tos de Final',  items:['7 pts · equipo clasifica','1 pt · llave correcta','2 pts · ganador partido exacto']},
-    {r:'Semifinal',      items:['10 pts · equipo clasifica','1 pt · llave correcta','2 pts · ganador partido exacto']},
-    {r:'Final',          items:['15 pts · finalista correcto','5 pts · llave correcta','10 pts · campeón exacto']},
-    {r:'Goleador',       items:['5 pts · goleador exacto']},
-  ].map(x=>`<div class="pts-key-card"><h4>${x.r}</h4><ul>${x.items.map(i=>`<li><span>✓</span>${i}</li>`).join('')}</ul></div>`).join('')}</div>`;
+    {r:'16avos',items:['4 pts · equipo clasifica','2 pts · posición exacta','2 pts · partido exacto']},
+    {r:'8avos', items:['4 pts · equipo clasifica','1 pt · llave correcta','2 pts · partido exacto']},
+    {r:'4tos',  items:['7 pts · equipo clasifica','1 pt · llave correcta','2 pts · partido exacto']},
+    {r:'Semis', items:['10 pts · equipo clasifica','1 pt · llave correcta','2 pts · partido exacto']},
+    {r:'Final', items:['15 pts · finalista','5 pts · llave correcta','10 pts · campeón exacto']},
+    {r:'Goleador',items:['5 pts · goleador exacto']},
+  ].map(x=>`<div class="pts-key-card"><h4>${x.r}</h4><ul>${x.items.map(i=>`<li><b>✓</b>${i}</li>`).join('')}</ul></div>`).join('')}</div>`;
+
   if(!hasReal()){
-    document.getElementById('main').innerHTML=tabsHtml('scores')+`<div class="alert-info">ℹ️ Ingresa los resultados reales en <strong>✏️ Resultados reales</strong> para calcular puntajes.</div><div class="card"><div class="card-hdr"><h2>📌 Sistema de puntos</h2></div><div class="card-body">${ptsKey}</div></div>`;return;
+    document.getElementById('main').innerHTML=tabs('scores')+`<div class="alert-info">ℹ️ Ve a <strong>✏️ Resultados reales</strong> para ingresar los resultados del torneo y calcular puntajes.</div><div class="card"><div class="card-hdr"><h2>📌 Sistema de puntos</h2></div><div class="card-body">${ptsKey}</div></div>`;return;
   }
   const sc=qs.map(q=>({...q,...scoreQ(q)})).sort((a,b)=>b.total-a.total);
   function pts(a,b,c){const t=a+b+c;return t>0?`<span style="color:#1a6b3c;font-weight:700">${t}</span><br><small style="color:#a0aec0;font-size:.65rem">${a}+${b}+${c}</small>`:`<span class="pts-zero">0</span>`;}
-  let h=tabsHtml('scores')+`<div class="card"><div class="card-hdr"><h2>📌 Sistema de puntos</h2><button class="btn btn-o" style="font-size:.72rem;padding:4px 10px" onclick="togglePts()">Mostrar/ocultar</button></div><div class="card-body"><div id="pts-key" style="display:none">${ptsKey}</div></div></div>
+  let h=tabs('scores')+`<div class="card"><div class="card-hdr"><h2>📌 Sistema de puntos</h2></div><div class="card-body">${ptsKey}</div></div>
   <div class="card"><div class="card-hdr"><h2>🏅 Tabla de posiciones</h2></div><div class="card-body"><div style="overflow-x:auto"><table>
-  <thead><tr><th>Pos.</th><th>Participante</th><th>16avos<br><small>clas+bon+ex</small></th><th>8avos<br><small>clas+ll+ex</small></th><th>4tos<br><small>clas+ll+ex</small></th><th>Semis<br><small>clas+ll+ex</small></th><th>Final<br><small>clas+ll+ex</small></th><th>Gol.</th><th style="background:#c8952a">TOTAL</th></tr></thead><tbody>
+  <thead><tr><th>Pos.</th><th>Participante</th><th>16avos</th><th>8avos</th><th>4tos</th><th>Semis</th><th>Final</th><th>Gol.</th><th style="background:#c8952a">TOTAL</th></tr></thead><tbody>
   ${sc.map((s,i)=>{const pc=i===0?'sp1':i===1?'sp2':i===2?'sp3':'spn';const ch=s.picks&&s.picks['p104'];
   return`<tr><td><span class="score-pos ${pc}" style="margin:auto">${i+1}</span></td>
-  <td class="nl" onclick="selIdx=${qs.findIndex(x=>x.name===s.name)};view='detail';render()">${e(s.name)}<br><small class="ts">${ch?ch.f+e(ch.n):''}</small></td>
+  <td class="nl" onclick="selIdx=${qs.findIndex(x=>x.name===s.name)};view='detail';render()">${e(s.name)}<br><small style="color:#a0aec0;font-size:.7rem">${ch?ch.f+e(ch.n):''}</small></td>
   <td class="pts-cell">${pts(s.r16q,s.r16b,s.r16e)}</td>
   <td class="pts-cell">${pts(s.qfq,s.qfb,s.qfe)}</td>
   <td class="pts-cell">${pts(s.cfq,s.cfb,s.cfe)}</td>
@@ -302,120 +475,192 @@ function rScores(){
   </tbody></table></div></div></div>`;
   document.getElementById('main').innerHTML=h;
 }
-function togglePts(){const el=document.getElementById('pts-key');if(el)el.style.display=el.style.display==='none'?'grid':'none';}
 
-/* COMPARE */
+// ── RESULTS (same click-to-pick style as index) ──
+function rResults(){
+  view='results';
+  let h=tabs('results')+`<div class="alert-info">✏️ Ingresa los resultados reales conforme avanza el torneo. Los puntajes se calculan automáticamente.</div>`;
+
+  // GROUPS
+  h+=`<div class="card"><div class="card-hdr"><h2>📊 Fase de Grupos — Resultados Reales</h2><span style="font-size:.75rem;color:#718096">Toca cada equipo en orden: 1°, 2°, 3°, 4°</span></div><div class="card-body"><div class="groups-real-grid">`;
+  Object.keys(GS).forEach(g=>{
+    const order=real.groups[g]||[null,null,null,null];
+    const rankedSet=new Set(order.filter(Boolean));
+    h+=`<div class="group-real-card"><div class="group-real-hdr">Grupo ${g} <span style="opacity:.75;font-size:.7rem">${rankedSet.size}/4</span></div>`;
+    GS[g].teams.forEach(t=>{
+      const pos=order.indexOf(t.n);
+      const ranked=pos>=0;
+      const rowCls=ranked?`pos${pos+1}`:'';
+      const badgeCls=ranked?`pr${pos+1}`:'pr-empty';
+      const badgeTxt=ranked?(pos+1)+'°':'·';
+      h+=`<div class="team-real-row ${rowCls}" onclick="toggleRealRank('${g}','${e(t.n)}')">
+        <div class="pos-badge-real ${badgeCls}">${badgeTxt}</div>
+        <span style="font-size:1rem">${t.f}</span>
+        <span style="font-size:.82rem;font-weight:${ranked&&pos<2?600:400};flex:1">${e(t.n)}</span>
+        ${ranked&&pos===0?`<span class="chip chip-g" style="font-size:.65rem">1°</span>`:''}
+        ${ranked&&pos===1?`<span class="chip" style="background:#bee3f8;color:#2b6cb0;font-size:.65rem">2°</span>`:''}
+      </div>`;
+    });
+    h+=`</div>`;
+  });
+  h+=`</div></div></div>`;
+
+  // THIRDS
+  const cnt=(real.thirds||[]).length;
+  h+=`<div class="card"><div class="card-hdr"><h2>🥉 Terceros que clasificaron</h2><span class="chip ${cnt===8?'chip-g':'chip-3'}" id="thirds-cnt-real">${cnt}/8</span></div><div class="card-body">
+  <p style="font-size:.82rem;color:#718096;margin-bottom:10px">¿Cuáles 8 grupos clasificaron su 3° lugar?</p>
+  <div class="thirds-real-grid">${Object.keys(GS).map(g=>{
+    const sel=(real.thirds||[]).includes(g);
+    const name=real.groups[g]&&real.groups[g][2]||'?';
+    const t=GS[g].teams.find(x=>x.n===name)||{f:'🏳'};
+    return`<button class="third-real-btn${sel?' selected':''}" id="rb3r_${g}" onclick="toggleRealThird('${g}')"><span class="chk">${sel?'✓':''}</span><span>${t.f}</span><strong>3°${g}</strong>: ${e(name)}</button>`;
+  }).join('')}</div></div></div>`;
+
+  // MATCH ROUNDS
+  function mCardReal(m){
+    const h2=getRealTeam(m.hs),a2=getRealTeam(m.as),w=real.picks[m.id];
+    const hw=w&&h2&&w.n===h2.n,aw=w&&a2&&w.n===a2.n;
+    const ok=!!h2&&!!a2;
+    return`<div class="match-card${w?' done':''}" id="rmc-${m.id}">
+    <div class="match-lbl">${m.num}<span>${m.hl} vs ${m.al}</span></div>
+    <div class="match-team${hw?' winner':''}${!h2?' pending':''}" onclick="${ok?`pickReal('${m.id}','h')`:''}">
+      <span style="font-size:1rem">${h2?h2.f:'🏳'}</span><span class="mname" style="flex:1;font-size:.82rem;margin-left:8px">${h2?(e(h2.n)+(h2._from?` <small style="color:#718096">(${h2._from})</small>`:'')):'pendiente…'}</span><span class="win-icon">✓</span>
+    </div>
+    <div class="mdiv"></div>
+    <div class="match-team${aw?' winner':''}${!a2?' pending':''}" onclick="${ok?`pickReal('${m.id}','a')`:''}">
+      <span style="font-size:1rem">${a2?a2.f:'🏳'}</span><span class="mname" style="flex:1;font-size:.82rem;margin-left:8px">${a2?(e(a2.n)+(a2._from?` <small style="color:#718096">(${a2._from})</small>`:'')):'pendiente…'}</span><span class="win-icon">✓</span>
+    </div>
+    </div>`;
+  }
+
+  h+=`<div class="card"><div class="card-hdr"><h2>⚔️ Fase Eliminatoria — Resultados Reales</h2><span style="font-size:.75rem;color:#718096">Toca el equipo ganador</span></div><div class="card-body">`;
+  h+=`<div class="round-hdr">16avos de Final<small>toca el ganador</small></div><div class="match-list" id="r16-real">${R16.map(m=>mCardReal(m)).join('')}</div>`;
+  h+=`<div class="round-hdr" style="margin-top:1rem">8avos de Final<small>toca el ganador</small></div><div class="match-list" id="qf-real">${QF.map(m=>mCardReal(m)).join('')}</div>`;
+  h+=`<div class="round-hdr" style="margin-top:1rem">4tos de Final<small>toca el ganador</small></div><div class="match-list" id="cf-real">${CF.map(m=>mCardReal(m)).join('')}</div>`;
+  h+=`<div class="round-hdr" style="margin-top:1rem">Semifinal<small>toca el ganador</small></div><div class="match-list" id="sf-real">${SF.map(m=>mCardReal(m)).join('')}</div>`;
+  h+=`<div class="round-hdr" style="margin-top:1rem;background:#c8952a">🥉 3° y 4° Lugar</div><div class="match-list">${mCardReal(TP)}</div>`;
+  h+=`<div class="round-hdr" style="margin-top:1rem">🏆 Gran Final</div><div class="match-list">${mCardReal(FN)}</div>`;
+  h+=`</div></div>`;
+
+  // GOLEADOR
+  h+=`<div class="card"><div class="card-hdr"><h2>👟 Goleador real del torneo</h2></div><div class="card-body">
+  <input type="text" id="real-gol" value="${e(real.goleador||'')}" placeholder="Nombre del goleador real…"
+  style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:inherit;outline:none"
+  oninput="real.goleador=this.value;saveReal()">
+  </div></div>`;
+
+  h+=`<div style="text-align:center;margin-top:1rem"><button class="btn btn-gold" onclick="view='scores';render()">🏅 Ver puntajes →</button></div>`;
+  document.getElementById('main').innerHTML=h;
+}
+
+function toggleRealRank(g,teamName){
+  if(!real.groups)real.groups={};
+  if(!real.groups[g])real.groups[g]=[null,null,null,null];
+  const order=[...real.groups[g]];
+  const pos=order.indexOf(teamName);
+  if(pos>=0){
+    order[pos]=null;
+    const filled=order.filter(Boolean);
+    while(filled.length<4)filled.push(null);
+    real.groups[g]=filled;
+  } else {
+    const next=order.indexOf(null);
+    if(next<0)return;
+    order[next]=teamName;
+    real.groups[g]=order;
+  }
+  saveReal();
+  // Re-render just this group card
+  rResults();
+}
+
+function toggleRealThird(g){
+  if(!real.thirds)real.thirds=[];
+  const i=real.thirds.indexOf(g);
+  if(i>=0)real.thirds.splice(i,1);
+  else{if(real.thirds.length>=8){alert('Solo 8 terceros');return;}real.thirds.push(g);}
+  saveReal();
+  rResults();
+}
+
+function pickReal(id,side){
+  const allM=[...R16,...QF,...CF,...SF,TP,FN];
+  const m=allM.find(x=>x.id===id);if(!m)return;
+  const src=side==='h'?m.hs:m.as;
+  const t=getRealTeam(src);if(!t)return;
+  if(!real.picks)real.picks={};
+  real.picks[id]={n:t.n,f:t.f};
+  saveReal();
+  rResults();
+}
+
+// ── COMPARE ──
 function rCompare(){
   view='compare';
   if(qs.length===0){rOverview();return;}
-  let h=tabsHtml('compare')+`<div class="cmp-wrap"><table class="cmp-table">
+  let h=tabs('compare')+`<div class="cmp-wrap"><table class="cmp-table">
   <thead><tr><th>Predicción</th>${qs.map(q=>`<th>${e(q.name)}</th>`).join('')}</tr></thead><tbody>
   <tr><td><strong>🏆 Campeón</strong></td>${qs.map(q=>{const c=q.picks&&q.picks['p104'];return`<td>${c?c.f+' '+e(c.n):'—'}</td>`;}).join('')}</tr>
   <tr><td><strong>👟 Goleador</strong></td>${qs.map(q=>`<td>${e(q.goleador)||'—'}</td>`).join('')}</tr>
-  <tr class="cmp-grp-hdr"><td colspan="${qs.length+1}">TERCEROS CLASIFICADOS</td></tr>
-  ${Object.keys(GS).map(g=>`<tr><td style="padding-left:10px">3°Grp.${g}</td>${qs.map(q=>{const sel=q.thirds&&q.thirds.includes(g);const name=q.groups&&q.groups[g]?q.groups[g][2]:'?';const t=GS[g].teams.find(x=>x.n===name)||{f:'🏳'};return`<td>${sel?`<span class="chip chip-3">${t.f}✓</span>`:''}</td>`;}).join('')}</tr>`).join('')}
-  ${Object.keys(GS).map(g=>`<tr class="cmp-grp-hdr"><td colspan="${qs.length+1}">GRUPO ${g}</td></tr>
+  <tr class="cmp-grp"><td colspan="${qs.length+1}">TERCEROS CLASIFICADOS</td></tr>
+  ${Object.keys(GS).map(g=>`<tr><td style="padding-left:10px">3°Grp.${g}</td>${qs.map(q=>{const sel=q.thirds&&q.thirds.includes(g);const name=q.groups&&q.groups[g]?q.groups[g][2]:'?';const t=GS[g].teams.find(x=>x.n===name)||{f:'🏳'};const isR=real.thirds&&real.thirds.includes(g);return`<td style="${isR&&sel?'background:#f0fff4;font-weight:700':''}">${sel?`<span class="chip chip-3">${t.f}✓</span>${isR?'✅':''}`:''}</td>`;}).join('')}</tr>`).join('')}
+  ${Object.keys(GS).map(g=>`<tr class="cmp-grp"><td colspan="${qs.length+1}">GRUPO ${g}</td></tr>
   ${[0,1,2].map(p=>`<tr><td style="padding-left:10px">${['🥇','🥈','🥉'][p]} ${p+1}°</td>
   ${qs.map(q=>{const n=q.groups&&q.groups[g]?q.groups[g][p]:'?';const t=GS[g].teams.find(x=>x.n===n)||{f:'🏳'};
   const isReal=real.groups&&real.groups[g]&&real.groups[g][p]===n;
-  const is3=p===2&&q.thirds&&q.thirds.includes(g);
-  return`<td style="${isReal?'background:#f0fff4;font-weight:700':''}">${t.f} ${e(n)}${is3?' <span class="chip chip-3">3°✓</span>':''}${isReal?' ✅':''}</td>`;}).join('')}</tr>`).join('')}`).join('')}
+  return`<td style="${isReal?'background:#f0fff4;font-weight:700':''}">${t.f} ${e(n)}${isReal?' ✅':''}</td>`;}).join('')}</tr>`).join('')}`).join('')}
   </tbody></table></div>`;
   document.getElementById('main').innerHTML=h;
 }
 
-/* RESULTS */
-function rResults(){
-  view='results';
-  const allTeams=Object.values(GS).flatMap(g=>g.teams);
-  const groupsHtml=Object.keys(GS).map(g=>{const cur=real.groups&&real.groups[g]||[];
-  return`<div class="result-group"><h4>Grupo ${g}</h4>
-  ${[0,1,2].map(pos=>`<div class="grp-result-row"><label>${pos+1}°</label>
-  <select onchange="saveGR('${g}',${pos},this.value)">
-    <option value="">— selecciona —</option>
-    ${GS[g].teams.map(t=>`<option value="${e(t.n)}"${cur[pos]===t.n?' selected':''}>${t.f} ${e(t.n)}</option>`).join('')}
-  </select></div>`).join('')}</div>`;}).join('');
-  const thirdsHtml=`<div class="result-group"><h4>8 terceros que clasificaron</h4>
-  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">${Object.keys(GS).map(g=>{const sel=real.thirds&&real.thirds.includes(g);const name=real.groups&&real.groups[g]&&real.groups[g][2]||'?';const t=GS[g].teams.find(x=>x.n===name)||{f:'🏳'};
-  return`<button id="rb3_${g}" class="team-btn${sel?' selected':''}" onclick="toggleRT('${g}')">${t.f} 3°${g}</button>`;}).join('')}</div>
-  <p style="font-size:.72rem;color:#718096" id="rt3cnt">Elegidos: ${(real.thirds||[]).length}/8</p></div>`;
-  function mSection(title,ids,lbls){return`<div class="result-group"><h4>${title}</h4>${ids.map(id=>{const cur=real.picks&&real.picks[id];
-  return`<div class="match-pick"><span class="lbl">${lbls[id]||id}</span>
-  <select onchange="saveRP('${id}',this.value)"><option value="">— ganador —</option>
-  ${allTeams.map(t=>`<option value="${e(t.n)}"${cur&&cur.n===t.n?' selected':''}>${t.f} ${e(t.n)}</option>`).join('')}
-  </select></div>`;}).join('')}</div>`;}
-  let h=tabsHtml('results')+`<div class="alert-info">✏️ Rellena los resultados reales conforme avanza el torneo. Los puntajes se recalculan automáticamente.</div>
-  <div class="card"><div class="card-hdr"><h2>📊 Grupos</h2></div><div class="card-body"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">${groupsHtml}</div></div></div>
-  <div class="card"><div class="card-hdr"><h2>🥉 Terceros clasificados</h2></div><div class="card-body">${thirdsHtml}</div></div>
-  <div class="card"><div class="card-hdr"><h2>⚔️ Eliminatorias</h2></div><div class="card-body">
-  ${mSection('16avos de Final',R16_IDS,R16_LBL)}
-  ${mSection('8avos de Final',QF_IDS,QF_LBL)}
-  ${mSection('4tos de Final',CF_IDS,CF_LBL)}
-  ${mSection('Semifinal',SF_IDS,SF_LBL)}
-  ${mSection('⚽ Final',['p104'],{p104:'P104 · GRAN FINAL'})}
-  </div></div>
-  <div class="card"><div class="card-hdr"><h2>👟 Goleador real</h2></div><div class="card-body">
-  <input type="text" id="real-gol" value="${e(real.goleador||'')}" placeholder="Nombre del goleador…"
-  style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;font-family:inherit;outline:none"
-  oninput="real.goleador=this.value;saveReal()">
-  </div></div>
-  <div style="text-align:center;margin-top:1rem"><button class="btn btn-gold" onclick="view='scores';render()">🏅 Ver tabla de puntajes →</button></div>`;
-  document.getElementById('main').innerHTML=h;
-}
-function saveGR(g,pos,val){if(!real.groups)real.groups={};if(!real.groups[g])real.groups[g]=[];real.groups[g][pos]=val;saveReal();}
-function toggleRT(g){if(!real.thirds)real.thirds=[];const i=real.thirds.indexOf(g);if(i>=0)real.thirds.splice(i,1);else{if(real.thirds.length>=8){alert('Solo 8 terceros');return;}real.thirds.push(g);}saveReal();
-document.querySelectorAll('[id^="rb3_"]').forEach(b=>{const bg=b.id.replace('rb3_','');b.classList.toggle('selected',real.thirds.includes(bg));});
-const el=document.getElementById('rt3cnt');if(el)el.textContent='Elegidos: '+real.thirds.length+'/8';}
-function saveRP(id,val){if(!real.picks)real.picks={};if(!val){delete real.picks[id];saveReal();return;}const t=Object.values(GS).flatMap(g=>g.teams).find(x=>x.n===val);real.picks[id]={n:val,f:t?t.f:'🏳'};saveReal();}
-
-/* DETAIL */
+// ── DETAIL ──
 function rDetail(idx){
-  view='detail';selIdx=idx;const q=qs[idx];const ch=q.picks&&q.picks['p104'];const sc=scoreQ(q);
-  let h=`<div class="tabs"><button class="tab" onclick="view='overview';render()">← Volver</button><button class="tab active">👤 ${e(q.name)}</button></div>
-  ${ch?`<div class="cbox"><div class="emo">🏆</div><h3>Campeón pronosticado</h3><div class="team">${ch.f} ${e(ch.n)}</div></div>`:''}
-  <div class="gol-box"><span style="font-size:1.3rem">👟</span><div><div style="font-size:.75rem;color:#2b6cb0;margin-bottom:2px">Goleador pronosticado</div><strong>${e(q.goleador)||'—'}</strong>${sc.gol>0?` <span class="chip chip-g">+${sc.gol}pts</span>`:''}</div></div>`;
+  view='detail';selIdx=idx;
+  const q=qs[idx];const ch=q.picks&&q.picks['p104'];const sc=scoreQ(q);
+  let h=`<div class="tabs"><button class="tab" onclick="view='overview';render()">← Volver</button><button class="tab active">👤 ${e(q.name)}</button></div>`;
+  if(ch)h+=`<div class="cbox"><div class="emo">🏆</div><h3>Campeón pronosticado</h3><div class="team">${ch.f} ${e(ch.n)}</div></div>`;
+  h+=`<div class="gol-box"><span style="font-size:1.3rem">👟</span><div><div style="font-size:.75rem;color:#2b6cb0;margin-bottom:2px">Goleador</div><strong>${e(q.goleador)||'—'}</strong>${sc.gol>0?` <span class="chip chip-g">+${sc.gol}pts</span>`:''}</div></div>`;
   if(hasReal()){
     h+=`<div class="card"><div class="card-hdr"><h2>🏅 Puntaje: ${sc.total} pts</h2></div><div class="card-body"><table>
-    <thead><tr><th>Ronda</th><th>Clasificados</th><th>Bono/Llave</th><th>Exacto</th><th>Subtotal</th></tr></thead><tbody>
+    <thead><tr><th>Ronda</th><th>Clasificados</th><th>Bono/Llave</th><th>Exacto</th><th>Sub</th></tr></thead><tbody>
     ${[['16avos',sc.r16q,sc.r16b,sc.r16e],['8avos',sc.qfq,sc.qfb,sc.qfe],['4tos',sc.cfq,sc.cfb,sc.cfe],['Semis',sc.sfq,sc.sfb,sc.sfe],['Final',sc.fnq,sc.fnb,sc.fne]].map(([r,a,b,c])=>`<tr><td><strong>${r}</strong></td><td class="pts-cell">${a}</td><td class="pts-cell">${b}</td><td class="pts-cell">${c}</td><td class="pts-cell" style="font-weight:800">${a+b+c}</td></tr>`).join('')}
-    <tr style="background:#f0fff4"><td><strong>Goleador</strong></td><td colspan="3" class="pts-cell">${sc.gol}</td><td class="pts-cell" style="font-weight:800">${sc.gol}</td></tr>
+    <tr style="background:#f0fff4"><td><strong>Goleador</strong></td><td colspan="3"></td><td class="pts-cell" style="font-weight:800">${sc.gol}</td></tr>
     </tbody></table></div></div>`;
   }
-  h+=`<div class="card"><div class="card-hdr"><h2>🥉 Terceros elegidos</h2></div><div class="card-body" style="display:flex;flex-wrap:wrap;gap:8px">`;
-  if(q.thirds&&q.thirds.length){q.thirds.forEach(g=>{const name=q.groups&&q.groups[g]?q.groups[g][2]:'?';const t=GS[g].teams.find(x=>x.n===name)||{f:'🏳'};const isR=real.thirds&&real.thirds.includes(g);
-  h+=`<div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:${isR?'#c6f6d5':'#fefcbf'};border:1px solid ${isR?'#276749':'#d69e2e'};border-radius:8px;font-size:.82rem"><span>${t.f}</span><span>3°<strong>Grp.${g}</strong>: ${e(name)}</span>${isR?'<span style="color:#276749">✅</span>':''}</div>`;});}
-  h+=`</div></div><div class="card"><div class="card-hdr"><h2>📊 Grupos</h2></div><div class="card-body">`;
-  Object.keys(GS).forEach(g=>{const ord=q.groups&&q.groups[g]?q.groups[g]:GS[g].teams.map(t=>t.n);h+=`<div class="stitle">Grupo ${g}</div>`;
-  ord.forEach((n,i)=>{const t=GS[g].teams.find(x=>x.n===n)||{n,f:'🏳'};const is3=i===2&&q.thirds&&q.thirds.includes(g);const isR=real.groups&&real.groups[g]&&real.groups[g][i]===n;
-  h+=`<div class="drow"><span class="pb b${i+1}">${i+1}</span><span style="font-size:1rem">${t.f}</span><span style="flex:1;font-weight:${i<2?600:400};font-size:.83rem">${e(n)}</span>${isR?`<span class="chip chip-g">✅</span>`:''}${is3&&!isR?`<span class="chip chip-3">3°sel.</span>`:''}</div>`;});});
-  h+=`</div></div><div class="card"><div class="card-hdr"><h2>⚔️ Eliminatorias</h2></div><div class="card-body">`;
-  [{l:'16avos',ids:R16_IDS,lbl:R16_LBL},{l:'8avos',ids:QF_IDS,lbl:QF_LBL},{l:'4tos',ids:CF_IDS,lbl:CF_LBL},{l:'Semis',ids:SF_IDS,lbl:SF_LBL},{l:'Final',ids:['p104'],lbl:{p104:'P104 FINAL'}}].forEach(r=>{
-  h+=`<div class="stitle"><span class="round-badge">${r.l}</span></div>`;
-  r.ids.forEach(id=>{const w=q.picks&&q.picks[id];const rw=real.picks&&real.picks[id];const ok=w&&rw&&w.n===rw.n;
-  h+=`<div class="drow"><span style="min-width:190px;font-size:.7rem;color:#718096">${r.lbl[id]||id}</span>
-  ${w?`<span>${w.f}</span><span class="chip chip-w" style="margin-left:4px">${e(w.n)}</span>`:
-  `<span style="color:#cbd5e0;font-style:italic;font-size:.78rem">sin elegir</span>`}
-  ${ok?`<span class="chip chip-g" style="margin-left:auto">✅</span>`:rw&&w?`<span style="margin-left:auto;font-size:.7rem;color:#a0aec0">Real:${rw.f}${e(rw.n)}</span>`:''}</div>`;});});
+  h+=`<div class="card"><div class="card-hdr"><h2>📊 Grupos</h2></div><div class="card-body">`;
+  Object.keys(GS).forEach(g=>{
+    const ord=q.groups&&q.groups[g]?q.groups[g]:GS[g].teams.map(t=>t.n);
+    h+=`<div class="stitle">Grupo ${g}</div>`;
+    ord.forEach((n,i)=>{if(!n)return;const t=GS[g].teams.find(x=>x.n===n)||{n,f:'🏳'};
+      const is3=i===2&&q.thirds&&q.thirds.includes(g);
+      const isR=real.groups&&real.groups[g]&&real.groups[g][i]===n;
+      h+=`<div class="drow"><span class="pos-badge-real pr${i+1}">${i+1}°</span><span style="font-size:1rem">${t.f}</span><span style="flex:1;font-weight:${i<2?600:400};font-size:.83rem;margin-left:4px">${e(n)}</span>${isR?`<span class="chip chip-g">✅</span>`:''}${is3?`<span class="chip chip-3" style="margin-left:4px">3°✓</span>`:''}</div>`;
+    });
+  });
+  h+=`</div></div>`;
+  const allRounds=[
+    {l:'16avos de Final',defs:R16},{l:'8avos de Final',defs:QF},{l:'4tos de Final',defs:CF},
+    {l:'Semifinal',defs:SF},{l:'⚽ Final',defs:[FN]}
+  ];
+  h+=`<div class="card"><div class="card-hdr"><h2>⚔️ Eliminatorias</h2></div><div class="card-body">`;
+  allRounds.forEach(r=>{
+    h+=`<div class="stitle"><span class="round-badge">${r.l}</span></div>`;
+    r.defs.forEach(m=>{const w=q.picks&&q.picks[m.id];const rw=real.picks&&real.picks[m.id];const ok=w&&rw&&w.n===rw.n;
+      h+=`<div class="drow"><span style="min-width:54px;font-size:.7rem;color:#a0aec0">${m.num}</span>
+      ${w?`<span style="font-size:.9rem">${w.f}</span><span class="chip chip-w" style="margin-left:4px">${e(w.n)}</span>`:
+      `<span style="color:#cbd5e0;font-size:.78rem;font-style:italic">sin elegir</span>`}
+      ${ok?`<span class="chip chip-g" style="margin-left:auto">✅</span>`:rw&&w?`<span style="margin-left:auto;font-size:.7rem;color:#a0aec0">${rw.f}${e(rw.n)}</span>`:''}</div>`;
+    });
+  });
   h+=`</div></div>`;
   document.getElementById('main').innerHTML=h;
 }
 
-/* UTILS */
-async function del(id,idx){
-  if(!confirm('¿Eliminar quiniela de "'+qs[idx].name+'"?'))return;
-  try{await supaDelete(id);load();}catch(ex){alert('Error: '+ex.message);}
-}
-async function clearAll(){
-  if(!confirm('¿Borrar TODAS las quinielas de Supabase? No se puede deshacer.'))return;
-  try{
-    for(const r of rows)await supaDelete(r.id);
-    load();
-  }catch(ex){alert('Error: '+ex.message);}
-}
+// ── UTILS ──
+async function del(id,idx){if(!confirm('¿Eliminar quiniela de "'+qs[idx].name+'"?'))return;try{await supaDelete(id);load();}catch(ex){alert('Error: '+ex.message);}}
 function gTn(n){for(const g of Object.values(GS)){const t=g.teams.find(x=>x.n===n);if(t)return t;}return null;}
 function e(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-// Auto-refresh every 30s
 load();
 setInterval(load,30000);
 </script>
