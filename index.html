@@ -470,6 +470,13 @@ function pickScorer(n){
 
 
 // ── NAV ──
+function allResolvablePicked(matches){
+  return matches.every(m=>{
+    const h=gT(m.hs),a=gT(m.as);
+    if(!h||!a)return true;
+    return !!ST.picks[m.id];
+  });
+}
 function next(){
   const s=STEPS[ST.step];
   if(s==='name'&&!ST.name)return;
@@ -478,6 +485,11 @@ function next(){
     if(!allDone){alert('Completa el orden de todos los grupos primero');return;}
   }
   if(s==='thirds'&&ST.thirds.length!==8){alert('Debes elegir exactamente 8 terceros');return;}
+  if(s==='r16'&&!allResolvablePicked(R16)){alert('Elige el ganador de todos los partidos disponibles');return;}
+  if(s==='qf'&&!allResolvablePicked(QF)){alert('Elige el ganador de todos los partidos disponibles');return;}
+  if(s==='cf'&&!allResolvablePicked(CF)){alert('Elige el ganador de todos los partidos disponibles');return;}
+  if(s==='sf'&&!allResolvablePicked(SF)){alert('Elige el ganador de todos los partidos disponibles');return;}
+  if(s==='final'&&(!allResolvablePicked([THIRD_PLACE])||!allResolvablePicked([FN]))){alert('Elige el ganador del partido por el 3er lugar y la final');return;}
   if(s==='gol'){
     const gi=document.getElementById('gi');
     if(gi&&gi.value.trim())ST.goleador=gi.value.trim();
