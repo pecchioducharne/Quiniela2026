@@ -269,18 +269,12 @@ const SCHEDULE={
 let real={groups:{},thirds:[],picks:{},scores:{},goleador:''};
 try{const rr=localStorage.getItem('qm2026_real');if(rr)real=JSON.parse(rr);}catch(e){}
 
-let _saveTimer=null;
 function saveReal(){
   localStorage.setItem('qm2026_real',JSON.stringify(real));
-  // Debounced Supabase save: fires 1.5s after the last action (prevents race conditions
-  // from rapid clicks while keeping Supabase up-to-date for cross-session persistence)
-  if(_saveTimer)clearTimeout(_saveTimer);
-  _saveTimer=setTimeout(()=>{
-    _saveTimer=null;
-    supaUpsertReal(real).catch(err=>console.warn('saveReal:',err));
-  },1500);
+  supaUpsertReal(real).catch(err=>console.warn('saveReal:',err));
 }
 
+let _scoreTimer=null;
 // PARTICIPANTS
 let rows=[];
 let qs=[];
@@ -608,6 +602,8 @@ function saveScoreOnly(id,side,val){
   const n=parseInt(val);
   real.scores[id][side]=isNaN(n)?'':n;
   localStorage.setItem('qm2026_real',JSON.stringify(real));
+  if(_scoreTimer)clearTimeout(_scoreTimer);
+  _scoreTimer=setTimeout(()=>{_scoreTimer=null;supaUpsertReal(real).catch(err=>console.warn('saveScore:',err));},1000);
 }
 
 async function guardarResultados(){
