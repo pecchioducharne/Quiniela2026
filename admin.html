@@ -270,6 +270,7 @@ let real={groups:{},thirds:[],picks:{},scores:{},goleador:''};
 try{const rr=localStorage.getItem('qm2026_real');if(rr)real=JSON.parse(rr);}catch(e){}
 
 function saveReal(){
+  real._ts=Date.now();
   localStorage.setItem('qm2026_real',JSON.stringify(real));
   supaUpsertReal(real).catch(err=>console.warn('saveReal:',err));
 }
@@ -286,7 +287,6 @@ function clearRealResults(){
   if(!confirm('¿Limpiar TODOS los resultados reales? Los puntajes se resetearán a 0.'))return;
   real={groups:{},thirds:[],picks:{},scores:{},goleador:''};
   saveReal();
-  supaUpsertReal(real).catch(err=>console.warn('clearReal:',err));
   alert('✅ Resultados reales limpiados.');
   render();
 }
@@ -296,11 +296,17 @@ function load(){
   document.getElementById('upd').textContent='Actualizando…';
   supaGet().then(data=>{
     const realRow=data.find(r=>r.name==='__real__');
-    // On first page load: always use Supabase data so changes from other
-    // devices/browsers are picked up (cross-device sync).
+    // On first page load: use whichever source (localStorage or Supabase) is newer.
+    // _ts timestamp written by saveReal() determines which is authoritative.
+    // Same device refresh → localStorage wins (saved after Supabase, same or newer _ts).
+    // Different device → Supabase wins (newer _ts from the other device).
     if(_firstLoad&&realRow&&realRow.data){
-      real={groups:{},thirds:[],picks:{},scores:{},goleador:'',...realRow.data};
-      localStorage.setItem('qm2026_real',JSON.stringify(real));
+      const supTs=(realRow.data._ts)||0;
+      const locTs=(real._ts)||0;
+      if(supTs>locTs){
+        real={groups:{},thirds:[],picks:{},scores:{},goleador:'',...realRow.data};
+        localStorage.setItem('qm2026_real',JSON.stringify(real));
+      }
     }
     _firstLoad=false;
     rows=data.filter(r=>r.name!=='__real__');
