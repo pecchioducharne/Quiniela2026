@@ -178,6 +178,14 @@ const H={'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'ap
 async function supaGet(){const r=await fetch(`${SUPA_URL}/rest/v1/quinelas?select=*&order=created_at.asc`,{headers:H});if(!r.ok)throw new Error(await r.text());return r.json();}
 async function supaDelete(id){const r=await fetch(`${SUPA_URL}/rest/v1/quinelas?id=eq.${id}`,{method:'DELETE',headers:H});if(!r.ok)throw new Error(await r.text());}
 async function supaInsert(name,data){const r=await fetch(`${SUPA_URL}/rest/v1/quinelas`,{method:'POST',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({name,data})});if(!r.ok)throw new Error(await r.text());}
+async function supaUpsertReal(data){
+  const chk=await fetch(`${SUPA_URL}/rest/v1/quinelas?name=eq.__real__&select=id`,{headers:H});
+  const ex=await chk.json();
+  if(ex.length>0){
+    const u=await fetch(`${SUPA_URL}/rest/v1/quinelas?id=eq.${ex[0].id}`,{method:'PATCH',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({data})});
+    if(!u.ok)throw new Error(await u.text());
+  }else{await supaInsert('__real__',data);}
+}
 
 const GS={
   A:{teams:[{n:'México',f:'🇲🇽'},{n:'Sudáfrica',f:'🇿🇦'},{n:'Corea del Sur',f:'🇰🇷'},{n:'Chequia',f:'🇨🇿'}]},
@@ -261,7 +269,10 @@ const SCHEDULE={
 let real={groups:{},thirds:[],picks:{},scores:{},goleador:''};
 // Load real from localStorage
 try{const rr=localStorage.getItem('qm2026_real');if(rr)real=JSON.parse(rr);}catch(e){}
-function saveReal(){localStorage.setItem('qm2026_real',JSON.stringify(real));}
+function saveReal(){
+  localStorage.setItem('qm2026_real',JSON.stringify(real));
+  supaUpsertReal(real).catch(err=>console.warn('saveReal Supabase:',err));
+}
 
 // PARTICIPANTS
 let rows=[];
@@ -281,8 +292,10 @@ function clearRealResults(){
 function load(){
   document.getElementById('upd').textContent='Actualizando…';
   supaGet().then(data=>{
-    rows=data;
-    qs=data.map(r=>({...r.data,_id:r.id,_created:r.created_at}));
+    const realRow=data.find(r=>r.name==='__real__');
+    if(realRow&&realRow.data){real=realRow.data;localStorage.setItem('qm2026_real',JSON.stringify(real));}
+    rows=data.filter(r=>r.name!=='__real__');
+    qs=rows.map(r=>({...r.data,_id:r.id,_created:r.created_at}));
     document.getElementById('tot').textContent=qs.length+' quinela'+(qs.length!==1?'s':'');
     document.getElementById('upd').textContent='Actualizado: '+new Date().toLocaleTimeString('es');
     render();
