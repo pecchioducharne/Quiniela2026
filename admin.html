@@ -294,7 +294,10 @@ function load(){
   supaGet().then(data=>{
     const realRow=data.find(r=>r.name==='__real__');
     if(realRow&&realRow.data&&view!=='results'){
-      real={groups:{},thirds:[],picks:{},scores:{},goleador:'',...realRow.data};
+      const incoming={groups:{},thirds:[],picks:{},scores:{},goleador:'',...realRow.data};
+      const supaHasScores=incoming.scores&&Object.keys(incoming.scores).length>0;
+      if(!supaHasScores&&real.scores&&Object.keys(real.scores).length>0)incoming.scores=real.scores;
+      real=incoming;
       localStorage.setItem('qm2026_real',JSON.stringify(real));
     }
     rows=data.filter(r=>r.name!=='__real__');
@@ -593,11 +596,25 @@ function saveScoreOnly(id,side,val){
   if(!real.scores[id])real.scores[id]={h:'',a:''};
   const n=parseInt(val);
   real.scores[id][side]=isNaN(n)?'':n;
+  localStorage.setItem('qm2026_real',JSON.stringify(real));
+}
+
+async function guardarResultados(){
+  const btn=document.getElementById('btn-guardar');
+  if(btn){btn.disabled=true;btn.textContent='Guardando…';}
+  try{
+    await supaUpsertReal(real);
+    localStorage.setItem('qm2026_real',JSON.stringify(real));
+    if(btn){btn.textContent='✅ Guardado';btn.style.background='#1a6b3c';setTimeout(()=>{btn.disabled=false;btn.textContent='💾 Guardar';btn.style.background='';},2000);}
+  }catch(err){
+    if(btn){btn.textContent='❌ Error';btn.style.background='#e53e3e';setTimeout(()=>{btn.disabled=false;btn.textContent='💾 Guardar';btn.style.background='';},2500);}
+    console.error('guardarResultados:',err);
+  }
 }
 function rResults(){
   view='results';
   const sy=window.scrollY;
-  let h=tabs('results')+`<div class="alert-info">✏️ Ingresa los resultados reales conforme avanza el torneo. Los puntajes se calculan automáticamente.</div>`;
+  let h=tabs('results')+`<div class="alert-info" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><span>✏️ Ingresa los resultados reales conforme avanza el torneo.</span><button id="btn-guardar" class="btn btn-gold" onclick="guardarResultados()">💾 Guardar</button></div>`;
 
   // GROUPS
   h+=`<div class="card"><div class="card-hdr"><h2>📊 Fase de Grupos — Resultados Reales</h2><span style="font-size:.75rem;color:#718096">Toca cada equipo en orden: 1°, 2°, 3°, 4°</span></div><div class="card-body"><div class="groups-real-grid">`;
