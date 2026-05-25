@@ -140,6 +140,7 @@ tr:nth-child(even) td{background:#f7fafc}
 .cmp-grp td{background:#1a3a5c!important;color:#fff;font-weight:700;font-size:.7rem;letter-spacing:.04em;padding:5px 10px}
 @media(max-width:500px){.stats{grid-template-columns:repeat(2,1fr)}}
 .score-inp{width:42px;height:30px;text-align:center;border:1.5px solid #e2e8f0;border-radius:6px;font-size:.9rem;font-weight:700;padding:0 4px;font-family:inherit;outline:none;-moz-appearance:textfield;background:#fff;flex-shrink:0}.score-inp::-webkit-outer-spin-button,.score-inp::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.score-inp:focus{border-color:#1a6b3c}
+.tie-msg{font-size:.72rem;color:#c05621;background:#fffaf0;border:1px solid #fbd38d;border-radius:6px;padding:4px 10px;margin:4px 12px 8px;text-align:center}
 .match-sched{font-size:.58rem;color:rgba(255,255,255,.7);font-weight:400;font-style:normal;margin-left:4px}
 </style>
 </head>
@@ -510,6 +511,7 @@ function updateScoreReal(id,side,val){
     const hv=parseInt(sc.h),av=parseInt(sc.a);
     if(hv>av)pickReal(id,'h');
     else if(av>hv)pickReal(id,'a');
+    else rResults();
   }
 }
 
@@ -561,6 +563,7 @@ function rResults(){
     const sc=SCHEDULE[m.id];
     const sh=((real.scores||{})[m.id]||{}).h??'';
     const sa=((real.scores||{})[m.id]||{}).a??'';
+    const isTie=sh!==''&&sa!==''&&parseInt(sh)===parseInt(sa);
     return`<div class="match-card${w?' done':''}" id="rmc-${m.id}">
     <div class="match-lbl">${m.num}<span>${m.hl} vs ${m.al}${sc?`<em class="match-sched"> · 📅 ${sc.d} ${sc.t} VET</em>`:''}</span></div>
     <div class="match-team${hw?' winner':''}${!h2?' pending':''}" onclick="${ok?`pickReal('${m.id}','h')`:''}">
@@ -572,6 +575,7 @@ function rResults(){
       <span style="font-size:1rem">${a2?a2.f:'🏳'}</span><span class="mname" style="flex:1;font-size:.82rem;margin-left:8px">${a2?(e(a2.n)+(a2._from?` <small style="color:#718096">(${a2._from})</small>`:'')):'pendiente…'}</span><span class="win-icon">✓</span>
       ${ok?`<input class="score-inp" type="number" min="0" max="99" value="${sa}" onclick="event.stopPropagation()" onchange="updateScoreReal('${m.id}','a',this.value)">`:''}
     </div>
+    ${ok&&isTie&&!w?`<div class="tie-msg">⚽ Empate — toca el equipo que pasa en penales</div>`:''}
     </div>`;
   }
 

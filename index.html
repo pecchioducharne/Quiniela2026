@@ -111,6 +111,7 @@ input[type=text]:focus{border-color:#1a6b3c}
 .score-inp{width:42px;height:30px;text-align:center;border:1.5px solid #e2e8f0;border-radius:6px;font-size:.9rem;font-weight:700;padding:0 4px;font-family:inherit;outline:none;-moz-appearance:textfield;background:#fff;flex-shrink:0}
 .score-inp::-webkit-outer-spin-button,.score-inp::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .score-inp:focus{border-color:#1a6b3c}
+.tie-msg{font-size:.72rem;color:#c05621;background:#fffaf0;border:1px solid #fbd38d;border-radius:6px;padding:4px 10px;margin:4px 12px 8px;text-align:center}
 .match-sched{font-size:.58rem;color:rgba(255,255,255,.7);font-weight:400;font-style:normal;margin-left:4px}
 </style>
 </head>
@@ -387,6 +388,7 @@ function mCard(m){
   const sc=SCHEDULE[m.id];
   const sh=(ST.scores[m.id]||{}).h??'';
   const sa=(ST.scores[m.id]||{}).a??'';
+  const isTie=sh!==''&&sa!==''&&parseInt(sh)===parseInt(sa);
   return`<div class="match-card${w?' done':''}" id="mc-${m.id}">
   <div class="match-lbl">${m.num}<span>${m.hl} vs ${m.al}${sc?`<em class="match-sched"> · 📅 ${sc.d} ${sc.t} VET</em>`:''}</span></div>
   <div class="match-team${hw?' winner':''}${!h?' pending':''}" onclick="${ok?`pick('${m.id}','h')`:''}">
@@ -402,6 +404,7 @@ function mCard(m){
     <span class="win-icon">✓</span>
     ${ok?`<input class="score-inp" type="number" min="0" max="99" value="${sa}" onclick="event.stopPropagation()" onchange="updateScore('${m.id}','a',this.value)">`:''}
   </div>
+  ${ok&&isTie&&!w?`<div class="tie-msg">⚽ Empate — toca el equipo que pasa en penales</div>`:''}
   </div>`;
 }
 
@@ -451,6 +454,14 @@ function updateScore(id,side,val){
     const hv=parseInt(sc.h),av=parseInt(sc.a);
     if(hv>av)pick(id,'h');
     else if(av>hv)pick(id,'a');
+    else{
+      const s=STEPS[ST.step];
+      if(s==='r16')rMatchRound('16avos de Final',R16);
+      else if(s==='qf')rMatchRound('8avos de Final',QF);
+      else if(s==='cf')rMatchRound('4tos de Final',CF);
+      else if(s==='sf')rSF();
+      else if(s==='final')rFinal();
+    }
   }
 }
 
@@ -503,6 +514,14 @@ function pickScorer(n){
 
 
 // ── NAV ──
+function allScoresFilled(matches){
+  return matches.every(m=>{
+    const h=gT(m.hs),a=gT(m.as);
+    if(!h||!a)return true;
+    const sc=ST.scores[m.id]||{};
+    return sc.h!==''&&sc.h!==undefined&&sc.a!==''&&sc.a!==undefined;
+  });
+}
 function allResolvablePicked(matches){
   return matches.every(m=>{
     const h=gT(m.hs),a=gT(m.as);
@@ -518,11 +537,26 @@ function next(){
     if(!allDone){alert('Completa el orden de todos los grupos primero');return;}
   }
   if(s==='thirds'&&ST.thirds.length!==8){alert('Debes elegir exactamente 8 terceros');return;}
-  if(s==='r16'&&!allResolvablePicked(R16)){alert('Elige el ganador de todos los partidos disponibles');return;}
-  if(s==='qf'&&!allResolvablePicked(QF)){alert('Elige el ganador de todos los partidos disponibles');return;}
-  if(s==='cf'&&!allResolvablePicked(CF)){alert('Elige el ganador de todos los partidos disponibles');return;}
-  if(s==='sf'&&!allResolvablePicked(SF)){alert('Elige el ganador de todos los partidos disponibles');return;}
-  if(s==='final'&&(!allResolvablePicked([THIRD_PLACE])||!allResolvablePicked([FN]))){alert('Elige el ganador del partido por el 3er lugar y la final');return;}
+  if(s==='r16'){
+    if(!allScoresFilled(R16)){alert('Debes ingresar el marcador de todos los partidos disponibles');return;}
+    if(!allResolvablePicked(R16)){alert('Hay empates — toca el equipo que pasa en penales');return;}
+  }
+  if(s==='qf'){
+    if(!allScoresFilled(QF)){alert('Debes ingresar el marcador de todos los partidos disponibles');return;}
+    if(!allResolvablePicked(QF)){alert('Hay empates — toca el equipo que pasa en penales');return;}
+  }
+  if(s==='cf'){
+    if(!allScoresFilled(CF)){alert('Debes ingresar el marcador de todos los partidos disponibles');return;}
+    if(!allResolvablePicked(CF)){alert('Hay empates — toca el equipo que pasa en penales');return;}
+  }
+  if(s==='sf'){
+    if(!allScoresFilled(SF)){alert('Debes ingresar el marcador de todos los partidos disponibles');return;}
+    if(!allResolvablePicked(SF)){alert('Hay empates — toca el equipo que pasa en penales');return;}
+  }
+  if(s==='final'){
+    if(!allScoresFilled([THIRD_PLACE,FN])){alert('Debes ingresar el marcador de todos los partidos disponibles');return;}
+    if(!allResolvablePicked([THIRD_PLACE])||!allResolvablePicked([FN])){alert('Hay empates — toca el equipo que pasa en penales');return;}
+  }
   if(s==='gol'){
     const gi=document.getElementById('gi');
     if(gi&&gi.value.trim())ST.goleador=gi.value.trim();
