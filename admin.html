@@ -298,14 +298,16 @@ function load(){
     const realRow=data.find(r=>r.name==='__real__');
     if(_firstLoad){
       _firstLoad=false;
-      if(realRow&&realRow.data){
-        // Supabase is the single shared source of truth — always use it on first load
-        // so both phone and computer always see the same data.
-        real={groups:{},thirds:[],picks:{},scores:{},goleador:'',...realRow.data};
+      const supaReal=realRow&&realRow.data?{groups:{},thirds:[],picks:{},scores:{},goleador:'',...realRow.data}:null;
+      const supaHas=supaReal&&((Object.keys(supaReal.groups||{}).length>0)||(Object.keys(supaReal.picks||{}).length>0));
+      const locHas=(Object.keys(real.groups||{}).length>0)||(Object.keys(real.picks||{}).length>0);
+      if(supaHas){
+        // Supabase has real data → use it (shared across all devices)
+        real=supaReal;
         localStorage.setItem('qm2026_real',JSON.stringify(real));
-      } else {
-        // No Supabase data yet (first ever use) — push local data up so it's shared
-        if(real.groups&&Object.keys(real.groups).length>0)saveReal();
+      } else if(locHas){
+        // Supabase is empty/missing but local has data → push local up to Supabase
+        saveReal();
       }
     }
     rows=data.filter(r=>r.name!=='__real__');

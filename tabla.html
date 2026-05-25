@@ -252,8 +252,10 @@ function load(){
     if(realRow&&realRow.data){real={groups:{},thirds:[],picks:{},scores:{},goleador:'',...realRow.data};}
     rows=data.filter(r=>r.name!=='__real__');
     qs=rows.map(r=>({...r.data,_id:r.id,_created:r.created_at}));
+    const grpCount=Object.keys(real.groups||{}).length;
+    const pickCount=Object.keys(real.picks||{}).length;
     document.getElementById('tot').textContent=qs.length+' quinela'+(qs.length!==1?'s':'');
-    document.getElementById('upd').textContent='Actualizado: '+new Date().toLocaleTimeString('es');
+    document.getElementById('upd').textContent='Actualizado: '+new Date().toLocaleTimeString('es')+(realRow?` · DB: ${grpCount}g/${pickCount}p`:' · sin datos reales');
     render();
   }).catch(err=>{
     document.getElementById('main').innerHTML=`<div style="color:#c53030;background:#fff5f5;border-radius:8px;padding:1rem">Error: ${err.message}</div>`;
