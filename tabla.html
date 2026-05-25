@@ -262,62 +262,105 @@ function load(){
 }
 
 // ── SCORING ──
-function mPts(id,wpts,epts,bpts,R,q){
-  const rw=(R.picks||{})[id],pw=(q.picks||{})[id];
+function mRes(id,R,q){
+  const rw=(R.picks||{})[id],qw=(q.picks||{})[id];
+  if(!rw||!qw||rw.n!==qw.n)return 0;
   const rs=((R.scores||{})[id])||{},qs=((q.scores||{})[id])||{};
-  const wm=!!(rw&&pw&&rw.n===pw.n);
-  const ex=rs.h!==''&&rs.h!==undefined&&rs.a!==''&&rs.a!==undefined&&
-            qs.h!==''&&qs.h!==undefined&&qs.a!==''&&qs.a!==undefined&&
-            rs.h===qs.h&&rs.a===qs.a;
-  return(wm?wpts:0)+(ex?epts:0)+(wm&&ex?bpts:0);
+  const rh=rs.h,ra=rs.a,qh=qs.h,qa=qs.a;
+  if(rh===''||rh===undefined||ra===''||ra===undefined||qh===''||qh===undefined||qa===''||qa===undefined)return 3;
+  if(Number(rh)===Number(qh)&&Number(ra)===Number(qa))return 6;
+  if((Number(rh)-Number(ra))===(Number(qh)-Number(qa)))return 4;
+  return 3;
+}
+function mBono(id,bono,R,q){
+  const rw=(R.picks||{})[id],qw=(q.picks||{})[id];
+  if(!rw||!qw||rw.n!==qw.n)return 0;
+  const rs=((R.scores||{})[id])||{},qs=((q.scores||{})[id])||{};
+  const rh=rs.h,ra=rs.a,qh=qs.h,qa=qs.a;
+  if(rh===''||rh===undefined||ra===''||ra===undefined||qh===''||qh===undefined||qa===''||qa===undefined)return 0;
+  return(Number(rh)===Number(qh)&&Number(ra)===Number(qa))?bono:0;
 }
 function scoreQ(q){
   const R=real||{groups:{},thirds:[],picks:{},goleador:''};
-  let r16q=0,r16b=0,r16e=0,qfq=0,qfb=0,qfe=0,cfq=0,cfb=0,cfe=0,sfq=0,sfb=0,sfe=0,fnq=0,fnb=0,fne=0,gol=0;
+  let r16q=0,r16b=0,r16e=0;
+  let qfq=0,qfb=0,qfe=0;
+  let cfq=0,cfb=0,cfe=0;
+  let sfq=0,sfb=0,sfe=0;
+  let tpq=0,tpb=0,tpe=0;
+  let fnq=0,fnb=0,fne=0;
+  let ter=0,sub=0,cam=0,gol=0;
 
-  // Real R16 qualifiers
+  // R16: group stage qualifiers
   const realQ16=new Set(),realQ16pos={};
   Object.keys(GS).forEach(g=>{const ord=R.groups&&R.groups[g];if(!ord)return;[0,1].forEach(p=>{if(ord[p]){realQ16.add(ord[p]);realQ16pos[ord[p]]={g,pos:p};}});});
   if(R.thirds)R.thirds.forEach(g=>{const ord=R.groups&&R.groups[g];if(ord&&ord[2]){realQ16.add(ord[2]);realQ16pos[ord[2]]={g,pos:2};}});
-  // Pred R16 qualifiers
   const predQ16=new Set(),predQ16pos={};
   Object.keys(GS).forEach(g=>{const ord=q.groups&&q.groups[g];if(!ord)return;[0,1].forEach(p=>{if(ord[p]){predQ16.add(ord[p]);predQ16pos[ord[p]]={g,pos:p};}});});
   if(q.thirds)q.thirds.forEach(g=>{const ord=q.groups&&q.groups[g];if(ord&&ord[2]){predQ16.add(ord[2]);predQ16pos[ord[2]]={g,pos:2};}});
+  predQ16.forEach(t=>{if(realQ16.has(t)){r16q+=4;const rp=realQ16pos[t],pp=predQ16pos[t];if(rp&&pp&&rp.g===pp.g&&rp.pos===pp.pos)r16q+=2;}});
+  R16_IDS.forEach(id=>{r16b+=mBono(id,2,R,q);r16e+=mRes(id,R,q);});
 
-  predQ16.forEach(t=>{if(realQ16.has(t)){r16q+=4;const rp=realQ16pos[t],pp=predQ16pos[t];if(rp&&pp&&rp.g===pp.g&&rp.pos===pp.pos)r16b+=2;}});
-  R16_IDS.forEach(id=>{r16e+=mPts(id,1,2,3,R,q);});
-
+  // QF (8avos)
   const realTQF={},predTQF={};
   R16_IDS.forEach(id=>{const w=R.picks&&R.picks[id];if(w)realTQF[w.n]=r16ToQF[id];});
   R16_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w)predTQF[w.n]=r16ToQF[id];});
-  const realQF=new Set(Object.keys(realTQF)),predQF=new Set(Object.keys(predTQF));
-  predQF.forEach(t=>{if(realQF.has(t)){qfq+=4;if(realTQF[t]&&predTQF[t]===realTQF[t])qfb+=1;}});
-  QF_IDS.forEach(id=>{qfe+=mPts(id,1,2,3,R,q);});
+  const realQFset=new Set(Object.keys(realTQF)),predQFset=new Set(Object.keys(predTQF));
+  predQFset.forEach(t=>{if(realQFset.has(t)){qfq+=4;if(realTQF[t]&&predTQF[t]===realTQF[t])qfb+=1;}});
+  QF_IDS.forEach(id=>{qfb+=mBono(id,2,R,q);qfe+=mRes(id,R,q);});
 
+  // CF (4tos)
   const realTCF={},predTCF={};
   QF_IDS.forEach(id=>{const w=R.picks&&R.picks[id];if(w)realTCF[w.n]=qfToCF[id];});
   QF_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w)predTCF[w.n]=qfToCF[id];});
-  const realCF=new Set(Object.keys(realTCF)),predCF=new Set(Object.keys(predTCF));
-  predCF.forEach(t=>{if(realCF.has(t)){cfq+=7;if(realTCF[t]&&predTCF[t]===realTCF[t])cfb+=1;}});
-  CF_IDS.forEach(id=>{cfe+=mPts(id,1,2,3,R,q);});
+  const realCFset=new Set(Object.keys(realTCF)),predCFset=new Set(Object.keys(predTCF));
+  predCFset.forEach(t=>{if(realCFset.has(t)){cfq+=7;if(realTCF[t]&&predTCF[t]===realTCF[t])cfb+=1;}});
+  CF_IDS.forEach(id=>{cfb+=mBono(id,2,R,q);cfe+=mRes(id,R,q);});
 
+  // SF (Semis)
   const realTSF={},predTSF={};
   CF_IDS.forEach(id=>{const w=R.picks&&R.picks[id];if(w)realTSF[w.n]=cfToSF[id];});
   CF_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w)predTSF[w.n]=cfToSF[id];});
-  const realSF=new Set(Object.keys(realTSF)),predSF=new Set(Object.keys(predTSF));
-  predSF.forEach(t=>{if(realSF.has(t)){sfq+=10;if(realTSF[t]&&predTSF[t]===realTSF[t])sfb+=1;}});
-  SF_IDS.forEach(id=>{sfe+=mPts(id,1,2,3,R,q);});
+  const realSFset=new Set(Object.keys(realTSF)),predSFset=new Set(Object.keys(predTSF));
+  predSFset.forEach(t=>{if(realSFset.has(t)){sfq+=10;if(realTSF[t]&&predTSF[t]===realTSF[t])sfb+=1;}});
+  SF_IDS.forEach(id=>{sfb+=mBono(id,4,R,q);sfe+=mRes(id,R,q);});
 
-  const realFN=new Set(),predFN=new Set(),realFNS={},predFNS={};
+  // 3rd/4th place (SF losers)
+  const rCF97=R.picks&&R.picks['cf_p97'],rCF98=R.picks&&R.picks['cf_p98'],rSF101=R.picks&&R.picks['sf_p101'];
+  const rCF99=R.picks&&R.picks['cf_p99'],rCF100=R.picks&&R.picks['cf_p100'],rSF102=R.picks&&R.picks['sf_p102'];
+  const realTP1=rSF101&&rCF97&&rCF98?(rSF101.n===rCF97.n?rCF98:rCF97):null;
+  const realTP2=rSF102&&rCF99&&rCF100?(rSF102.n===rCF99.n?rCF100:rCF99):null;
+  const pCF97=q.picks&&q.picks['cf_p97'],pCF98=q.picks&&q.picks['cf_p98'],pSF101=q.picks&&q.picks['sf_p101'];
+  const pCF99=q.picks&&q.picks['cf_p99'],pCF100=q.picks&&q.picks['cf_p100'],pSF102=q.picks&&q.picks['sf_p102'];
+  const predTP1=pSF101&&pCF97&&pCF98?(pSF101.n===pCF97.n?pCF98:pCF97):null;
+  const predTP2=pSF102&&pCF99&&pCF100?(pSF102.n===pCF99.n?pCF100:pCF99):null;
+  if(predTP1&&realTP1&&predTP1.n===realTP1.n){tpq+=8;tpb+=1;}
+  else if(predTP1&&realTP2&&predTP1.n===realTP2.n){tpq+=8;}
+  if(predTP2&&realTP2&&predTP2.n===realTP2.n){tpq+=8;tpb+=1;}
+  else if(predTP2&&realTP1&&predTP2.n===realTP1.n){tpq+=8;}
+  tpb+=mBono('p103',4,R,q);
+  tpe+=mRes('p103',R,q);
+
+  // Final
+  const realFN=new Set(),realFNS={};
   SF_IDS.forEach(id=>{const w=R.picks&&R.picks[id];if(w){realFN.add(w.n);realFNS[w.n]=id;}});
+  const predFN=new Set(),predFNS={};
   SF_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w){predFN.add(w.n);predFNS[w.n]=id;}});
-  predFN.forEach(t=>{if(realFN.has(t)){fnq+=15;if(realFNS[t]&&predFNS[t]===realFNS[t])fnb+=5;}});
-  fne+=mPts('p103',1,2,3,R,q);
-  fne+=mPts('p104',1,10,3,R,q);
+  predFN.forEach(t=>{if(realFN.has(t)){fnq+=15;if(realFNS[t]&&predFNS[t]===realFNS[t])fnb+=1;}});
+  fnb+=mBono('p104',10,R,q);
+  fne+=mRes('p104',R,q);
 
-  if(R.goleador&&q.goleador&&R.goleador.trim().toLowerCase()===q.goleador.trim().toLowerCase())gol=5;
-  const total=r16q+r16b+r16e+qfq+qfb+qfe+cfq+cfb+cfe+sfq+sfb+sfe+fnq+fnb+fne+gol;
-  return{r16q,r16b,r16e,qfq,qfb,qfe,cfq,cfb,cfe,sfq,sfb,sfe,fnq,fnb,fne,gol,total};
+  // Champion / Runner-up / 3rd place winner bonuses
+  const realChamp=R.picks&&R.picks['p104'],predChamp=q.picks&&q.picks['p104'];
+  if(realChamp&&predChamp&&realChamp.n===predChamp.n)cam=30;
+  const realRU=[...realFN].find(t=>t!==(realChamp&&realChamp.n));
+  const predRU=[...predFN].find(t=>t!==(predChamp&&predChamp.n));
+  if(realRU&&predRU&&realRU===predRU)sub=15;
+  const realThird=R.picks&&R.picks['p103'],predThird=q.picks&&q.picks['p103'];
+  if(realThird&&predThird&&realThird.n===predThird.n)ter=10;
+
+  if(R.goleador&&q.goleador&&R.goleador.trim().toLowerCase()===q.goleador.trim().toLowerCase())gol=10;
+  const total=r16q+r16b+r16e+qfq+qfb+qfe+cfq+cfb+cfe+sfq+sfb+sfe+tpq+tpb+tpe+fnq+fnb+fne+ter+sub+cam+gol;
+  return{r16q,r16b,r16e,qfq,qfb,qfe,cfq,cfb,cfe,sfq,sfb,sfe,tpq,tpb,tpe,fnq,fnb,fne,ter,sub,cam,gol,total};
 }
 
 function hasReal(){return real&&((real.picks&&Object.keys(real.picks).length>0)||(real.groups&&Object.keys(real.groups).length>0));}
@@ -386,12 +429,14 @@ function rOverview(){
 function rScores(){
   view='scores';
   const ptsKey=`<div class="pts-key">${[
-    {r:'16avos',items:['4 pts · equipo clasifica','2 pts · posición exacta','1 ganador · +2 marcador exacto · +3 bono']},
-    {r:'8avos', items:['4 pts · equipo clasifica','1 pt · llave correcta','1 ganador · +2 marcador exacto · +3 bono']},
-    {r:'4tos',  items:['7 pts · equipo clasifica','1 pt · llave correcta','1 ganador · +2 marcador exacto · +3 bono']},
-    {r:'Semis', items:['10 pts · equipo clasifica','1 pt · llave correcta','1 ganador · +2 marcador exacto · +3 bono']},
-    {r:'Final', items:['15 pts · finalista','5 pts · llave correcta','3°: 1+2+3 · Final: 1 gan. +10 exacto +3 bono']},
-    {r:'Goleador',items:['5 pts · goleador exacto']},
+    {r:'Partidos',items:['6 pts · ganador + resultado exacto','4 pts · ganador + diferencia de goles','3 pts · ganador']},
+    {r:'16avos',items:['4 pts · equipo clasifica','2 pts · posición exacta','2 pts bono · exacto']},
+    {r:'8avos', items:['4 pts · equipo clasifica','1 pt · llave correcta','2 pts bono · exacto']},
+    {r:'4tos',  items:['7 pts · equipo clasifica','1 pt · llave correcta','2 pts bono · exacto']},
+    {r:'Semis', items:['10 pts · equipo clasifica','1 pt · llave correcta','4 pts bono · exacto']},
+    {r:'3°/4°', items:['8 pts · equipo clasifica','1 pt · llave correcta','4 pts bono · exacto']},
+    {r:'Final', items:['15 pts · finalista','1 pt · llave correcta','10 pts bono · exacto']},
+    {r:'Extras',items:['30 pts · campeón exacto','15 pts · subcampeón exacto','10 pts · 3er lugar exacto','10 pts · goleador exacto']},
   ].map(x=>`<div class="pts-key-card"><h4>${x.r}</h4><ul>${x.items.map(i=>`<li><b>✓</b>${i}</li>`).join('')}</ul></div>`).join('')}</div>`;
 
   if(!hasReal()){
@@ -401,7 +446,7 @@ function rScores(){
   function pts(a,b,c){const t=a+b+c;return t>0?`<span style="color:#1a6b3c;font-weight:700">${t}</span><br><small style="color:#a0aec0;font-size:.65rem">${a}+${b}+${c}</small>`:`<span class="pts-zero">0</span>`;}
   let h=tabs('scores')+`<div class="card"><div class="card-hdr"><h2>📌 Sistema de puntos</h2></div><div class="card-body">${ptsKey}</div></div>
   <div class="card"><div class="card-hdr"><h2>🏅 Tabla de posiciones</h2></div><div class="card-body"><div style="overflow-x:auto"><table>
-  <thead><tr><th>Pos.</th><th>Participante</th><th>16avos</th><th>8avos</th><th>4tos</th><th>Semis</th><th>Final</th><th>Gol.</th><th style="background:#c8952a">TOTAL</th></tr></thead><tbody>
+  <thead><tr><th>Pos.</th><th>Participante</th><th>16avos</th><th>8avos</th><th>4tos</th><th>Semis</th><th>3°/4°</th><th>Final</th><th>Extras</th><th style="background:#c8952a">TOTAL</th></tr></thead><tbody>
   ${sc.map((s,i)=>{const pc=i===0?'sp1':i===1?'sp2':i===2?'sp3':'spn';const ch=s.picks&&s.picks['p104'];
   return`<tr><td><span class="score-pos ${pc}" style="margin:auto">${i+1}</span></td>
   <td class="nl" onclick="selIdx=${qs.findIndex(x=>x.name===s.name)};view='detail';render()">${e(s.name)}<br><small style="color:#a0aec0;font-size:.7rem">${ch?ch.f+e(ch.n):''}</small></td>
@@ -409,8 +454,9 @@ function rScores(){
   <td class="pts-cell">${pts(s.qfq,s.qfb,s.qfe)}</td>
   <td class="pts-cell">${pts(s.cfq,s.cfb,s.cfe)}</td>
   <td class="pts-cell">${pts(s.sfq,s.sfb,s.sfe)}</td>
+  <td class="pts-cell">${pts(s.tpq,s.tpb,s.tpe)}</td>
   <td class="pts-cell">${pts(s.fnq,s.fnb,s.fne)}</td>
-  <td class="pts-cell">${s.gol>0?`<span style="color:#c8952a;font-weight:700">${s.gol}</span>`:`<span class="pts-zero">0</span>`}</td>
+  <td class="pts-cell">${(s.cam+s.sub+s.ter+s.gol)>0?`<span style="color:#c8952a;font-weight:700">${s.cam+s.sub+s.ter+s.gol}</span>`:`<span class="pts-zero">0</span>`}</td>
   <td class="pts-cell" style="font-size:1.1rem;color:#1a3a5c;font-weight:800">${s.total}</td></tr>`;}).join('')}
   </tbody></table></div></div></div>`;
   document.getElementById('main').innerHTML=h;
@@ -445,8 +491,11 @@ function rDetail(idx){
   if(hasReal()){
     h+=`<div class="card"><div class="card-hdr"><h2>🏅 Puntaje: ${sc.total} pts</h2></div><div class="card-body"><table>
     <thead><tr><th>Ronda</th><th>Clasificados</th><th>Bono/Llave</th><th>Partidos</th><th>Sub</th></tr></thead><tbody>
-    ${[['16avos',sc.r16q,sc.r16b,sc.r16e],['8avos',sc.qfq,sc.qfb,sc.qfe],['4tos',sc.cfq,sc.cfb,sc.cfe],['Semis',sc.sfq,sc.sfb,sc.sfe],['Final',sc.fnq,sc.fnb,sc.fne]].map(([r,a,b,c])=>`<tr><td><strong>${r}</strong></td><td class="pts-cell">${a}</td><td class="pts-cell">${b}</td><td class="pts-cell">${c}</td><td class="pts-cell" style="font-weight:800">${a+b+c}</td></tr>`).join('')}
-    <tr style="background:#f0fff4"><td><strong>Goleador</strong></td><td colspan="3"></td><td class="pts-cell" style="font-weight:800">${sc.gol}</td></tr>
+    ${[['16avos',sc.r16q,sc.r16b,sc.r16e],['8avos',sc.qfq,sc.qfb,sc.qfe],['4tos',sc.cfq,sc.cfb,sc.cfe],['Semis',sc.sfq,sc.sfb,sc.sfe],['3°/4°',sc.tpq,sc.tpb,sc.tpe],['Final',sc.fnq,sc.fnb,sc.fne]].map(([r,a,b,c])=>`<tr><td><strong>${r}</strong></td><td class="pts-cell">${a}</td><td class="pts-cell">${b}</td><td class="pts-cell">${c}</td><td class="pts-cell" style="font-weight:800">${a+b+c}</td></tr>`).join('')}
+    <tr style="background:#fef9e7"><td><strong>Campeón</strong></td><td colspan="3"></td><td class="pts-cell" style="font-weight:800">${sc.cam}</td></tr>
+    <tr><td><strong>Subcampeón</strong></td><td colspan="3"></td><td class="pts-cell" style="font-weight:800">${sc.sub}</td></tr>
+    <tr style="background:#fef9e7"><td><strong>3er Lugar</strong></td><td colspan="3"></td><td class="pts-cell" style="font-weight:800">${sc.ter}</td></tr>
+    <tr><td><strong>Goleador</strong></td><td colspan="3"></td><td class="pts-cell" style="font-weight:800">${sc.gol}</td></tr>
     </tbody></table></div></div>`;
   }
   h+=`<div class="card"><div class="card-hdr"><h2>📊 Grupos</h2></div><div class="card-body">`;
