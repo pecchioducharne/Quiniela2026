@@ -588,8 +588,15 @@ function updateScoreReal(id,side,val){
 }
 
 // ── RESULTS (same click-to-pick style as index) ──
+function saveScoreOnly(id,side,val){
+  if(!real.scores)real.scores={};
+  if(!real.scores[id])real.scores[id]={h:'',a:''};
+  const n=parseInt(val);
+  real.scores[id][side]=isNaN(n)?'':n;
+}
 function rResults(){
   view='results';
+  const sy=window.scrollY;
   let h=tabs('results')+`<div class="alert-info">✏️ Ingresa los resultados reales conforme avanza el torneo. Los puntajes se calculan automáticamente.</div>`;
 
   // GROUPS
@@ -640,12 +647,12 @@ function rResults(){
     <div class="match-lbl">${m.num}<span>${m.hl} vs ${m.al}${sc?`<em class="match-sched"> · 📅 ${sc.d} ${sc.t} VET</em>`:''}</span></div>
     <div class="match-team${hw?' winner':''}${!h2?' pending':''}" onclick="${ok?`pickReal('${m.id}','h')`:''}">
       <span style="font-size:1rem">${h2?h2.f:'🏳'}</span><span class="mname" style="flex:1;font-size:.82rem;margin-left:8px">${h2?(e(h2.n)+(h2._from?` <small style="color:#718096">(${h2._from})</small>`:'')):'pendiente…'}</span><span class="win-icon">✓</span>
-      ${ok?`<input class="score-inp" type="number" min="0" max="99" value="${sh}" onclick="event.stopPropagation()" onchange="updateScoreReal('${m.id}','h',this.value)">`:''}
+      ${ok?`<input class="score-inp" type="number" min="0" max="99" value="${sh}" onclick="event.stopPropagation()" oninput="saveScoreOnly('${m.id}','h',this.value)" onchange="updateScoreReal('${m.id}','h',this.value)">`:''}
     </div>
     <div class="mdiv"></div>
     <div class="match-team${aw?' winner':''}${!a2?' pending':''}" onclick="${ok?`pickReal('${m.id}','a')`:''}">
       <span style="font-size:1rem">${a2?a2.f:'🏳'}</span><span class="mname" style="flex:1;font-size:.82rem;margin-left:8px">${a2?(e(a2.n)+(a2._from?` <small style="color:#718096">(${a2._from})</small>`:'')):'pendiente…'}</span><span class="win-icon">✓</span>
-      ${ok?`<input class="score-inp" type="number" min="0" max="99" value="${sa}" onclick="event.stopPropagation()" onchange="updateScoreReal('${m.id}','a',this.value)">`:''}
+      ${ok?`<input class="score-inp" type="number" min="0" max="99" value="${sa}" onclick="event.stopPropagation()" oninput="saveScoreOnly('${m.id}','a',this.value)" onchange="updateScoreReal('${m.id}','a',this.value)">`:''}
     </div>
     ${ok&&isTie&&!w?`<div class="tie-msg">⚽ Empate — toca el equipo que pasa en penales</div>`:''}
     </div>`;
@@ -669,6 +676,7 @@ function rResults(){
 
   h+=`<div style="text-align:center;margin-top:1rem"><button class="btn btn-gold" onclick="view='scores';render()">🏅 Ver puntajes →</button></div>`;
   document.getElementById('main').innerHTML=h;
+  window.scrollTo(0,sy);
 }
 
 function toggleRealRank(g,teamName){
