@@ -182,21 +182,20 @@ async function supaInsert(name,data){const r=await fetch(`${SUPA_URL}/rest/v1/qu
 async function supaUpsertReal(data){
   let lastErr;
   for(let attempt=0;attempt<=2;attempt++){
-    if(attempt>0)await new Promise(r=>setTimeout(r,500*attempt));
+    if(attempt>0)await new Promise(r=>setTimeout(r,800*attempt));
     const ac=new AbortController();
-    const tid=setTimeout(()=>ac.abort(),10000);
+    const tid=setTimeout(()=>ac.abort(),12000);
     try{
-      const chk=await fetch(`${SUPA_URL}/rest/v1/quinelas?name=eq.__real__&select=id`,{headers:H,signal:ac.signal});
-      const ex=await chk.json();
-      if(ex.length>0){
-        const u=await fetch(`${SUPA_URL}/rest/v1/quinelas?id=eq.${ex[0].id}`,{method:'PATCH',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({data}),signal:ac.signal});
-        if(!u.ok)throw new Error(await u.text());
-      }else{
-        const ins=await fetch(`${SUPA_URL}/rest/v1/quinelas`,{method:'POST',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({name:'__real__',data}),signal:ac.signal});
-        if(!ins.ok)throw new Error(await ins.text());
-      }
+      // Delete ALL __real__ rows (clean slate, avoids stale duplicates)
+      const del=await fetch(`${SUPA_URL}/rest/v1/quinelas?name=eq.__real__`,{method:'DELETE',headers:H,signal:ac.signal});
+      if(!del.ok)throw new Error('DELETE falló: '+await del.text());
+      // Insert fresh row and verify it was created
+      const ins=await fetch(`${SUPA_URL}/rest/v1/quinelas`,{method:'POST',headers:{...H,'Prefer':'return=representation'},body:JSON.stringify({name:'__real__',data}),signal:ac.signal});
+      if(!ins.ok)throw new Error('INSERT falló: '+await ins.text());
+      const saved=await ins.json();
+      if(!saved||saved.length===0)throw new Error('INSERT no creó ninguna fila (permisos?)');
       clearTimeout(tid);
-      return;
+      return saved[0];
     }catch(e){clearTimeout(tid);lastErr=e;}
   }
   throw lastErr;
@@ -294,15 +293,17 @@ let _supaInProgress=false,_supaAgain=false;
 async function _flushSave(){
   if(_supaInProgress){_supaAgain=true;return;}
   _supaInProgress=true;_supaAgain=false;
-  _setSaveStatus('⏳ Guardando…','#c8952a');
+  _setSaveStatus('⏳ Guardando en BD…','#c8952a');
   const snap=JSON.parse(JSON.stringify(real));
   try{
     await supaUpsertReal(snap);
-    _setSaveStatus('☁️ Guardado','#1a6b3c');
-    setTimeout(()=>_setSaveStatus('',''),4000);
+    const gc=Object.keys(snap.groups||{}).length;
+    const pc=Object.keys(snap.picks||{}).length;
+    _setSaveStatus('☁️ BD: '+gc+'g/'+pc+'p','#1a6b3c');
+    setTimeout(()=>_setSaveStatus('',''),6000);
   }catch(e){
     console.warn('saveReal:',e);
-    _setSaveStatus('❌ Error al guardar en nube ('+e.message+')','#c53030');
+    _setSaveStatus('❌ Error BD: '+e.message,'#c53030');
   }
   _supaInProgress=false;
   if(_supaAgain)_flushSave();
@@ -669,8 +670,13 @@ async function guardarResultados(){
   const snap=JSON.parse(JSON.stringify(real));
   try{
     await supaUpsertReal(snap);
+    const gc=Object.keys(snap.groups||{}).length;
+    const pc=Object.keys(snap.picks||{}).length;
+    _setSaveStatus('☁️ BD: '+gc+'g/'+pc+'p','#1a6b3c');
+    setTimeout(()=>_setSaveStatus('',''),6000);
     if(btn){btn.textContent='✅ Guardado';btn.style.background='#1a6b3c';setTimeout(()=>{btn.disabled=false;btn.textContent='💾 Guardar';btn.style.background='';},2000);}
   }catch(err){
+    _setSaveStatus('❌ Error BD: '+err.message,'#c53030');
     if(btn){btn.textContent='❌ Error';btn.style.background='#e53e3e';setTimeout(()=>{btn.disabled=false;btn.textContent='💾 Guardar';btn.style.background='';},2500);}
     console.error('guardarResultados:',err);
   }
