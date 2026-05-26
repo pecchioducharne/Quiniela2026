@@ -168,6 +168,7 @@ tr:nth-child(even) td{background:#f7fafc}
     <button class="btn btn-o" style="color:#e53e3e;border-color:#fed7d7" onclick="clearAll()">🗑 Borrar quinielas</button>
     <button class="btn btn-o" style="color:#c8952a;border-color:#fbd38d" onclick="clearRealResults()">🧹 Limpiar resultados reales</button>
     <span class="upd" id="upd"></span>
+    <span id="supa-status" style="font-size:.8rem;font-weight:600;margin-left:8px"></span>
   </div>
   <div id="main"><div class="loading"><span class="spin">⚽</span> Cargando…</div></div>
 </div>
@@ -179,12 +180,26 @@ async function supaGet(){const r=await fetch(`${SUPA_URL}/rest/v1/quinelas?selec
 async function supaDelete(id){const r=await fetch(`${SUPA_URL}/rest/v1/quinelas?id=eq.${id}`,{method:'DELETE',headers:H});if(!r.ok)throw new Error(await r.text());}
 async function supaInsert(name,data){const r=await fetch(`${SUPA_URL}/rest/v1/quinelas`,{method:'POST',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({name,data})});if(!r.ok)throw new Error(await r.text());}
 async function supaUpsertReal(data){
-  const chk=await fetch(`${SUPA_URL}/rest/v1/quinelas?name=eq.__real__&select=id`,{headers:H});
-  const ex=await chk.json();
-  if(ex.length>0){
-    const u=await fetch(`${SUPA_URL}/rest/v1/quinelas?id=eq.${ex[0].id}`,{method:'PATCH',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({data})});
-    if(!u.ok)throw new Error(await u.text());
-  }else{await supaInsert('__real__',data);}
+  let lastErr;
+  for(let attempt=0;attempt<=2;attempt++){
+    if(attempt>0)await new Promise(r=>setTimeout(r,500*attempt));
+    const ac=new AbortController();
+    const tid=setTimeout(()=>ac.abort(),10000);
+    try{
+      const chk=await fetch(`${SUPA_URL}/rest/v1/quinelas?name=eq.__real__&select=id`,{headers:H,signal:ac.signal});
+      const ex=await chk.json();
+      if(ex.length>0){
+        const u=await fetch(`${SUPA_URL}/rest/v1/quinelas?id=eq.${ex[0].id}`,{method:'PATCH',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({data}),signal:ac.signal});
+        if(!u.ok)throw new Error(await u.text());
+      }else{
+        const ins=await fetch(`${SUPA_URL}/rest/v1/quinelas`,{method:'POST',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({name:'__real__',data}),signal:ac.signal});
+        if(!ins.ok)throw new Error(await ins.text());
+      }
+      clearTimeout(tid);
+      return;
+    }catch(e){clearTimeout(tid);lastErr=e;}
+  }
+  throw lastErr;
 }
 
 const GS={
@@ -269,12 +284,26 @@ const SCHEDULE={
 let real={groups:{},thirds:[],picks:{},scores:{},goleador:''};
 try{const rr=localStorage.getItem('qm2026_real');if(rr)real=JSON.parse(rr);}catch(e){}
 
+function _setSaveStatus(msg,color){
+  const el=document.getElementById('supa-status');
+  if(!el)return;
+  el.textContent=msg;
+  el.style.color=color||'';
+}
 let _supaInProgress=false,_supaAgain=false;
 async function _flushSave(){
   if(_supaInProgress){_supaAgain=true;return;}
   _supaInProgress=true;_supaAgain=false;
+  _setSaveStatus('⏳ Guardando…','#c8952a');
   const snap=JSON.parse(JSON.stringify(real));
-  try{await supaUpsertReal(snap);}catch(e){console.warn('saveReal:',e);}
+  try{
+    await supaUpsertReal(snap);
+    _setSaveStatus('☁️ Guardado','#1a6b3c');
+    setTimeout(()=>_setSaveStatus('',''),4000);
+  }catch(e){
+    console.warn('saveReal:',e);
+    _setSaveStatus('❌ Error al guardar en nube ('+e.message+')','#c53030');
+  }
   _supaInProgress=false;
   if(_supaAgain)_flushSave();
 }
