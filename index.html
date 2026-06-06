@@ -19,8 +19,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#1a
 .hero .emo{font-size:3rem;margin-bottom:.75rem}
 .hero h2{font-size:1.6rem;font-weight:800;color:#1a6b3c;margin-bottom:.5rem;letter-spacing:-.02em}
 .hero p{color:#718096;font-size:.9rem;line-height:1.6;max-width:420px;margin:0 auto 1.5rem}
-input[type=text],input[type=tel]{width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;transition:border-color .15s}
-input[type=text]:focus,input[type=tel]:focus{border-color:#1a6b3c}
+input[type=text]{width:100%;padding:11px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;transition:border-color .15s}
+input[type=text]:focus{border-color:#1a6b3c}
 .btn{padding:11px 22px;border-radius:8px;font-size:.875rem;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;gap:6px;justify-content:center}
 .btn-g{background:#1a6b3c;color:#fff}.btn-g:hover{background:#276749}.btn-g:disabled{opacity:.4;cursor:not-allowed}
 .btn-o{background:#fff;color:#4a5568;border:1.5px solid #e2e8f0}.btn-o:hover{border-color:#a0aec0}
@@ -219,7 +219,7 @@ const SCORERS=['Kylian Mbappé (Francia)','Lionel Messi (Argentina)','Erling Haa
 const STEP_LABELS=['Nombre','Fase de Grupos','Mejores Terceros','16avos','8avos','4tos','Semifinal','3°/4° y Final','Goleador'];
 const STEPS=['name','groups','thirds','r16','qf','cf','sf','final','gol'];
 
-let ST={step:0,name:'',phone:'',groups:{},thirds:[],picks:{},scores:{},goleador:''};
+let ST={step:0,name:'',groups:{},thirds:[],picks:{},scores:{},goleador:''};
 Object.keys(GS).forEach(g=>{ST.groups[g]=[null,null,null,null];}); // null = unranked
 const APP=document.getElementById('app');
 
@@ -291,16 +291,14 @@ function navRow(extraDisabled){
 
 // ── NAME ──
 function rName(){
-  const canStart=!!(ST.name&&ST.phone);
+  const canStart=!!(ST.name);
   APP.innerHTML=`<div class="hero"><div class="emo">⚽</div><h2>Quiniela Mundial 2026</h2>
   <p>Predice grupos, terceros y fase eliminatoria partido a partido hasta el campeón y el goleador del torneo.</p></div>
 
-  <div class="card"><div class="card-hdr"><h2>👤 Tus datos</h2></div>
-  <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
-    <input type="text" id="ni" placeholder="Nombre completo" maxlength="30" value="${e(ST.name)}"
-      oninput="ST.name=this.value.trim();document.getElementById('bstart').disabled=!(ST.name&&ST.phone);">
-    <input type="tel" id="pi" placeholder="Número de teléfono" maxlength="20" value="${e(ST.phone)}"
-      oninput="ST.phone=this.value.trim();document.getElementById('bstart').disabled=!(ST.name&&ST.phone);">
+  <div class="card"><div class="card-hdr"><h2>👤 Tu nombre</h2></div>
+  <div class="card-body">
+    <input type="text" id="ni" placeholder="Nombre y Apellido" maxlength="40" value="${e(ST.name)}"
+      oninput="ST.name=this.value.trim();document.getElementById('bstart').disabled=!ST.name;">
   </div></div>
 
   <div class="card"><div class="card-hdr"><h2>📋 Cómo funciona</h2></div><div class="card-body" style="font-size:.83rem;color:#4a5568;line-height:1.7">
@@ -621,7 +619,7 @@ function allResolvablePicked(matches){
 }
 function next(){
   const s=STEPS[ST.step];
-  if(s==='name'&&(!ST.name||!ST.phone))return;
+  if(s==='name'&&!ST.name)return;
   if(s==='groups'){
     const allDone=Object.keys(GS).every(g=>ST.groups[g].every(v=>v!==null));
     if(!allDone){alert('Completa el orden de todos los grupos primero');return;}
@@ -669,7 +667,7 @@ async function save(){
   ov.innerHTML='<div class="saving-box"><span class="spin">⚽</span>Guardando tu quiniela…</div>';
   document.body.appendChild(ov);
   try{
-    const data={name:ST.name,phone:ST.phone,groups:ST.groups,thirds:ST.thirds,picks:ST.picks,scores:ST.scores,goleador:ST.goleador,savedAt:new Date().toISOString()};
+    const data={name:ST.name,groups:ST.groups,thirds:ST.thirds,picks:ST.picks,scores:ST.scores,goleador:ST.goleador,savedAt:new Date().toISOString()};
     await supaInsert(ST.name,data);
     document.body.removeChild(ov);
     rDone();
@@ -694,7 +692,7 @@ function rDone(){
 }
 
 function reset(){
-  ST={step:0,name:'',phone:'',groups:{},thirds:[],picks:{},scores:{},goleador:''};
+  ST={step:0,name:'',groups:{},thirds:[],picks:{},scores:{},goleador:''};
   Object.keys(GS).forEach(g=>{ST.groups[g]=[null,null,null,null];});
   R();
 }
