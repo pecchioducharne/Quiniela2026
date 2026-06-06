@@ -266,21 +266,7 @@ function load(){
 // ── SCORING ──
 function mRes(id,R,q){
   const rw=(R.picks||{})[id],qw=(q.picks||{})[id];
-  if(!rw||!qw||rw.n!==qw.n)return 0;
-  const rs=((R.scores||{})[id])||{},qs=((q.scores||{})[id])||{};
-  const rh=rs.h,ra=rs.a,qh=qs.h,qa=qs.a;
-  if(rh===''||rh===undefined||ra===''||ra===undefined||qh===''||qh===undefined||qa===''||qa===undefined)return 3;
-  if(Number(rh)===Number(qh)&&Number(ra)===Number(qa))return 6;
-  if((Number(rh)-Number(ra))===(Number(qh)-Number(qa)))return 4;
-  return 3;
-}
-function mBono(id,bono,R,q){
-  const rw=(R.picks||{})[id],qw=(q.picks||{})[id];
-  if(!rw||!qw||rw.n!==qw.n)return 0;
-  const rs=((R.scores||{})[id])||{},qs=((q.scores||{})[id])||{};
-  const rh=rs.h,ra=rs.a,qh=qs.h,qa=qs.a;
-  if(rh===''||rh===undefined||ra===''||ra===undefined||qh===''||qh===undefined||qa===''||qa===undefined)return 0;
-  return(Number(rh)===Number(qh)&&Number(ra)===Number(qa))?bono:0;
+  return(rw&&qw&&rw.n===qw.n)?3:0;
 }
 function scoreQ(q){
   const R=real||{groups:{},thirds:[],picks:{},goleador:''};
@@ -300,7 +286,7 @@ function scoreQ(q){
   Object.keys(GS).forEach(g=>{const ord=q.groups&&q.groups[g];if(!ord)return;[0,1].forEach(p=>{if(ord[p]){predQ16.add(ord[p]);predQ16pos[ord[p]]={g,pos:p};}});});
   if(q.thirds)q.thirds.forEach(g=>{const ord=q.groups&&q.groups[g];if(ord&&ord[2]){predQ16.add(ord[2]);predQ16pos[ord[2]]={g,pos:2};}});
   predQ16.forEach(t=>{if(realQ16.has(t)){r16q+=4;const rp=realQ16pos[t],pp=predQ16pos[t];if(rp&&pp&&rp.g===pp.g&&rp.pos===pp.pos)r16q+=2;}});
-  R16_IDS.forEach(id=>{r16b+=mBono(id,2,R,q);r16e+=mRes(id,R,q);});
+  R16_IDS.forEach(id=>{r16e+=mRes(id,R,q);});
 
   // QF (8avos)
   const realTQF={},predTQF={};
@@ -308,7 +294,7 @@ function scoreQ(q){
   R16_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w)predTQF[w.n]=r16ToQF[id];});
   const realQFset=new Set(Object.keys(realTQF)),predQFset=new Set(Object.keys(predTQF));
   predQFset.forEach(t=>{if(realQFset.has(t)){qfq+=4;if(realTQF[t]&&predTQF[t]===realTQF[t])qfb+=1;}});
-  QF_IDS.forEach(id=>{qfb+=mBono(id,2,R,q);qfe+=mRes(id,R,q);});
+  QF_IDS.forEach(id=>{qfe+=mRes(id,R,q);});
 
   // CF (4tos)
   const realTCF={},predTCF={};
@@ -316,7 +302,7 @@ function scoreQ(q){
   QF_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w)predTCF[w.n]=qfToCF[id];});
   const realCFset=new Set(Object.keys(realTCF)),predCFset=new Set(Object.keys(predTCF));
   predCFset.forEach(t=>{if(realCFset.has(t)){cfq+=7;if(realTCF[t]&&predTCF[t]===realTCF[t])cfb+=1;}});
-  CF_IDS.forEach(id=>{cfb+=mBono(id,2,R,q);cfe+=mRes(id,R,q);});
+  CF_IDS.forEach(id=>{cfe+=mRes(id,R,q);});
 
   // SF (Semis)
   const realTSF={},predTSF={};
@@ -324,7 +310,7 @@ function scoreQ(q){
   CF_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w)predTSF[w.n]=cfToSF[id];});
   const realSFset=new Set(Object.keys(realTSF)),predSFset=new Set(Object.keys(predTSF));
   predSFset.forEach(t=>{if(realSFset.has(t)){sfq+=10;if(realTSF[t]&&predTSF[t]===realTSF[t])sfb+=1;}});
-  SF_IDS.forEach(id=>{sfb+=mBono(id,4,R,q);sfe+=mRes(id,R,q);});
+  SF_IDS.forEach(id=>{sfe+=mRes(id,R,q);});
 
   // 3rd/4th place (SF losers)
   const rCF97=R.picks&&R.picks['cf_p97'],rCF98=R.picks&&R.picks['cf_p98'],rSF101=R.picks&&R.picks['sf_p101'];
@@ -339,7 +325,6 @@ function scoreQ(q){
   else if(predTP1&&realTP2&&predTP1.n===realTP2.n){tpq+=8;}
   if(predTP2&&realTP2&&predTP2.n===realTP2.n){tpq+=8;tpb+=1;}
   else if(predTP2&&realTP1&&predTP2.n===realTP1.n){tpq+=8;}
-  tpb+=mBono('p103',4,R,q);
   tpe+=mRes('p103',R,q);
 
   // Final
@@ -348,7 +333,6 @@ function scoreQ(q){
   const predFN=new Set(),predFNS={};
   SF_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w){predFN.add(w.n);predFNS[w.n]=id;}});
   predFN.forEach(t=>{if(realFN.has(t)){fnq+=15;if(realFNS[t]&&predFNS[t]===realFNS[t])fnb+=1;}});
-  fnb+=mBono('p104',10,R,q);
   fne+=mRes('p104',R,q);
 
   // Champion / Runner-up / 3rd place winner bonuses
@@ -431,14 +415,14 @@ function rOverview(){
 function rScores(){
   view='scores';
   const ptsKey=`<div class="pts-key">${[
-    {r:'Partidos',items:['6 pts · ganador + resultado exacto','4 pts · ganador + diferencia de goles','3 pts · ganador']},
-    {r:'16avos',items:['4 pts · equipo clasifica','2 pts · posición exacta','2 pts bono · exacto']},
-    {r:'8avos', items:['4 pts · equipo clasifica','1 pt · llave correcta','2 pts bono · exacto']},
-    {r:'4tos',  items:['7 pts · equipo clasifica','1 pt · llave correcta','2 pts bono · exacto']},
-    {r:'Semis', items:['10 pts · equipo clasifica','1 pt · llave correcta','4 pts bono · exacto']},
-    {r:'3°/4°', items:['8 pts · equipo clasifica','1 pt · llave correcta','4 pts bono · exacto']},
-    {r:'Final', items:['15 pts · finalista','1 pt · llave correcta','10 pts bono · exacto']},
-    {r:'Extras',items:['30 pts · campeón exacto','15 pts · subcampeón exacto','10 pts · 3er lugar exacto','10 pts · goleador exacto']},
+    {r:'Partidos',items:['3 pts · ganador correcto']},
+    {r:'16avos',items:['4 pts · equipo clasifica','2 pts · posición exacta (1°/2°/3°)']},
+    {r:'8avos', items:['4 pts · equipo clasifica','1 pt · llave correcta']},
+    {r:'4tos',  items:['7 pts · equipo clasifica','1 pt · llave correcta']},
+    {r:'Semis', items:['10 pts · equipo clasifica','1 pt · llave correcta']},
+    {r:'3°/4°', items:['8 pts · equipo clasifica','1 pt · llave correcta']},
+    {r:'Final', items:['15 pts · finalista','1 pt · llave correcta']},
+    {r:'Extras',items:['30 pts · campeón','15 pts · subcampeón','10 pts · 3er lugar','10 pts · goleador']},
   ].map(x=>`<div class="pts-key-card"><h4>${x.r}</h4><ul>${x.items.map(i=>`<li><b>✓</b>${i}</li>`).join('')}</ul></div>`).join('')}</div>`;
 
   if(!hasReal()){

@@ -109,10 +109,6 @@ input[type=text]:focus{border-color:#1a6b3c}
 .info-box{background:#ebf8ff;border:1.5px solid #bee3f8;border-radius:8px;padding:10px 14px;font-size:.82rem;color:#2c5282;margin-bottom:1rem}
 @media(max-width:520px){.groups-all{grid-template-columns:1fr 1fr}.thirds-grid{grid-template-columns:1fr 1fr}.scorer-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:360px){.groups-all{grid-template-columns:1fr}}
-.score-inp{width:42px;height:30px;text-align:center;border:1.5px solid #e2e8f0;border-radius:6px;font-size:.9rem;font-weight:700;padding:0 4px;font-family:inherit;outline:none;-moz-appearance:textfield;background:#fff;flex-shrink:0}
-.score-inp::-webkit-outer-spin-button,.score-inp::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.score-inp:focus{border-color:#1a6b3c}
-.tie-msg{font-size:.72rem;color:#c05621;background:#fffaf0;border:1px solid #fbd38d;border-radius:6px;padding:4px 10px;margin:4px 12px 8px;text-align:center}
 .match-sched{font-size:.58rem;color:rgba(255,255,255,.7);font-weight:400;font-style:normal;margin-left:4px}
 .prize-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
 .prize-card{padding:12px 8px;border-radius:10px;border:1.5px solid #e2e8f0;text-align:center}
@@ -219,7 +215,7 @@ const SCORERS=['Kylian Mbappé (Francia)','Lionel Messi (Argentina)','Erling Haa
 const STEP_LABELS=['Nombre','Fase de Grupos','Mejores Terceros','16avos','8avos','4tos','Semifinal','3°/4° y Final','Goleador'];
 const STEPS=['name','groups','thirds','r16','qf','cf','sf','final','gol'];
 
-let ST={step:0,name:'',groups:{},thirds:[],picks:{},scores:{},goleador:''};
+let ST={step:0,name:'',groups:{},thirds:[],picks:{},goleador:''};
 Object.keys(GS).forEach(g=>{ST.groups[g]=[null,null,null,null];}); // null = unranked
 const APP=document.getElementById('app');
 
@@ -310,24 +306,19 @@ function rName(){
 
   <div class="card"><div class="card-hdr"><h2>📌 Sistema de puntos</h2></div><div class="card-body">
   <div class="pts-key">
-    <div class="pts-key-card"><h4>Partidos (3/4/6 pts)</h4><ul>
-      <li><b>6</b> pts · ganador + resultado exacto</li>
-      <li><b>4</b> pts · ganador + diferencia de goles</li>
-      <li><b>3</b> pts · solo ganador correcto</li>
+    <div class="pts-key-card"><h4>Partidos eliminatorios (3 pts)</h4><ul>
+      <li><b>3</b> pts · ganador correcto</li>
     </ul></div>
     <div class="pts-key-card"><h4>Grupos + 16avos</h4><ul>
       <li><b>4</b> pts · equipo clasifica a 16avos</li>
       <li><b>+2</b> pts · posición exacta (1°/2°/3°)</li>
-      <li><b>2</b> pts bono · marcador exacto en 16avos</li>
     </ul></div>
     <div class="pts-key-card"><h4>8avos → Semis</h4><ul>
       <li><b>4</b> pts (8avos) · <b>7</b> pts (4tos) · <b>10</b> pts (Semis) por equipo que clasifica</li>
       <li><b>1</b> pt · llave correcta</li>
-      <li><b>2</b> pts bono 8avos/4tos · <b>4</b> pts bono Semis · marcador exacto</li>
     </ul></div>
     <div class="pts-key-card"><h4>3°/4° + Final + Extras</h4><ul>
-      <li><b>8</b> pts · equipo en 3°/4° · <b>15</b> pts · finalista</li>
-      <li><b>1</b> pt · llave correcta · <b>4/10</b> pts bono exacto</li>
+      <li><b>8</b> pts · equipo en 3°/4° · <b>15</b> pts · finalista · <b>1</b> pt · llave correcta</li>
       <li><b>30</b> pts campeón · <b>15</b> pts subcampeón · <b>10</b> pts 3er lugar · <b>10</b> pts goleador</li>
     </ul></div>
   </div>
@@ -337,17 +328,17 @@ function rName(){
   <div style="overflow-x:auto"><table style="font-size:.78rem;width:100%;border-collapse:collapse">
     <thead><tr style="background:#1a3a5c;color:#fff"><th style="padding:7px 10px;text-align:left">Ronda</th><th style="padding:7px 10px;text-align:center">Clasificados</th><th style="padding:7px 10px;text-align:center">Bono</th><th style="padding:7px 10px;text-align:center">Resultado</th><th style="padding:7px 10px;text-align:center;background:#1a6b3c">Total</th></tr></thead>
     <tbody>
-      <tr><td style="padding:6px 10px">16avos</td><td style="padding:6px 10px;text-align:center">192</td><td style="padding:6px 10px;text-align:center">32</td><td style="padding:6px 10px;text-align:center">96</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#1a6b3c">320</td></tr>
-      <tr style="background:#f7fafc"><td style="padding:6px 10px">8avos</td><td style="padding:6px 10px;text-align:center">64</td><td style="padding:6px 10px;text-align:center">32</td><td style="padding:6px 10px;text-align:center">48</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#1a6b3c">144</td></tr>
-      <tr><td style="padding:6px 10px">4tos</td><td style="padding:6px 10px;text-align:center">56</td><td style="padding:6px 10px;text-align:center">16</td><td style="padding:6px 10px;text-align:center">24</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#1a6b3c">96</td></tr>
-      <tr style="background:#f7fafc"><td style="padding:6px 10px">Semis</td><td style="padding:6px 10px;text-align:center">40</td><td style="padding:6px 10px;text-align:center">12</td><td style="padding:6px 10px;text-align:center">12</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#1a6b3c">64</td></tr>
-      <tr><td style="padding:6px 10px">3°/4°</td><td style="padding:6px 10px;text-align:center">16</td><td style="padding:6px 10px;text-align:center">6</td><td style="padding:6px 10px;text-align:center">6</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#1a6b3c">28</td></tr>
-      <tr style="background:#f7fafc"><td style="padding:6px 10px">Final</td><td style="padding:6px 10px;text-align:center">30</td><td style="padding:6px 10px;text-align:center">12</td><td style="padding:6px 10px;text-align:center">6</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#1a6b3c">48</td></tr>
+      <tr><td style="padding:6px 10px">16avos</td><td style="padding:6px 10px;text-align:center">192</td><td style="padding:6px 10px;text-align:center">0</td><td style="padding:6px 10px;text-align:center">48</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#1a6b3c">240</td></tr>
+      <tr style="background:#f7fafc"><td style="padding:6px 10px">8avos</td><td style="padding:6px 10px;text-align:center">64</td><td style="padding:6px 10px;text-align:center">16</td><td style="padding:6px 10px;text-align:center">24</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#1a6b3c">104</td></tr>
+      <tr><td style="padding:6px 10px">4tos</td><td style="padding:6px 10px;text-align:center">56</td><td style="padding:6px 10px;text-align:center">8</td><td style="padding:6px 10px;text-align:center">12</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#1a6b3c">76</td></tr>
+      <tr style="background:#f7fafc"><td style="padding:6px 10px">Semis</td><td style="padding:6px 10px;text-align:center">40</td><td style="padding:6px 10px;text-align:center">4</td><td style="padding:6px 10px;text-align:center">6</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#1a6b3c">50</td></tr>
+      <tr><td style="padding:6px 10px">3°/4°</td><td style="padding:6px 10px;text-align:center">16</td><td style="padding:6px 10px;text-align:center">2</td><td style="padding:6px 10px;text-align:center">3</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#1a6b3c">21</td></tr>
+      <tr style="background:#f7fafc"><td style="padding:6px 10px">Final</td><td style="padding:6px 10px;text-align:center">30</td><td style="padding:6px 10px;text-align:center">2</td><td style="padding:6px 10px;text-align:center">3</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#1a6b3c">35</td></tr>
       <tr><td style="padding:6px 10px">Campeón</td><td colspan="3" style="padding:6px 10px;text-align:center;color:#718096">—</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#c8952a">30</td></tr>
       <tr style="background:#f7fafc"><td style="padding:6px 10px">Subcampeón</td><td colspan="3" style="padding:6px 10px;text-align:center;color:#718096">—</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#c8952a">15</td></tr>
       <tr><td style="padding:6px 10px">3er Lugar</td><td colspan="3" style="padding:6px 10px;text-align:center;color:#718096">—</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#c8952a">10</td></tr>
       <tr style="background:#f7fafc"><td style="padding:6px 10px">Goleador</td><td colspan="3" style="padding:6px 10px;text-align:center;color:#718096">—</td><td style="padding:6px 10px;text-align:center;font-weight:700;color:#c8952a">10</td></tr>
-      <tr style="background:#1a3a5c;color:#fff"><td style="padding:7px 10px;font-weight:700">TOTAL</td><td style="padding:7px 10px;text-align:center;font-weight:700">463</td><td style="padding:7px 10px;text-align:center;font-weight:700">110</td><td style="padding:7px 10px;text-align:center;font-weight:700">192</td><td style="padding:7px 10px;text-align:center;font-weight:800;font-size:.9rem;background:#c8952a">765</td></tr>
+      <tr style="background:#1a3a5c;color:#fff"><td style="padding:7px 10px;font-weight:700">TOTAL</td><td style="padding:7px 10px;text-align:center;font-weight:700">463</td><td style="padding:7px 10px;text-align:center;font-weight:700">32</td><td style="padding:7px 10px;text-align:center;font-weight:700">96</td><td style="padding:7px 10px;text-align:center;font-weight:800;font-size:.9rem;background:#c8952a">591</td></tr>
     </tbody>
   </table></div>
   </div></div>
@@ -473,32 +464,26 @@ function mCard(m){
   const hw=w&&h&&w.n===h.n,aw=w&&a&&w.n===a.n;
   const ok=!!h&&!!a;
   const sc=SCHEDULE[m.id];
-  const sh=(ST.scores[m.id]||{}).h??'';
-  const sa=(ST.scores[m.id]||{}).a??'';
-  const isTie=sh!==''&&sa!==''&&parseInt(sh)===parseInt(sa);
   return`<div class="match-card${w?' done':''}" id="mc-${m.id}">
   <div class="match-lbl">${m.num}<span>${m.hl} vs ${m.al}${sc?`<em class="match-sched"> · 📅 ${sc.d} ${sc.t} VET</em>`:''}</span></div>
   <div class="match-team${hw?' winner':''}${!h?' pending':''}" onclick="${ok?`pick('${m.id}','h')`:''}">
     <span class="team-flag">${h?h.f:'🏳'}</span>
     <span class="team-name-txt">${h?(e(h.n)+(h._from?` <small style="color:#718096;font-size:.65rem">(${h._from})</small>`:'')):'pendiente…'}</span>
     <span class="win-icon">✓</span>
-    ${ok?`<input class="score-inp" type="number" min="0" max="99" value="${sh}" onclick="event.stopPropagation()" onchange="updateScore('${m.id}','h',this.value)">`:''}
   </div>
   <div class="mdiv"></div>
   <div class="match-team${aw?' winner':''}${!a?' pending':''}" onclick="${ok?`pick('${m.id}','a')`:''}">
     <span class="team-flag">${a?a.f:'🏳'}</span>
     <span class="team-name-txt">${a?(e(a.n)+(a._from?` <small style="color:#718096;font-size:.65rem">(${a._from})</small>`:'')):'pendiente…'}</span>
     <span class="win-icon">✓</span>
-    ${ok?`<input class="score-inp" type="number" min="0" max="99" value="${sa}" onclick="event.stopPropagation()" onchange="updateScore('${m.id}','a',this.value)">`:''}
   </div>
-  ${ok&&isTie&&!w?`<div class="tie-msg">⚽ Empate — toca el equipo que pasa en penales</div>`:''}
   </div>`;
 }
 
 function rMatchRound(title,matches){
   APP.innerHTML=`${nav()}
-  <div class="info-box">⚽ Ingresa el marcador de cada partido y toca el equipo ganador. Si hay empate, toca el equipo que pasa en penales.</div>
-  <div class="round-hdr">${title}<small>ingresa marcador y toca el ganador</small></div>
+  <div class="info-box">👆 Toca el equipo que crees que pasa a la siguiente ronda.</div>
+  <div class="round-hdr">${title}<small>toca el equipo ganador</small></div>
   <div class="match-list">${matches.map(m=>mCard(m)).join('')}</div>
   ${navRow()}`;
 }
@@ -533,25 +518,6 @@ function pick(id,side){
   else if(s==='final')rFinal();
 }
 
-function updateScore(id,side,val){
-  if(!ST.scores[id])ST.scores[id]={h:'',a:''};
-  const n=parseInt(val);
-  ST.scores[id][side]=isNaN(n)?'':n;
-  const sc=ST.scores[id];
-  if(sc.h!==''&&sc.a!==''){
-    const hv=parseInt(sc.h),av=parseInt(sc.a);
-    if(hv>av)pick(id,'h');
-    else if(av>hv)pick(id,'a');
-    else{
-      const s=STEPS[ST.step];
-      if(s==='r16')rMatchRound('16avos de Final',R16);
-      else if(s==='qf')rMatchRound('8avos de Final',QF);
-      else if(s==='cf')rMatchRound('4tos de Final',CF);
-      else if(s==='sf')rSF();
-      else if(s==='final')rFinal();
-    }
-  }
-}
 
 // ── GOLEADOR ──
 function rGol(){
@@ -602,15 +568,7 @@ function pickScorer(n){
 
 
 // ── NAV ──
-function allScoresFilled(matches){
-  return matches.every(m=>{
-    const h=gT(m.hs),a=gT(m.as);
-    if(!h||!a)return true;
-    const sc=ST.scores[m.id]||{};
-    return sc.h!==''&&sc.h!==undefined&&sc.a!==''&&sc.a!==undefined;
-  });
-}
-function allResolvablePicked(matches){
+function allPicked(matches){
   return matches.every(m=>{
     const h=gT(m.hs),a=gT(m.as);
     if(!h||!a)return true;
@@ -625,26 +583,11 @@ function next(){
     if(!allDone){alert('Completa el orden de todos los grupos primero');return;}
   }
   if(s==='thirds'&&ST.thirds.length!==8){alert('Debes elegir exactamente 8 terceros');return;}
-  if(s==='r16'){
-    if(!allScoresFilled(R16)){alert('Debes ingresar el marcador de todos los partidos disponibles');return;}
-    if(!allResolvablePicked(R16)){alert('Hay empates — toca el equipo que pasa en penales');return;}
-  }
-  if(s==='qf'){
-    if(!allScoresFilled(QF)){alert('Debes ingresar el marcador de todos los partidos disponibles');return;}
-    if(!allResolvablePicked(QF)){alert('Hay empates — toca el equipo que pasa en penales');return;}
-  }
-  if(s==='cf'){
-    if(!allScoresFilled(CF)){alert('Debes ingresar el marcador de todos los partidos disponibles');return;}
-    if(!allResolvablePicked(CF)){alert('Hay empates — toca el equipo que pasa en penales');return;}
-  }
-  if(s==='sf'){
-    if(!allScoresFilled(SF)){alert('Debes ingresar el marcador de todos los partidos disponibles');return;}
-    if(!allResolvablePicked(SF)){alert('Hay empates — toca el equipo que pasa en penales');return;}
-  }
-  if(s==='final'){
-    if(!allScoresFilled([THIRD_PLACE,FN])){alert('Debes ingresar el marcador de todos los partidos disponibles');return;}
-    if(!allResolvablePicked([THIRD_PLACE])||!allResolvablePicked([FN])){alert('Hay empates — toca el equipo que pasa en penales');return;}
-  }
+  if(s==='r16'&&!allPicked(R16)){alert('Toca el equipo ganador de cada partido disponible');return;}
+  if(s==='qf'&&!allPicked(QF)){alert('Toca el equipo ganador de cada partido disponible');return;}
+  if(s==='cf'&&!allPicked(CF)){alert('Toca el equipo ganador de cada partido disponible');return;}
+  if(s==='sf'&&!allPicked(SF)){alert('Toca el equipo ganador de cada partido disponible');return;}
+  if(s==='final'&&(!allPicked([THIRD_PLACE])||!allPicked([FN]))){alert('Toca el equipo ganador de cada partido');return;}
   if(s==='gol'){
     const gi=document.getElementById('gi');
     if(gi&&gi.value.trim())ST.goleador=gi.value.trim();
@@ -667,7 +610,7 @@ async function save(){
   ov.innerHTML='<div class="saving-box"><span class="spin">⚽</span>Guardando tu quiniela…</div>';
   document.body.appendChild(ov);
   try{
-    const data={name:ST.name,groups:ST.groups,thirds:ST.thirds,picks:ST.picks,scores:ST.scores,goleador:ST.goleador,savedAt:new Date().toISOString()};
+    const data={name:ST.name,groups:ST.groups,thirds:ST.thirds,picks:ST.picks,goleador:ST.goleador,savedAt:new Date().toISOString()};
     await supaInsert(ST.name,data);
     document.body.removeChild(ov);
     rDone();
@@ -692,7 +635,7 @@ function rDone(){
 }
 
 function reset(){
-  ST={step:0,name:'',groups:{},thirds:[],picks:{},scores:{},goleador:''};
+  ST={step:0,name:'',groups:{},thirds:[],picks:{},goleador:''};
   Object.keys(GS).forEach(g=>{ST.groups[g]=[null,null,null,null];});
   R();
 }
