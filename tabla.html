@@ -466,6 +466,12 @@ function rCompare(){
   return`<tr><td style="padding-left:10px">${['🥇','🥈','🥉'][p]} ${p+1}°</td><td style="background:${rn?'#f0fff4':'#fff'};font-weight:700">${rn?rt.f+' '+e(rn):'—'}</td>
   ${qs.map(q=>{const n=q.groups&&q.groups[g]?q.groups[g][p]:'?';const t=GS[g].teams.find(x=>x.n===n)||{f:'🏳'};const ok=rn&&rn===n;
   return`<td style="${ok?'background:#f0fff4;font-weight:700':''}">${t.f} ${e(n)}${ok?' ✅':''}</td>`;}).join('')}</tr>`;}).join('')}`).join('')}
+  ${[{l:'16AVOS DE FINAL',defs:R16},{l:'8AVOS DE FINAL',defs:QF},{l:'4TOS DE FINAL',defs:CF},{l:'SEMIFINAL',defs:SF},{l:'3° Y 4° LUGAR',defs:[TP]},{l:'GRAN FINAL',defs:[FN]}].map(({l,defs})=>`
+  <tr class="cmp-grp"><td colspan="${nc}">${l}</td></tr>
+  ${defs.map(m=>{const rw=real.picks&&real.picks[m.id];const rt=rw?{f:rw.f,n:rw.n}:null;
+  return`<tr><td style="padding-left:10px;font-size:.72rem">${m.num}</td><td style="background:${rt?'#f0fff4':'#fff'};font-weight:700">${rt?rt.f+' '+e(rt.n):'—'}</td>
+  ${qs.map(q=>{const w=q.picks&&q.picks[m.id];const ok=rw&&w&&rw.n===w.n;
+  return`<td style="${ok?'background:#f0fff4;font-weight:700':''}">${w?w.f+' '+e(w.n):'—'}${ok?' ✅':''}</td>`;}).join('')}</tr>`;}).join('')}`).join('')}
   </tbody></table></div>`;
   document.getElementById('main').innerHTML=h;
 }
