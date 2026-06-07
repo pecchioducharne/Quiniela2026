@@ -235,8 +235,12 @@ function _escribirEliminatoria(ss, participantes, real, ahora) {
 function _filaEliminatoria(p, partidos) {
   const d = p.data || {};
   const picks = d.picks || {};
-  const scorer = d.scorer || '';
-  const cols = partidos.map(m => m.id === 'scorer' ? scorer : (picks[m.id] || ''));
+  const goleador = d.goleador || '';
+  const cols = partidos.map(m => {
+    if (m.id === 'scorer') return goleador;
+    const w = picks[m.id];
+    return w ? `${w.f || ''} ${w.n || ''}`.trim() : '';
+  });
   return [p.name, ...cols];
 }
 
