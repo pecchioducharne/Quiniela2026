@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Quiniela Mundial 2026</title>
+<title>Quiniela Siths Mundial 2026</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#1a202c;min-height:100vh}
@@ -111,6 +111,10 @@ input[type=text]:focus{border-color:#1a6b3c}
 @media(max-width:360px){.groups-all{grid-template-columns:1fr}}
 .match-sched{font-size:.58rem;color:rgba(255,255,255,.7);font-weight:400;font-style:normal;margin-left:4px}
 .prize-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
+.rules-box{display:flex;flex-direction:column;gap:10px}
+.rule-line{display:flex;gap:12px;align-items:flex-start;font-size:.85rem;color:#4a5568;line-height:1.55;padding:10px 12px;background:#f7fafc;border:1px solid #e2e8f0;border-radius:8px}
+.rule-line strong{color:#1a3a5c}
+.rule-emo{font-size:1.3rem;flex-shrink:0;line-height:1.2}
 .prize-card{padding:12px 8px;border-radius:10px;border:1.5px solid #e2e8f0;text-align:center}
 .prize-card.gold{background:linear-gradient(135deg,#fffbf0,#fef9e7);border-color:#d69e2e}
 .prize-card.silver{background:#f8fafc;border-color:#a0aec0}
@@ -126,7 +130,7 @@ input[type=text]:focus{border-color:#1a6b3c}
 </style>
 </head>
 <body>
-<div class="hdr"><span>⚽</span><h1>Quiniela Mundial 2026</h1><span class="hdr-sub" id="hdr-name"></span></div>
+<div class="hdr"><span>⚽</span><h1>Quiniela Siths Mundial 2026</h1><span class="hdr-sub" id="hdr-name"></span></div>
 <div class="wrap" id="app"></div>
 <script>
 // ── SUPABASE ──
@@ -289,7 +293,7 @@ function navRow(extraDisabled){
 // ── NAME ──
 function rName(){
   const canStart=!!(ST.name);
-  APP.innerHTML=`<div class="hero"><div class="emo">⚽</div><h2>Quiniela Mundial 2026</h2>
+  APP.innerHTML=`<div class="hero"><div class="emo">⚽</div><h2>Quiniela Siths Mundial 2026</h2>
   <p>Predice grupos, terceros y fase eliminatoria partido a partido hasta el campeón y el goleador del torneo.</p></div>
 
   <div class="card"><div class="card-hdr"><h2>👤 Tu nombre</h2></div>
@@ -346,11 +350,11 @@ function rName(){
   </table></div>
   </div></div>
 
-  <div class="card"><div class="card-hdr"><h2>🏆 Premios — Quiniela $20 por persona</h2></div><div class="card-body">
-  <div class="prize-grid">
-    <div class="prize-card gold"><div class="prize-pos">🥇</div><div class="prize-pct">70%</div><div class="prize-lbl">1er lugar</div></div>
-    <div class="prize-card silver"><div class="prize-pos">🥈</div><div class="prize-pct">20%</div><div class="prize-lbl">2do lugar</div></div>
-    <div class="prize-card bronze"><div class="prize-pos">🥉</div><div class="prize-pct">10%</div><div class="prize-lbl">3er lugar</div></div>
+  <div class="card"><div class="card-hdr"><h2>🏆 Reglas y premio</h2></div><div class="card-body">
+  <div class="rules-box">
+    <div class="rule-line"><span class="rule-emo">💵</span><div><strong>Buy-in: $25 por persona.</strong> Cada participante envia $25 para entrar a la quiniela.</div></div>
+    <div class="rule-line"><span class="rule-emo">📤</span><div><strong>Como entrar:</strong> envia tu pago de $25 y completa tu quiniela. Tu quiniela cuenta una vez recibido el pago.</div></div>
+    <div class="rule-line"><span class="rule-emo">🥇</span><div><strong>Premio:</strong> al final del torneo, el ganador de la quiniela recibe $25 de cada participante. El que mas puntos acumule se lleva todo el pozo.</div></div>
   </div>
   </div></div>
 
