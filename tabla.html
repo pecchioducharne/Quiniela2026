@@ -159,10 +159,10 @@ tr:nth-child(even) td{background:#f7fafc}
   <div id="main"><div class="loading"><span class="spin">⚽</span> Cargando…</div></div>
 </div>
 <script>
-const SUPA_URL='https://dwqvchnvrdkyeksdebho.supabase.co';
-const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR3cXZjaG52cmRreWVrc2RlYmhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNjY4NTMsImV4cCI6MjA5NDk0Mjg1M30.8HfPAhVeZynKj9uj9c7RyYrSsdoHxHkudG3jYz6A9sE';
+const SUPA_URL='https://ucytxxrriqugmuvitqzk.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjeXR4eHJyaXF1Z211dml0cXprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzAwNDEsImV4cCI6MjA5NjcwNjA0MX0.Ic_wx0b7QKVUcSesS9X9cJ2Bs-o9YZ84e9HPx8YStFk';
 const H={'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'};
-async function supaGet(){const r=await fetch(`${SUPA_URL}/rest/v1/quinelas?select=*&order=created_at.asc`,{headers:H});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function supaGet(){const r=await fetch(`${SUPA_URL}/rest/v1/quinelas_siths?select=*&order=created_at.asc`,{headers:H});if(!r.ok)throw new Error(await r.text());return r.json();}
 
 const GS={
   A:{teams:[{n:'México',f:'🇲🇽'},{n:'Sudáfrica',f:'🇿🇦'},{n:'Corea del Sur',f:'🇰🇷'},{n:'Chequia',f:'🇨🇿'}]},
