@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resultados en Vivo — Mundial 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#1a202c;min-height:100vh}
+.hdr{background:#1a6b3c;color:#fff;padding:0 20px;height:56px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.hdr h1{font-size:1rem;font-weight:700;flex:1}
+.live-dot{width:9px;height:9px;border-radius:50%;background:#fff;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.wrap{max-width:760px;margin:0 auto;padding:1.25rem 1rem 4rem}
+.bar{display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap}
+.btn{padding:8px 16px;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;font-family:inherit;background:#1a6b3c;color:#fff}
+.btn:hover{background:#276749}
+.upd{font-size:.74rem;color:#718096}
+.day-hdr{background:#1a3a5c;color:#fff;border-radius:8px;padding:7px 14px;margin:1.1rem 0 .6rem;font-size:.8rem;font-weight:700;text-transform:capitalize}
+.m{display:flex;align-items:center;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:11px 14px;margin-bottom:7px;gap:8px}
+.m.live{border-color:#1a6b3c;box-shadow:0 0 0 2px rgba(26,107,60,.12)}
+.side{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
+.side.away{flex-direction:row-reverse;text-align:right}
+.flag{font-size:1.15rem;flex-shrink:0}
+.tn{font-size:.85rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tn.win{font-weight:800;color:#1a6b3c}
+.score{font-size:1.05rem;font-weight:800;color:#1a3a5c;min-width:54px;text-align:center;letter-spacing:1px}
+.score .vs{font-size:.72rem;color:#a0aec0;font-weight:600}
+.stat{font-size:.6rem;font-weight:700;text-align:center;min-width:54px;padding:2px 0;border-radius:4px;margin-top:3px}
+.s-ft{background:#edf2f7;color:#718096}
+.s-live{background:#1a6b3c;color:#fff;animation:pulse 1.6s infinite}
+.s-ns{background:#fff;color:#a0aec0;border:1px solid #e2e8f0}
+.scol{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.loading,.err{text-align:center;padding:2.5rem 1rem;color:#718096;font-size:.9rem}
+.err{color:#c53030;background:#fff5f5;border-radius:10px;border:1px solid #fed7d7}
+.note{font-size:.72rem;color:#a0aec0;text-align:center;margin-top:1.5rem;line-height:1.6}
+.spin{display:inline-block;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.sponsor{text-align:center;padding:1rem 1rem .6rem}
+.sponsor div{font-size:.72rem;font-weight:600;color:#718096;letter-spacing:.04em;margin-bottom:.45rem}
+</style>
+</head>
+<body>
+<div class="hdr"><span class="live-dot"></span><h1>Resultados en Vivo — Mundial 2026</h1></div>
+<div class="sponsor"><div>Sponsored by:</div>
+  <a href="https://vellutoverde.com/" target="_blank" rel="noopener"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWuB1-q7C4-a9upp532TfPqCL-GvQxEROaC8-bzqjPC-rYGpyjwzerG_zy&s=10" alt="Velluto Verde" style="height:42px;border-radius:8px"></a>
+</div>
+<div class="wrap">
+  <div class="bar">
+    <button class="btn" onclick="load()">🔄 Actualizar</button>
+    <span class="upd" id="upd">Cargando…</span>
+  </div>
+  <div id="main"><div class="loading"><span class="spin">⚽</span> Cargando partidos…</div></div>
+  <div class="note">Fuente: TheSportsDB · FIFA World Cup (idLeague 4429) · se actualiza cada 60s.<br>FT = finalizado · EN VIVO = en juego · — = aún no comienza.</div>
+</div>
+<script>
+const API='https://www.thesportsdb.com/api/v1/json/123/eventsseason.php?id=4429&s=2026';
+
+// Mapeo nombre TheSportsDB (EN) -> {es, bandera} usando los mismos equipos de la quiniela
+const TEAM={
+  'Mexico':['México','🇲🇽'],'South Africa':['Sudáfrica','🇿🇦'],'South Korea':['Corea del Sur','🇰🇷'],'Czech Republic':['Chequia','🇨🇿'],
+  'Canada':['Canadá','🇨🇦'],'Bosnia-Herzegovina':['Bosnia y Herz.','🇧🇦'],'Bosnia and Herzegovina':['Bosnia y Herz.','🇧🇦'],'Qatar':['Qatar','🇶🇦'],'Switzerland':['Suiza','🇨🇭'],
+  'Brazil':['Brasil','🇧🇷'],'Morocco':['Marruecos','🇲🇦'],'Haiti':['Haití','🇭🇹'],'Scotland':['Escocia','🏴󠁧󠁢󠁳󠁣󠁴󠁿'],
+  'USA':['Estados Unidos','🇺🇸'],'United States':['Estados Unidos','🇺🇸'],'Paraguay':['Paraguay','🇵🇾'],'Australia':['Australia','🇦🇺'],'Turkey':['Turquía','🇹🇷'],'Türkiye':['Turquía','🇹🇷'],
+  'Germany':['Alemania','🇩🇪'],'Curacao':['Curazao','🇨🇼'],'Curaçao':['Curazao','🇨🇼'],'Ivory Coast':['C. de Marfil','🇨🇮'],'Ecuador':['Ecuador','🇪🇨'],
+  'Netherlands':['Países Bajos','🇳🇱'],'Japan':['Japón','🇯🇵'],'Sweden':['Suecia','🇸🇪'],'Tunisia':['Túnez','🇹🇳'],
+  'Belgium':['Bélgica','🇧🇪'],'Iran':['Irán','🇮🇷'],'New Zealand':['Nueva Zelanda','🇳🇿'],'Egypt':['Egipto','🇪🇬'],
+  'Spain':['España','🇪🇸'],'Cape Verde':['Cabo Verde','🇨🇻'],'Saudi Arabia':['Arabia Saudita','🇸🇦'],'Uruguay':['Uruguay','🇺🇾'],
+  'France':['Francia','🇫🇷'],'Senegal':['Senegal','🇸🇳'],'Iraq':['Irak','🇮🇶'],'Norway':['Noruega','🇳🇴'],
+  'Argentina':['Argentina','🇦🇷'],'Algeria':['Argelia','🇩🇿'],'Austria':['Austria','🇦🇹'],'Jordan':['Jordania','🇯🇴'],
+  'Portugal':['Portugal','🇵🇹'],'DR Congo':['R.D. del Congo','🇨🇩'],'Uzbekistan':['Uzbekistán','🇺🇿'],'Colombia':['Colombia','🇨🇴'],
+  'England':['Inglaterra','🏴󠁧󠁢󠁥󠁮󠁧󠁿'],'Croatia':['Croacia','🇭🇷'],'Ghana':['Ghana','🇬🇭'],'Panama':['Panamá','🇵🇦']
+};
+function team(n){const t=TEAM[n];return t?{n:t[0],f:t[1]}:{n:n||'?',f:'🏳'};}
+
+const LIVE=new Set(['1H','2H','HT','ET','P','LIVE','PEN','BT']);
+function isLive(s){return LIVE.has((s||'').toUpperCase());}
+function isFT(s){return ['FT','AET','PEN. ','MATCH FINISHED','FINISHED'].includes((s||'').toUpperCase())|| (s||'').toUpperCase()==='FT';}
+
+function statusChip(s){
+  const u=(s||'').toUpperCase();
+  if(isLive(u))return `<div class="stat s-live">EN VIVO</div>`;
+  if(u==='FT'||u==='AET'||u==='PEN')return `<div class="stat s-ft">${u==='FT'?'FINAL':u}</div>`;
+  return `<div class="stat s-ns">—</div>`;
+}
+
+function fmtDay(iso){
+  if(!iso)return '';
+  // iso = YYYY-MM-DD ; construir label sin Date() dependiente de zona
+  const [y,m,d]=iso.split('-').map(Number);
+  const meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return `${d} de ${meses[m-1]}`;
+}
+
+function row(e){
+  const h=team(e.strHomeTeam),a=team(e.strAwayTeam);
+  const hs=e.intHomeScore,as=e.intAwayScore;
+  const has=hs!=null&&as!=null&&hs!==''&&as!=='';
+  const live=isLive(e.strStatus);
+  const hw=has&&Number(hs)>Number(as),aw=has&&Number(as)>Number(hs);
+  return `<div class="m${live?' live':''}">
+    <div class="side"><span class="flag">${h.f}</span><span class="tn${hw?' win':''}">${h.n}</span></div>
+    <div class="scol">
+      <div class="score">${has?`${hs} <span class="vs"></span> ${as}`:'<span class="vs">vs</span>'}</div>
+      ${statusChip(e.strStatus)}
+    </div>
+    <div class="side away"><span class="flag">${a.f}</span><span class="tn${aw?' win':''}">${a.n}</span></div>
+  </div>`;
+}
+
+async function load(){
+  document.getElementById('upd').textContent='Actualizando…';
+  try{
+    const r=await fetch(API,{cache:'no-store'});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const d=await r.json();
+    const ev=(d.events||[]).slice().sort((a,b)=>(a.dateEvent+(a.strTime||'')).localeCompare(b.dateEvent+(b.strTime||'')));
+    if(!ev.length){document.getElementById('main').innerHTML='<div class="loading">Aún no hay partidos cargados.</div>';return;}
+    let html='',lastDay='';
+    for(const e of ev){
+      if(e.dateEvent!==lastDay){lastDay=e.dateEvent;html+=`<div class="day-hdr">${fmtDay(e.dateEvent)}</div>`;}
+      html+=row(e);
+    }
+    document.getElementById('main').innerHTML=html;
+    const liveN=ev.filter(e=>isLive(e.strStatus)).length;
+    const ftN=ev.filter(e=>(e.strStatus||'').toUpperCase()==='FT').length;
+    document.getElementById('upd').textContent=`${ftN} jugados · ${liveN} en vivo · ${ev.length} total · ${new Date().toLocaleTimeString('es')}`;
+  }catch(err){
+    document.getElementById('main').innerHTML=`<div class="err">No se pudieron cargar los partidos.<br>${err.message}<br><br><button class="btn" onclick="load()">Reintentar</button></div>`;
+    document.getElementById('upd').textContent='Error';
+  }
+}
+load();
+setInterval(load,60000);
+</script>
+</body>
+</html>
