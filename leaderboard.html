@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leaderboard en Vivo — Quiniela Siths Mundial 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#1a202c;min-height:100vh}
+.hdr{background:#1a6b3c;color:#fff;padding:0 20px;height:56px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.hdr h1{font-size:.98rem;font-weight:700;flex:1}
+.live-dot{width:9px;height:9px;border-radius:50%;background:#fff;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.wrap{max-width:720px;margin:0 auto;padding:1.1rem 1rem 4rem}
+.sponsor{text-align:center;padding:.9rem 1rem .4rem}
+.sponsor div{font-size:.72rem;font-weight:600;color:#718096;letter-spacing:.04em;margin-bottom:.4rem}
+.bar{display:flex;align-items:center;gap:10px;margin-bottom:.9rem;flex-wrap:wrap}
+.btn{padding:8px 16px;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;font-family:inherit;background:#1a6b3c;color:#fff}
+.btn:hover{background:#276749}
+.upd{font-size:.74rem;color:#718096}
+.info{background:#ebf8ff;border:1px solid #bee3f8;border-radius:8px;padding:9px 13px;font-size:.78rem;color:#2c5282;margin-bottom:1rem;line-height:1.5}
+.lb{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid #f0f4f8;cursor:pointer;transition:background .12s}
+.row:last-child{border-bottom:none}
+.row:hover{background:#f7fafc}
+.rank{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:800;flex-shrink:0;background:#edf2f7;color:#718096}
+.r1{background:#FFD700;color:#6b4c00}.r2{background:#C0C0C0;color:#333}.r3{background:#CD7F32;color:#fff}
+.who{flex:1;min-width:0}
+.who .nm{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who .sub{font-size:.7rem;color:#a0aec0;margin-top:1px}
+.pts{font-size:1.15rem;font-weight:800;color:#1a3a5c;text-align:right;min-width:50px}
+.pts small{font-size:.62rem;color:#a0aec0;font-weight:600;display:block}
+.det{display:none;padding:10px 14px 14px;background:#f7fafc;border-bottom:1px solid #f0f4f8;font-size:.78rem;color:#4a5568}
+.det.open{display:block}
+.det .gr{display:inline-block;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:3px 8px;margin:3px 4px 0 0;font-size:.72rem}
+.det .ok{color:#1a6b3c;font-weight:700}
+.loading,.err{text-align:center;padding:2.5rem 1rem;color:#718096;font-size:.9rem}
+.err{color:#c53030;background:#fff5f5;border-radius:10px;border:1px solid #fed7d7}
+.spin{display:inline-block;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.note{font-size:.72rem;color:#a0aec0;text-align:center;margin-top:1.4rem;line-height:1.6}
+.links{text-align:center;margin-top:1rem;font-size:.8rem}
+.links a{color:#1a6b3c;text-decoration:none;font-weight:600;margin:0 8px}
+</style>
+</head>
+<body>
+<div class="hdr"><span class="live-dot"></span><h1>Leaderboard en Vivo — Siths 2026</h1></div>
+<div class="sponsor"><div>Sponsored by:</div>
+  <a href="https://vellutoverde.com/" target="_blank" rel="noopener"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWuB1-q7C4-a9upp532TfPqCL-GvQxEROaC8-bzqjPC-rYGpyjwzerG_zy&s=10" alt="Velluto Verde" style="height:40px;border-radius:8px"></a>
+</div>
+<div class="wrap">
+  <div class="bar">
+    <button class="btn" onclick="load()">🔄 Actualizar</button>
+    <span class="upd" id="upd">Cargando…</span>
+  </div>
+  <div class="info">⚡ Puntaje <strong>provisional de fase de grupos</strong>, calculado en vivo con los resultados reales de los partidos jugados. Suma <strong>3 pts</strong> por cada equipo que ubicaste en su posición exacta del grupo (1°/2°/3°/4°), según la tabla real actual. Las posiciones cambian conforme avanzan los partidos.</div>
+  <div id="main"><div class="loading"><span class="spin">⚽</span> Calculando…</div></div>
+  <div class="links">
+    <a href="scores.html">📺 Resultados en vivo</a>
+    <a href="tabla.html">📊 Tabla oficial</a>
+  </div>
+  <div class="note">Predicciones desde tu quiniela · resultados desde TheSportsDB (FIFA World Cup) · se actualiza cada 60s.<br>Este leaderboard es independiente y no modifica la quiniela ni la tabla oficial.</div>
+</div>
+<script>
+// ── SUPABASE (solo lectura, mismo proyecto de la Siths) ──
+const SUPA_URL='https://ucytxxrriqugmuvitqzk.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjeXR4eHJyaXF1Z211dml0cXprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzAwNDEsImV4cCI6MjA5NjcwNjA0MX0.Ic_wx0b7QKVUcSesS9X9cJ2Bs-o9YZ84e9HPx8YStFk';
+const SCORES_API='https://www.thesportsdb.com/api/v1/json/123/eventsseason.php?id=4429&s=2026';
+
+// ── GRUPOS (nombres ES, igual que la quiniela) ──
+const GS={
+  A:[['México','🇲🇽'],['Sudáfrica','🇿🇦'],['Corea del Sur','🇰🇷'],['Chequia','🇨🇿']],
+  B:[['Canadá','🇨🇦'],['Bosnia y Herz.','🇧🇦'],['Qatar','🇶🇦'],['Suiza','🇨🇭']],
+  C:[['Brasil','🇧🇷'],['Marruecos','🇲🇦'],['Haití','🇭🇹'],['Escocia','🏴󠁧󠁢󠁳󠁣󠁴󠁿']],
+  D:[['Estados Unidos','🇺🇸'],['Paraguay','🇵🇾'],['Australia','🇦🇺'],['Turquía','🇹🇷']],
+  E:[['Alemania','🇩🇪'],['Curazao','🇨🇼'],['C. de Marfil','🇨🇮'],['Ecuador','🇪🇨']],
+  F:[['Países Bajos','🇳🇱'],['Japón','🇯🇵'],['Suecia','🇸🇪'],['Túnez','🇹🇳']],
+  G:[['Bélgica','🇧🇪'],['Irán','🇮🇷'],['Nueva Zelanda','🇳🇿'],['Egipto','🇪🇬']],
+  H:[['España','🇪🇸'],['Cabo Verde','🇨🇻'],['Arabia Saudita','🇸🇦'],['Uruguay','🇺🇾']],
+  I:[['Francia','🇫🇷'],['Senegal','🇸🇳'],['Irak','🇮🇶'],['Noruega','🇳🇴']],
+  J:[['Argentina','🇦🇷'],['Argelia','🇩🇿'],['Austria','🇦🇹'],['Jordania','🇯🇴']],
+  K:[['Portugal','🇵🇹'],['R.D. del Congo','🇨🇩'],['Uzbekistán','🇺🇿'],['Colombia','🇨🇴']],
+  L:[['Inglaterra','🏴󠁧󠁢󠁥󠁮󠁧󠁿'],['Croacia','🇭🇷'],['Ghana','🇬🇭'],['Panamá','🇵🇦']]
+};
+// flag lookup + grupo de cada equipo (por nombre ES)
+const FLAG={},GROUP_OF={};
+Object.keys(GS).forEach(g=>GS[g].forEach(([n,f])=>{FLAG[n]=f;GROUP_OF[n]=g;}));
+
+// ── EN (TheSportsDB) -> ES ──
+const EN2ES={
+  'Mexico':'México','South Africa':'Sudáfrica','South Korea':'Corea del Sur','Czech Republic':'Chequia',
+  'Canada':'Canadá','Bosnia-Herzegovina':'Bosnia y Herz.','Bosnia and Herzegovina':'Bosnia y Herz.','Qatar':'Qatar','Switzerland':'Suiza',
+  'Brazil':'Brasil','Morocco':'Marruecos','Haiti':'Haití','Scotland':'Escocia',
+  'USA':'Estados Unidos','United States':'Estados Unidos','Paraguay':'Paraguay','Australia':'Australia','Turkey':'Turquía','Türkiye':'Turquía',
+  'Germany':'Alemania','Curacao':'Curazao','Curaçao':'Curazao','Ivory Coast':'C. de Marfil','Ecuador':'Ecuador',
+  'Netherlands':'Países Bajos','Japan':'Japón','Sweden':'Suecia','Tunisia':'Túnez',
+  'Belgium':'Bélgica','Iran':'Irán','New Zealand':'Nueva Zelanda','Egypt':'Egipto',
+  'Spain':'España','Cape Verde':'Cabo Verde','Saudi Arabia':'Arabia Saudita','Uruguay':'Uruguay',
+  'France':'Francia','Senegal':'Senegal','Iraq':'Irak','Norway':'Noruega',
+  'Argentina':'Argentina','Algeria':'Argelia','Austria':'Austria','Jordan':'Jordania',
+  'Portugal':'Portugal','DR Congo':'R.D. del Congo','Uzbekistan':'Uzbekistán','Colombia':'Colombia',
+  'England':'Inglaterra','Croatia':'Croacia','Ghana':'Ghana','Panama':'Panamá'
+};
+const es=n=>EN2ES[n]||n;
+const FT=s=>['FT','AET','PEN'].includes((s||'').toUpperCase());
+
+// ── Construir tabla real por grupo desde partidos terminados ──
+function buildRealStandings(events){
+  const tbl={}; // g -> {team:{pts,gf,ga,pj}}
+  Object.keys(GS).forEach(g=>{tbl[g]={};GS[g].forEach(([n])=>tbl[g][n]={pts:0,gf:0,ga:0,pj:0});});
+  for(const e of events){
+    if(!FT(e.strStatus))continue;
+    const h=es(e.strHomeTeam),a=es(e.strAwayTeam);
+    const g=GROUP_OF[h];
+    if(!g||GROUP_OF[a]!==g)continue; // solo partidos de fase de grupos dentro del mismo grupo
+    const hs=Number(e.intHomeScore),as=Number(e.intAwayScore);
+    if(Number.isNaN(hs)||Number.isNaN(as))continue;
+    const T=tbl[g];if(!T[h]||!T[a])continue;
+    T[h].pj++;T[a].pj++;T[h].gf+=hs;T[h].ga+=as;T[a].gf+=as;T[a].ga+=hs;
+    if(hs>as){T[h].pts+=3;}else if(as>hs){T[a].pts+=3;}else{T[h].pts++;T[a].pts++;}
+  }
+  // ordenar cada grupo: pts, dif gol, gf
+  const order={},played={};
+  Object.keys(GS).forEach(g=>{
+    const arr=GS[g].map(([n])=>n);
+    arr.sort((x,y)=>{const X=tbl[g][x],Y=tbl[g][y];return (Y.pts-X.pts)||((Y.gf-Y.ga)-(X.gf-X.ga))||(Y.gf-X.gf)||arr.indexOf(x)-arr.indexOf(y);});
+    order[g]=arr;
+    played[g]=arr.some(n=>tbl[g][n].pj>0);
+  });
+  return {order,played,tbl};
+}
+
+// ── Puntuar una quiniela contra la tabla real (solo grupos jugados) ──
+function score(pred,real){
+  let pts=0;const hits=[];
+  Object.keys(GS).forEach(g=>{
+    if(!real.played[g])return; // grupo sin partidos terminados aún no puntua
+    const po=(pred.groups&&pred.groups[g])||[];
+    const ro=real.order[g];
+    for(let i=0;i<4;i++){
+      if(po[i]&&ro[i]&&po[i]===ro[i]){pts+=3;hits.push({g,pos:i+1,team:po[i]});}
+    }
+  });
+  return {pts,hits};
+}
+
+function e(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+async function load(){
+  document.getElementById('upd').textContent='Actualizando…';
+  try{
+    const [qRes,sRes]=await Promise.all([
+      fetch(`${SUPA_URL}/rest/v1/quinelas_siths?select=name,data&name=neq.__real__`,{headers:{apikey:SUPA_KEY,Authorization:'Bearer '+SUPA_KEY},cache:'no-store'}),
+      fetch(SCORES_API,{cache:'no-store'})
+    ]);
+    if(!qRes.ok)throw new Error('Supabase '+qRes.status);
+    if(!sRes.ok)throw new Error('Scores '+sRes.status);
+    const rows=await qRes.json();
+    const events=(await sRes.json()).events||[];
+    const real=buildRealStandings(events);
+    const ftN=events.filter(x=>FT(x.strStatus)).length;
+    const groupsPlayed=Object.keys(GS).filter(g=>real.played[g]).length;
+
+    const board=rows.map(r=>{const s=score(r.data||{},real);return{name:r.name,...s};})
+      .sort((a,b)=>b.pts-a.pts||a.name.localeCompare(b.name));
+
+    if(!board.length){document.getElementById('main').innerHTML='<div class="loading">Aún no hay quinielas registradas.</div>';return;}
+
+    let html='<div class="lb">';
+    board.forEach((b,i)=>{
+      const rk=i+1;const rc=rk===1?'r1':rk===2?'r2':rk===3?'r3':'';
+      const det=b.hits.length?b.hits.map(h=>`<span class="gr">Grupo ${h.g} · ${h.pos}° <span class="ok">${FLAG[h.team]||''} ${e(h.team)}</span></span>`).join(''):'<span style="color:#a0aec0">Sin aciertos de posición todavía.</span>';
+      html+=`<div class="row" onclick="document.getElementById('d${i}').classList.toggle('open')">
+        <div class="rank ${rc}">${rk}</div>
+        <div class="who"><div class="nm">${e(b.name)}</div><div class="sub">${b.hits.length} posicion${b.hits.length===1?'':'es'} exacta${b.hits.length===1?'':'s'}</div></div>
+        <div class="pts">${b.pts}<small>PTS</small></div>
+      </div>
+      <div class="det" id="d${i}">${det}</div>`;
+    });
+    html+='</div>';
+    document.getElementById('main').innerHTML=html;
+    document.getElementById('upd').textContent=`${board.length} quinielas · ${ftN} partidos jugados · ${groupsPlayed}/12 grupos activos · ${new Date().toLocaleTimeString('es')}`;
+  }catch(err){
+    document.getElementById('main').innerHTML=`<div class="err">No se pudo calcular el leaderboard.<br>${e(err.message)}<br><br><button class="btn" onclick="load()">Reintentar</button></div>`;
+    document.getElementById('upd').textContent='Error';
+  }
+}
+load();
+setInterval(load,60000);
+</script>
+</body>
+</html>
