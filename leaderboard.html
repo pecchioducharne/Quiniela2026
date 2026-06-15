@@ -30,10 +30,10 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#1a
 .who .sub{font-size:.7rem;color:#a0aec0;margin-top:1px}
 .pts{font-size:1.15rem;font-weight:800;color:#1a3a5c;text-align:right;min-width:50px}
 .pts small{font-size:.62rem;color:#a0aec0;font-weight:600;display:block}
-.det{display:none;padding:10px 14px 14px;background:#f7fafc;border-bottom:1px solid #f0f4f8;font-size:.78rem;color:#4a5568}
+.det{display:none;padding:10px 14px 14px;background:#f7fafc;border-bottom:1px solid #f0f4f8;font-size:.75rem;color:#4a5568;line-height:1.5}
 .det.open{display:block}
-.det .gr{display:inline-block;background:#fff;border:1px solid #e2e8f0;border-radius:6px;padding:3px 8px;margin:3px 4px 0 0;font-size:.72rem}
-.det .ok{color:#1a6b3c;font-weight:700}
+.det .itm{margin-left:8px;color:#718096}
+.det .ok{color:#1a6b3c;font-weight:600}
 .loading,.err{text-align:center;padding:2.5rem 1rem;color:#718096;font-size:.9rem}
 .err{color:#c53030;background:#fff5f5;border-radius:10px;border:1px solid #fed7d7}
 .spin{display:inline-block;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
@@ -52,7 +52,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#1a
     <button class="btn" onclick="load()">🔄 Actualizar</button>
     <span class="upd" id="upd">Cargando…</span>
   </div>
-  <div class="info">⚡ Puntaje <strong>provisional de fase de grupos</strong>, calculado en vivo con los resultados reales de los partidos jugados. Suma <strong>3 pts</strong> por cada equipo que ubicaste en su posición exacta del grupo (1°/2°/3°/4°), según la tabla real actual. Las posiciones cambian conforme avanzan los partidos.</div>
+  <div class="info">⚡ <strong>Sistema oficial de puntos</strong> (553 pts máx), calculado en vivo desde los resultados reales. Incluye fase de grupos, clasificación a R16/QF/CF/SF/Final, ganadores de partidos, campeón, subcampeón, 3er lugar y goleador. Los puntajes se actualizan conforme avanzan los partidos.</div>
   <div id="main"><div class="loading"><span class="spin">⚽</span> Calculando…</div></div>
   <div class="links">
     <a href="scores.html">📺 Resultados en vivo</a>
@@ -61,88 +61,120 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#1a
   <div class="note">Predicciones desde tu quiniela · resultados desde TheSportsDB (FIFA World Cup) · se actualiza cada 60s.<br>Este leaderboard es independiente y no modifica la quiniela ni la tabla oficial.</div>
 </div>
 <script>
-// ── SUPABASE (solo lectura, mismo proyecto de la Siths) ──
 const SUPA_URL='https://ucytxxrriqugmuvitqzk.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjeXR4eHJyaXF1Z211dml0cXprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzAwNDEsImV4cCI6MjA5NjcwNjA0MX0.Ic_wx0b7QKVUcSesS9X9cJ2Bs-o9YZ84e9HPx8YStFk';
 const SCORES_API='https://www.thesportsdb.com/api/v1/json/123/eventsseason.php?id=4429&s=2026';
 
-// ── GRUPOS (nombres ES, igual que la quiniela) ──
+// ── OFICIAL: estructura de grupos y equipos (copia exacta de tabla.html) ──
 const GS={
-  A:[['México','🇲🇽'],['Sudáfrica','🇿🇦'],['Corea del Sur','🇰🇷'],['Chequia','🇨🇿']],
-  B:[['Canadá','🇨🇦'],['Bosnia y Herz.','🇧🇦'],['Qatar','🇶🇦'],['Suiza','🇨🇭']],
-  C:[['Brasil','🇧🇷'],['Marruecos','🇲🇦'],['Haití','🇭🇹'],['Escocia','🏴󠁧󠁢󠁳󠁣󠁴󠁿']],
-  D:[['Estados Unidos','🇺🇸'],['Paraguay','🇵🇾'],['Australia','🇦🇺'],['Turquía','🇹🇷']],
-  E:[['Alemania','🇩🇪'],['Curazao','🇨🇼'],['C. de Marfil','🇨🇮'],['Ecuador','🇪🇨']],
-  F:[['Países Bajos','🇳🇱'],['Japón','🇯🇵'],['Suecia','🇸🇪'],['Túnez','🇹🇳']],
-  G:[['Bélgica','🇧🇪'],['Irán','🇮🇷'],['Nueva Zelanda','🇳🇿'],['Egipto','🇪🇬']],
-  H:[['España','🇪🇸'],['Cabo Verde','🇨🇻'],['Arabia Saudita','🇸🇦'],['Uruguay','🇺🇾']],
-  I:[['Francia','🇫🇷'],['Senegal','🇸🇳'],['Irak','🇮🇶'],['Noruega','🇳🇴']],
-  J:[['Argentina','🇦🇷'],['Argelia','🇩🇿'],['Austria','🇦🇹'],['Jordania','🇯🇴']],
-  K:[['Portugal','🇵🇹'],['R.D. del Congo','🇨🇩'],['Uzbekistán','🇺🇿'],['Colombia','🇨🇴']],
-  L:[['Inglaterra','🏴󠁧󠁢󠁥󠁮󠁧󠁿'],['Croacia','🇭🇷'],['Ghana','🇬🇭'],['Panamá','🇵🇦']]
+  A:{teams:[{n:'México',f:'🇲🇽'},{n:'Sudáfrica',f:'🇿🇦'},{n:'Corea del Sur',f:'🇰🇷'},{n:'Chequia',f:'🇨🇿'}]},
+  B:{teams:[{n:'Canadá',f:'🇨🇦'},{n:'Bosnia y Herz.',f:'🇧🇦'},{n:'Qatar',f:'🇶🇦'},{n:'Suiza',f:'🇨🇭'}]},
+  C:{teams:[{n:'Brasil',f:'🇧🇷'},{n:'Marruecos',f:'🇲🇦'},{n:'Haití',f:'🇭🇹'},{n:'Escocia',f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿'}]},
+  D:{teams:[{n:'Estados Unidos',f:'🇺🇸'},{n:'Paraguay',f:'🇵🇾'},{n:'Australia',f:'🇦🇺'},{n:'Turquía',f:'🇹🇷'}]},
+  E:{teams:[{n:'Alemania',f:'🇩🇪'},{n:'Curazao',f:'🇨🇼'},{n:'C. de Marfil',f:'🇨🇮'},{n:'Ecuador',f:'🇪🇨'}]},
+  F:{teams:[{n:'Países Bajos',f:'🇳🇱'},{n:'Japón',f:'🇯🇵'},{n:'Suecia',f:'🇸🇪'},{n:'Túnez',f:'🇹🇳'}]},
+  G:{teams:[{n:'Bélgica',f:'🇧🇪'},{n:'Irán',f:'🇮🇷'},{n:'Nueva Zelanda',f:'🇳🇿'},{n:'Egipto',f:'🇪🇬'}]},
+  H:{teams:[{n:'España',f:'🇪🇸'},{n:'Cabo Verde',f:'🇨🇻'},{n:'Arabia Saudita',f:'🇸🇦'},{n:'Uruguay',f:'🇺🇾'}]},
+  I:{teams:[{n:'Francia',f:'🇫🇷'},{n:'Senegal',f:'🇸🇳'},{n:'Irak',f:'🇮🇶'},{n:'Noruega',f:'🇳🇴'}]},
+  J:{teams:[{n:'Argentina',f:'🇦🇷'},{n:'Argelia',f:'🇩🇿'},{n:'Austria',f:'🇦🇹'},{n:'Jordania',f:'🇯🇴'}]},
+  K:{teams:[{n:'Portugal',f:'🇵🇹'},{n:'R.D. del Congo',f:'🇨🇩'},{n:'Uzbekistán',f:'🇺🇿'},{n:'Colombia',f:'🇨🇴'}]},
+  L:{teams:[{n:'Inglaterra',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},{n:'Croacia',f:'🇭🇷'},{n:'Ghana',f:'🇬🇭'},{n:'Panamá',f:'🇵🇦'}]}
 };
-// flag lookup + grupo de cada equipo (por nombre ES)
-const FLAG={},GROUP_OF={};
-Object.keys(GS).forEach(g=>GS[g].forEach(([n,f])=>{FLAG[n]=f;GROUP_OF[n]=g;}));
+const R16_IDS=['p74','p77','p73','p75','p83','p84','p81','p82','p78','p76','p79','p80','p88','p86','p85','p87'];
+const QF_IDS=['qf_p89','qf_p90','qf_p93','qf_p94','qf_p91','qf_p92','qf_p95','qf_p96'];
+const CF_IDS=['cf_p97','cf_p98','cf_p99','cf_p100'];
+const SF_IDS=['sf_p101','sf_p102'];
+const r16ToQF={p74:'qf_p89',p77:'qf_p89',p73:'qf_p90',p75:'qf_p90',p83:'qf_p93',p84:'qf_p93',p81:'qf_p94',p82:'qf_p94',p78:'qf_p91',p76:'qf_p91',p79:'qf_p92',p80:'qf_p92',p88:'qf_p95',p86:'qf_p95',p85:'qf_p96',p87:'qf_p96'};
+const qfToCF={qf_p89:'cf_p97',qf_p90:'cf_p97',qf_p93:'cf_p98',qf_p94:'cf_p98',qf_p91:'cf_p99',qf_p92:'cf_p99',qf_p95:'cf_p100',qf_p96:'cf_p100'};
+const cfToSF={cf_p97:'sf_p101',cf_p98:'sf_p101',cf_p99:'sf_p102',cf_p100:'sf_p102'};
 
-// ── EN (TheSportsDB) -> ES ──
-const EN2ES={
-  'Mexico':'México','South Africa':'Sudáfrica','South Korea':'Corea del Sur','Czech Republic':'Chequia',
-  'Canada':'Canadá','Bosnia-Herzegovina':'Bosnia y Herz.','Bosnia and Herzegovina':'Bosnia y Herz.','Qatar':'Qatar','Switzerland':'Suiza',
-  'Brazil':'Brasil','Morocco':'Marruecos','Haiti':'Haití','Scotland':'Escocia',
-  'USA':'Estados Unidos','United States':'Estados Unidos','Paraguay':'Paraguay','Australia':'Australia','Turkey':'Turquía','Türkiye':'Turquía',
-  'Germany':'Alemania','Curacao':'Curazao','Curaçao':'Curazao','Ivory Coast':'C. de Marfil','Ecuador':'Ecuador',
-  'Netherlands':'Países Bajos','Japan':'Japón','Sweden':'Suecia','Tunisia':'Túnez',
-  'Belgium':'Bélgica','Iran':'Irán','New Zealand':'Nueva Zelanda','Egypt':'Egipto',
-  'Spain':'España','Cape Verde':'Cabo Verde','Saudi Arabia':'Arabia Saudita','Uruguay':'Uruguay',
-  'France':'Francia','Senegal':'Senegal','Iraq':'Irak','Norway':'Noruega',
-  'Argentina':'Argentina','Algeria':'Argelia','Austria':'Austria','Jordan':'Jordania',
-  'Portugal':'Portugal','DR Congo':'R.D. del Congo','Uzbekistan':'Uzbekistán','Colombia':'Colombia',
-  'England':'Inglaterra','Croatia':'Croacia','Ghana':'Ghana','Panama':'Panamá'
-};
+const EN2ES={'Mexico':'México','South Africa':'Sudáfrica','South Korea':'Corea del Sur','Czech Republic':'Chequia','Canada':'Canadá','Bosnia-Herzegovina':'Bosnia y Herz.','Bosnia and Herzegovina':'Bosnia y Herz.','Qatar':'Qatar','Switzerland':'Suiza','Brazil':'Brasil','Morocco':'Marruecos','Haiti':'Haití','Scotland':'Escocia','USA':'Estados Unidos','United States':'Estados Unidos','Paraguay':'Paraguay','Australia':'Australia','Turkey':'Turquía','Türkiye':'Turquía','Germany':'Alemania','Curacao':'Curazao','Curaçao':'Curazao','Ivory Coast':'C. de Marfil','Ecuador':'Ecuador','Netherlands':'Países Bajos','Japan':'Japón','Sweden':'Suecia','Tunisia':'Túnez','Belgium':'Bélgica','Iran':'Irán','New Zealand':'Nueva Zelanda','Egypt':'Egipto','Spain':'España','Cape Verde':'Cabo Verde','Saudi Arabia':'Arabia Saudita','Uruguay':'Uruguay','France':'Francia','Senegal':'Senegal','Iraq':'Irak','Norway':'Noruega','Argentina':'Argentina','Algeria':'Argelia','Austria':'Austria','Jordan':'Jordania','Portugal':'Portugal','DR Congo':'R.D. del Congo','Uzbekistan':'Uzbekistán','Colombia':'Colombia','England':'Inglaterra','Croatia':'Croacia','Ghana':'Ghana','Panama':'Panamá'};
 const es=n=>EN2ES[n]||n;
 const FT=s=>['FT','AET','PEN'].includes((s||'').toUpperCase());
 
-// ── Construir tabla real por grupo desde partidos terminados ──
-function buildRealStandings(events){
-  const tbl={}; // g -> {team:{pts,gf,ga,pj}}
-  Object.keys(GS).forEach(g=>{tbl[g]={};GS[g].forEach(([n])=>tbl[g][n]={pts:0,gf:0,ga:0,pj:0});});
+// ── Construir real={groups,thirds,picks,goleador} desde eventos ──
+function buildRealFromEvents(events){
+  const tbl={};Object.keys(GS).forEach(g=>{tbl[g]={};GS[g].teams.forEach(t=>tbl[g][t.n]={pts:0,gf:0,ga:0,pj:0});});
+  const GROUP_OF={};Object.keys(GS).forEach(g=>GS[g].teams.forEach(t=>GROUP_OF[t.n]=g));
   for(const e of events){
     if(!FT(e.strStatus))continue;
-    const h=es(e.strHomeTeam),a=es(e.strAwayTeam);
-    const g=GROUP_OF[h];
-    if(!g||GROUP_OF[a]!==g)continue; // solo partidos de fase de grupos dentro del mismo grupo
+    const h=es(e.strHomeTeam),a=es(e.strAwayTeam),g=GROUP_OF[h];
+    if(!g||GROUP_OF[a]!==g)continue;
     const hs=Number(e.intHomeScore),as=Number(e.intAwayScore);
     if(Number.isNaN(hs)||Number.isNaN(as))continue;
     const T=tbl[g];if(!T[h]||!T[a])continue;
     T[h].pj++;T[a].pj++;T[h].gf+=hs;T[h].ga+=as;T[a].gf+=as;T[a].ga+=hs;
-    if(hs>as){T[h].pts+=3;}else if(as>hs){T[a].pts+=3;}else{T[h].pts++;T[a].pts++;}
+    if(hs>as)T[h].pts+=3;else if(as>hs)T[a].pts+=3;else{T[h].pts++;T[a].pts++;}
   }
-  // ordenar cada grupo: pts, dif gol, gf
-  const order={},played={};
+  const groups={};
   Object.keys(GS).forEach(g=>{
-    const arr=GS[g].map(([n])=>n);
-    arr.sort((x,y)=>{const X=tbl[g][x],Y=tbl[g][y];return (Y.pts-X.pts)||((Y.gf-Y.ga)-(X.gf-X.ga))||(Y.gf-X.gf)||arr.indexOf(x)-arr.indexOf(y);});
-    order[g]=arr;
-    played[g]=arr.some(n=>tbl[g][n].pj>0);
+    const arr=GS[g].teams.map(t=>t.n);
+    arr.sort((x,y)=>{const X=tbl[g][x],Y=tbl[g][y];return(Y.pts-X.pts)||((Y.gf-Y.ga)-(X.gf-X.ga))||(Y.gf-X.gf)||arr.indexOf(x)-arr.indexOf(y);});
+    groups[g]=arr;
   });
-  return {order,played,tbl};
+  return{groups,thirds:[],picks:{},goleador:''};
 }
 
-// ── Puntuar una quiniela contra la tabla real (solo grupos jugados) ──
-function score(pred,real){
-  let pts=0;const hits=[];
-  Object.keys(GS).forEach(g=>{
-    if(!real.played[g])return; // grupo sin partidos terminados aún no puntua
-    const po=(pred.groups&&pred.groups[g])||[];
-    const ro=real.order[g];
-    for(let i=0;i<4;i++){
-      if(po[i]&&ro[i]&&po[i]===ro[i]){pts+=3;hits.push({g,pos:i+1,team:po[i]});}
-    }
-  });
-  return {pts,hits};
+// ── OFICIAL: scoreQ (copia exacta de tabla.html) ──
+function mRes(id,pts,R,q){const rw=(R.picks||{})[id],qw=(q.picks||{})[id];return(rw&&qw&&rw.n===qw.n)?pts:0;}
+function scoreQ(q){
+  const R=real||{groups:{},thirds:[],picks:{},goleador:''};
+  let r16q=0,r16p=0,r16e=0,qfq=0,qfe=0,cfq=0,cfe=0,sfq=0,sfe=0,tpq=0,tpe=0,fnq=0,fne=0,ter=0,sub=0,cam=0,gol=0;
+  const realQ16=new Set(),realQ16pos={};
+  Object.keys(GS).forEach(g=>{const ord=R.groups&&R.groups[g];if(!ord)return;[0,1].forEach(p=>{if(ord[p]){realQ16.add(ord[p]);realQ16pos[ord[p]]={g,pos:p};}});});
+  if(R.thirds)R.thirds.forEach(g=>{const ord=R.groups&&R.groups[g];if(ord&&ord[2]){realQ16.add(ord[2]);realQ16pos[ord[2]]={g,pos:2};}});
+  const predQ16=new Set(),predQ16pos={};
+  Object.keys(GS).forEach(g=>{const ord=q.groups&&q.groups[g];if(!ord)return;[0,1].forEach(p=>{if(ord[p]){predQ16.add(ord[p]);predQ16pos[ord[p]]={g,pos:p};}});});
+  if(q.thirds)q.thirds.forEach(g=>{const ord=q.groups&&q.groups[g];if(ord&&ord[2]){predQ16.add(ord[2]);predQ16pos[ord[2]]={g,pos:2};}});
+  predQ16.forEach(t=>{if(realQ16.has(t)){r16q+=4;const rp=realQ16pos[t],pp=predQ16pos[t];if(rp&&pp&&rp.g===pp.g&&rp.pos===pp.pos)r16p+=2;}});
+  R16_IDS.forEach(id=>{r16e+=mRes(id,2,R,q);});
+  const realTQF={},predTQF={};
+  R16_IDS.forEach(id=>{const w=R.picks&&R.picks[id];if(w)realTQF[w.n]=r16ToQF[id];});
+  R16_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w)predTQF[w.n]=r16ToQF[id];});
+  const realQFset=new Set(Object.keys(realTQF)),predQFset=new Set(Object.keys(predTQF));
+  predQFset.forEach(t=>{if(realQFset.has(t))qfq+=4;});
+  QF_IDS.forEach(id=>{qfe+=mRes(id,2,R,q);});
+  const realTCF={},predTCF={};
+  QF_IDS.forEach(id=>{const w=R.picks&&R.picks[id];if(w)realTCF[w.n]=qfToCF[id];});
+  QF_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w)predTCF[w.n]=qfToCF[id];});
+  const realCFset=new Set(Object.keys(realTCF)),predCFset=new Set(Object.keys(predTCF));
+  predCFset.forEach(t=>{if(realCFset.has(t))cfq+=7;});
+  CF_IDS.forEach(id=>{cfe+=mRes(id,4,R,q);});
+  const realTSF={},predTSF={};
+  CF_IDS.forEach(id=>{const w=R.picks&&R.picks[id];if(w)realTSF[w.n]=cfToSF[id];});
+  CF_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w)predTSF[w.n]=cfToSF[id];});
+  const realSFset=new Set(Object.keys(realTSF)),predSFset=new Set(Object.keys(predTSF));
+  predSFset.forEach(t=>{if(realSFset.has(t))sfq+=10;});
+  SF_IDS.forEach(id=>{sfe+=mRes(id,5,R,q);});
+  const rCF97=R.picks&&R.picks['cf_p97'],rCF98=R.picks&&R.picks['cf_p98'],rSF101=R.picks&&R.picks['sf_p101'];
+  const rCF99=R.picks&&R.picks['cf_p99'],rCF100=R.picks&&R.picks['cf_p100'],rSF102=R.picks&&R.picks['sf_p102'];
+  const realTP1=rSF101&&rCF97&&rCF98?(rSF101.n===rCF97.n?rCF98:rCF97):null;
+  const realTP2=rSF102&&rCF99&&rCF100?(rSF102.n===rCF99.n?rCF100:rCF99):null;
+  const pCF97=q.picks&&q.picks['cf_p97'],pCF98=q.picks&&q.picks['cf_p98'],pSF101=q.picks&&q.picks['sf_p101'];
+  const pCF99=q.picks&&q.picks['cf_p99'],pCF100=q.picks&&q.picks['cf_p100'],pSF102=q.picks&&q.picks['sf_p102'];
+  const predTP1=pSF101&&pCF97&&pCF98?(pSF101.n===pCF97.n?pCF98:pCF97):null;
+  const predTP2=pSF102&&pCF99&&pCF100?(pSF102.n===pCF99.n?pCF100:pCF99):null;
+  if(predTP1&&realTP1&&predTP1.n===realTP1.n)tpq+=8;else if(predTP1&&realTP2&&predTP1.n===realTP2.n)tpq+=8;
+  if(predTP2&&realTP2&&predTP2.n===realTP2.n)tpq+=8;else if(predTP2&&realTP1&&predTP2.n===realTP1.n)tpq+=8;
+  tpe+=mRes('p103',6,R,q);
+  const realFN=new Set(),realFNS={};
+  SF_IDS.forEach(id=>{const w=R.picks&&R.picks[id];if(w){realFN.add(w.n);realFNS[w.n]=id;}});
+  const predFN=new Set(),predFNS={};
+  SF_IDS.forEach(id=>{const w=q.picks&&q.picks[id];if(w){predFN.add(w.n);predFNS[w.n]=id;}});
+  predFN.forEach(t=>{if(realFN.has(t))fnq+=15;});
+  fne+=mRes('p104',10,R,q);
+  const realChamp=R.picks&&R.picks['p104'],predChamp=q.picks&&q.picks['p104'];
+  if(realChamp&&predChamp&&realChamp.n===predChamp.n)cam=30;
+  const realRU=[...realFN].find(t=>t!==(realChamp&&realChamp.n)),predRU=[...predFN].find(t=>t!==(predChamp&&predChamp.n));
+  if(realRU&&predRU&&realRU===predRU)sub=15;
+  const realThird=R.picks&&R.picks['p103'],predThird=q.picks&&q.picks['p103'];
+  if(realThird&&predThird&&realThird.n===predThird.n)ter=10;
+  if(R.goleador&&q.goleador&&R.goleador.trim().toLowerCase()===q.goleador.trim().toLowerCase())gol=10;
+  const total=r16q+r16p+r16e+qfq+qfe+cfq+cfe+sfq+sfe+tpq+tpe+fnq+fne+ter+sub+cam+gol;
+  return{r16q,r16p,r16e,qfq,qfe,cfq,cfe,sfq,sfe,tpq,tpe,fnq,fne,ter,sub,cam,gol,total};
 }
 
+let real={groups:{},thirds:[],picks:{},goleador:''};
 function e(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 async function load(){
@@ -156,29 +188,35 @@ async function load(){
     if(!sRes.ok)throw new Error('Scores '+sRes.status);
     const rows=await qRes.json();
     const events=(await sRes.json()).events||[];
-    const real=buildRealStandings(events);
-    const ftN=events.filter(x=>FT(x.strStatus)).length;
-    const groupsPlayed=Object.keys(GS).filter(g=>real.played[g]).length;
-
-    const board=rows.map(r=>{const s=score(r.data||{},real);return{name:r.name,...s};})
-      .sort((a,b)=>b.pts-a.pts||a.name.localeCompare(b.name));
-
+    real=buildRealFromEvents(events);
+    const board=rows.map(r=>({name:r.name,...scoreQ(r.data||{})})).sort((a,b)=>b.total-a.total||a.name.localeCompare(b.name));
     if(!board.length){document.getElementById('main').innerHTML='<div class="loading">Aún no hay quinielas registradas.</div>';return;}
-
     let html='<div class="lb">';
     board.forEach((b,i)=>{
-      const rk=i+1;const rc=rk===1?'r1':rk===2?'r2':rk===3?'r3':'';
-      const det=b.hits.length?b.hits.map(h=>`<span class="gr">Grupo ${h.g} · ${h.pos}° <span class="ok">${FLAG[h.team]||''} ${e(h.team)}</span></span>`).join(''):'<span style="color:#a0aec0">Sin aciertos de posición todavía.</span>';
+      const rk=i+1,rc=rk===1?'r1':rk===2?'r2':rk===3?'r3':'';
+      const lines=[];
+      if(b.r16q||b.r16p||b.r16e)lines.push(`R16: ${b.r16q+b.r16p+b.r16e} pts (clasif ${b.r16q}, pos ${b.r16p}, partidos ${b.r16e})`);
+      if(b.qfq||b.qfe)lines.push(`QF: ${b.qfq+b.qfe} pts (clasif ${b.qfq}, partidos ${b.qfe})`);
+      if(b.cfq||b.cfe)lines.push(`CF: ${b.cfq+b.cfe} pts (clasif ${b.cfq}, partidos ${b.cfe})`);
+      if(b.sfq||b.sfe)lines.push(`SF: ${b.sfq+b.sfe} pts (clasif ${b.sfq}, partidos ${b.sfe})`);
+      if(b.tpq||b.tpe)lines.push(`3°: ${b.tpq+b.tpe} pts (clasif ${b.tpq}, partido ${b.tpe})`);
+      if(b.fnq||b.fne)lines.push(`Final: ${b.fnq+b.fne} pts (clasif ${b.fnq}, partido ${b.fne})`);
+      if(b.cam)lines.push(`<span class="ok">Campeón: +${b.cam} pts</span>`);
+      if(b.sub)lines.push(`<span class="ok">Subcampeón: +${b.sub} pts</span>`);
+      if(b.ter)lines.push(`<span class="ok">3er lugar: +${b.ter} pts</span>`);
+      if(b.gol)lines.push(`<span class="ok">Goleador: +${b.gol} pts</span>`);
+      const det=lines.length?lines.map(l=>`<div class="itm">${l}</div>`).join(''):'<div class="itm" style="color:#a0aec0">Sin puntos todavía.</div>';
       html+=`<div class="row" onclick="document.getElementById('d${i}').classList.toggle('open')">
         <div class="rank ${rc}">${rk}</div>
-        <div class="who"><div class="nm">${e(b.name)}</div><div class="sub">${b.hits.length} posicion${b.hits.length===1?'':'es'} exacta${b.hits.length===1?'':'s'}</div></div>
-        <div class="pts">${b.pts}<small>PTS</small></div>
+        <div class="who"><div class="nm">${e(b.name)}</div><div class="sub">de 553 pts máx</div></div>
+        <div class="pts">${b.total}<small>PTS</small></div>
       </div>
       <div class="det" id="d${i}">${det}</div>`;
     });
     html+='</div>';
     document.getElementById('main').innerHTML=html;
-    document.getElementById('upd').textContent=`${board.length} quinielas · ${ftN} partidos jugados · ${groupsPlayed}/12 grupos activos · ${new Date().toLocaleTimeString('es')}`;
+    const ftN=events.filter(x=>FT(x.strStatus)).length;
+    document.getElementById('upd').textContent=`${board.length} quinielas · ${ftN} partidos jugados · ${new Date().toLocaleTimeString('es')}`;
   }catch(err){
     document.getElementById('main').innerHTML=`<div class="err">No se pudo calcular el leaderboard.<br>${e(err.message)}<br><br><button class="btn" onclick="load()">Reintentar</button></div>`;
     document.getElementById('upd').textContent='Error';
