@@ -61,8 +61,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#1a
   <div class="note">Predicciones desde tu quiniela · resultados desde TheSportsDB (FIFA World Cup) · se actualiza cada 60s.<br>Este leaderboard es independiente y no modifica la quiniela ni la tabla oficial.</div>
 </div>
 <script>
-const SUPA_URL='https://dwqvchnvrdkyeksdebho.supabase.co';
-const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR3cXZjaG52cmRreWVrc2RlYmhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNjY4NTMsImV4cCI6MjA5NDk0Mjg1M30.8HfPAhVeZynKj9uj9c7RyYrSsdoHxHkudG3jYz6A9sE';
+const SUPA_URL='https://ucytxxrriqugmuvitqzk.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjeXR4eHJyaXF1Z211dml0cXprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzAwNDEsImV4cCI6MjA5NjcwNjA0MX0.Ic_wx0b7QKVUcSesS9X9cJ2Bs-o9YZ84e9HPx8YStFk';
 const SCORES_API='https://www.thesportsdb.com/api/v1/json/123/eventsseason.php?id=4429&s=2026';
 
 // ── OFICIAL: estructura de grupos y equipos (copia exacta de tabla.html) ──
@@ -181,7 +181,7 @@ async function load(){
   document.getElementById('upd').textContent='Actualizando…';
   try{
     const [qRes,sRes]=await Promise.all([
-      fetch(`${SUPA_URL}/rest/v1/quinelas?select=name,data`,{headers:{apikey:SUPA_KEY,Authorization:'Bearer '+SUPA_KEY},cache:'no-store'}),
+      fetch(`${SUPA_URL}/rest/v1/quinelas_siths?select=name,data`,{headers:{apikey:SUPA_KEY,Authorization:'Bearer '+SUPA_KEY},cache:'no-store'}),
       fetch(SCORES_API,{cache:'no-store'})
     ]);
     if(!qRes.ok)throw new Error('Supabase '+qRes.status);
