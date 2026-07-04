@@ -230,7 +230,7 @@ async function load(){
     });
     html+='</div>';
     document.getElementById('main').innerHTML=html;
-    const ftN=events.filter(x=>FT(x.strStatus)).length;
+    const ftN=events.filter(x=>x.status&&x.status.type&&x.status.type.completed).length;
     document.getElementById('upd').textContent=`${board.length} quinielas · ${ftN} partidos jugados · ${new Date().toLocaleTimeString('es')}`;
   }catch(err){
     document.getElementById('main').innerHTML=`<div class="err">No se pudo calcular el leaderboard.<br>${e(err.message)}<br><br><button class="btn" onclick="load()">Reintentar</button></div>`;
