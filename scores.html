@@ -50,14 +50,14 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#1a
     <span class="upd" id="upd">Cargando…</span>
   </div>
   <div id="main"><div class="loading"><span class="spin">⚽</span> Cargando partidos…</div></div>
-  <div class="note">Fuente: TheSportsDB · FIFA World Cup (idLeague 4429) · se actualiza cada 60s.<br>FT = finalizado · EN VIVO = en juego · — = aún no comienza.</div>
+  <div class="note">Fuente: ESPN API · FIFA World Cup 2026 · se actualiza cada 60s.<br>FT = finalizado · EN VIVO = en juego · — = aún no comienza.</div>
 </div>
 <script>
-const API='https://www.thesportsdb.com/api/v1/json/123/eventsseason.php?id=4429&s=2026';
+const API='http://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=2026&limit=500';
 
-// Mapeo nombre TheSportsDB (EN) -> {es, bandera} usando los mismos equipos de la quiniela
+// Mapeo nombre ESPN (EN) -> {es, bandera} usando los mismos equipos de la quiniela
 const TEAM={
-  'Mexico':['México','🇲🇽'],'South Africa':['Sudáfrica','🇿🇦'],'South Korea':['Corea del Sur','🇰🇷'],'Czech Republic':['Chequia','🇨🇿'],
+  'Mexico':['México','🇲🇽'],'South Africa':['Sudáfrica','🇿🇦'],'South Korea':['Corea del Sur','🇰🇷'],'Czech Republic':['Chequia','🇨🇿'],'Czechia':['Chequia','🇨🇿'],
   'Canada':['Canadá','🇨🇦'],'Bosnia-Herzegovina':['Bosnia y Herz.','🇧🇦'],'Bosnia and Herzegovina':['Bosnia y Herz.','🇧🇦'],'Qatar':['Qatar','🇶🇦'],'Switzerland':['Suiza','🇨🇭'],
   'Brazil':['Brasil','🇧🇷'],'Morocco':['Marruecos','🇲🇦'],'Haiti':['Haití','🇭🇹'],'Scotland':['Escocia','🏴󠁧󠁢󠁳󠁣󠁴󠁿'],
   'USA':['Estados Unidos','🇺🇸'],'United States':['Estados Unidos','🇺🇸'],'Paraguay':['Paraguay','🇵🇾'],'Australia':['Australia','🇦🇺'],'Turkey':['Turquía','🇹🇷'],'Türkiye':['Turquía','🇹🇷'],
@@ -72,36 +72,37 @@ const TEAM={
 };
 function team(n){const t=TEAM[n];return t?{n:t[0],f:t[1]}:{n:n||'?',f:'🏳'};}
 
-const LIVE=new Set(['1H','2H','HT','ET','P','LIVE','PEN','BT']);
-function isLive(s){return LIVE.has((s||'').toUpperCase());}
-function isFT(s){return ['FT','AET','PEN. ','MATCH FINISHED','FINISHED'].includes((s||'').toUpperCase())|| (s||'').toUpperCase()==='FT';}
+function isLive(st){return st&&st.type&&st.type.name==='STATUS_IN_PROGRESS';}
+function isFT(st){return st&&st.type&&st.type.completed;}
 
-function statusChip(s){
-  const u=(s||'').toUpperCase();
-  if(isLive(u))return `<div class="stat s-live">EN VIVO</div>`;
-  if(u==='FT'||u==='AET'||u==='PEN')return `<div class="stat s-ft">${u==='FT'?'FINAL':u}</div>`;
+function statusChip(st){
+  if(isLive(st))return `<div class="stat s-live">EN VIVO</div>`;
+  if(isFT(st))return `<div class="stat s-ft">FINAL</div>`;
   return `<div class="stat s-ns">—</div>`;
 }
 
 function fmtDay(iso){
   if(!iso)return '';
-  // iso = YYYY-MM-DD ; construir label sin Date() dependiente de zona
   const [y,m,d]=iso.split('-').map(Number);
   const meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   return `${d} de ${meses[m-1]}`;
 }
 
 function row(e){
-  const h=team(e.strHomeTeam),a=team(e.strAwayTeam);
-  const hs=e.intHomeScore,as=e.intAwayScore;
+  const comp=(e.competitions||[])[0];if(!comp)return '';
+  const teams=comp.competitors||[];
+  const home=teams.find(t=>t.homeAway==='home')||teams[0]||{};
+  const away=teams.find(t=>t.homeAway==='away')||teams[1]||{};
+  const h=team(home.team?.displayName),a=team(away.team?.displayName);
+  const hs=home.score,as=away.score;
   const has=hs!=null&&as!=null&&hs!==''&&as!=='';
-  const live=isLive(e.strStatus);
+  const live=isLive(e.status);
   const hw=has&&Number(hs)>Number(as),aw=has&&Number(as)>Number(hs);
   return `<div class="m${live?' live':''}">
     <div class="side"><span class="flag">${h.f}</span><span class="tn${hw?' win':''}">${h.n}</span></div>
     <div class="scol">
       <div class="score">${has?`${hs} <span class="vs"></span> ${as}`:'<span class="vs">vs</span>'}</div>
-      ${statusChip(e.strStatus)}
+      ${statusChip(e.status)}
     </div>
     <div class="side away"><span class="flag">${a.f}</span><span class="tn${aw?' win':''}">${a.n}</span></div>
   </div>`;
@@ -113,16 +114,17 @@ async function load(){
     const r=await fetch(API,{cache:'no-store'});
     if(!r.ok)throw new Error('HTTP '+r.status);
     const d=await r.json();
-    const ev=(d.events||[]).slice().sort((a,b)=>(a.dateEvent+(a.strTime||'')).localeCompare(b.dateEvent+(b.strTime||'')));
+    const ev=(d.events||[]).slice().sort((a,b)=>(a.date||'').localeCompare(b.date||''));
     if(!ev.length){document.getElementById('main').innerHTML='<div class="loading">Aún no hay partidos cargados.</div>';return;}
     let html='',lastDay='';
     for(const e of ev){
-      if(e.dateEvent!==lastDay){lastDay=e.dateEvent;html+=`<div class="day-hdr">${fmtDay(e.dateEvent)}</div>`;}
+      const day=(e.date||'').split('T')[0];
+      if(day!==lastDay){lastDay=day;html+=`<div class="day-hdr">${fmtDay(day)}</div>`;}
       html+=row(e);
     }
     document.getElementById('main').innerHTML=html;
-    const liveN=ev.filter(e=>isLive(e.strStatus)).length;
-    const ftN=ev.filter(e=>(e.strStatus||'').toUpperCase()==='FT').length;
+    const liveN=ev.filter(e=>isLive(e.status)).length;
+    const ftN=ev.filter(e=>isFT(e.status)).length;
     document.getElementById('upd').textContent=`${ftN} jugados · ${liveN} en vivo · ${ev.length} total · ${new Date().toLocaleTimeString('es')}`;
   }catch(err){
     document.getElementById('main').innerHTML=`<div class="err">No se pudieron cargar los partidos.<br>${err.message}<br><br><button class="btn" onclick="load()">Reintentar</button></div>`;

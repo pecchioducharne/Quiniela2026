@@ -58,12 +58,12 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f4f8;color:#1a
     <a href="scores.html">📺 Resultados en vivo</a>
     <a href="tabla.html">📊 Tabla oficial</a>
   </div>
-  <div class="note">Predicciones desde tu quiniela · resultados desde TheSportsDB (FIFA World Cup) · se actualiza cada 60s.<br>Este leaderboard es independiente y no modifica la quiniela ni la tabla oficial.</div>
+  <div class="note">Predicciones desde tu quiniela · resultados en tiempo real desde ESPN API · se actualiza cada 60s.<br>Este leaderboard es independiente y no modifica la quiniela ni la tabla oficial.</div>
 </div>
 <script>
 const SUPA_URL='https://ucytxxrriqugmuvitqzk.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjeXR4eHJyaXF1Z211dml0cXprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzAwNDEsImV4cCI6MjA5NjcwNjA0MX0.Ic_wx0b7QKVUcSesS9X9cJ2Bs-o9YZ84e9HPx8YStFk';
-const SCORES_API='https://www.thesportsdb.com/api/v1/json/123/eventsseason.php?id=4429&s=2026';
+const SCORES_API='http://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=2026&limit=500';
 
 // ── OFICIAL: estructura de grupos y equipos (copia exacta de tabla.html) ──
 const GS={
@@ -88,19 +88,22 @@ const r16ToQF={p74:'qf_p89',p77:'qf_p89',p73:'qf_p90',p75:'qf_p90',p83:'qf_p93',
 const qfToCF={qf_p89:'cf_p97',qf_p90:'cf_p97',qf_p93:'cf_p98',qf_p94:'cf_p98',qf_p91:'cf_p99',qf_p92:'cf_p99',qf_p95:'cf_p100',qf_p96:'cf_p100'};
 const cfToSF={cf_p97:'sf_p101',cf_p98:'sf_p101',cf_p99:'sf_p102',cf_p100:'sf_p102'};
 
-const EN2ES={'Mexico':'México','South Africa':'Sudáfrica','South Korea':'Corea del Sur','Czech Republic':'Chequia','Canada':'Canadá','Bosnia-Herzegovina':'Bosnia y Herz.','Bosnia and Herzegovina':'Bosnia y Herz.','Qatar':'Qatar','Switzerland':'Suiza','Brazil':'Brasil','Morocco':'Marruecos','Haiti':'Haití','Scotland':'Escocia','USA':'Estados Unidos','United States':'Estados Unidos','Paraguay':'Paraguay','Australia':'Australia','Turkey':'Turquía','Türkiye':'Turquía','Germany':'Alemania','Curacao':'Curazao','Curaçao':'Curazao','Ivory Coast':'C. de Marfil','Ecuador':'Ecuador','Netherlands':'Países Bajos','Japan':'Japón','Sweden':'Suecia','Tunisia':'Túnez','Belgium':'Bélgica','Iran':'Irán','New Zealand':'Nueva Zelanda','Egypt':'Egipto','Spain':'España','Cape Verde':'Cabo Verde','Saudi Arabia':'Arabia Saudita','Uruguay':'Uruguay','France':'Francia','Senegal':'Senegal','Iraq':'Irak','Norway':'Noruega','Argentina':'Argentina','Algeria':'Argelia','Austria':'Austria','Jordan':'Jordania','Portugal':'Portugal','DR Congo':'R.D. del Congo','Uzbekistan':'Uzbekistán','Colombia':'Colombia','England':'Inglaterra','Croatia':'Croacia','Ghana':'Ghana','Panama':'Panamá'};
+const EN2ES={'Mexico':'México','South Africa':'Sudáfrica','South Korea':'Corea del Sur','Czech Republic':'Chequia','Czechia':'Chequia','Canada':'Canadá','Bosnia-Herzegovina':'Bosnia y Herz.','Bosnia and Herzegovina':'Bosnia y Herz.','Qatar':'Qatar','Switzerland':'Suiza','Brazil':'Brasil','Morocco':'Marruecos','Haiti':'Haití','Scotland':'Escocia','USA':'Estados Unidos','United States':'Estados Unidos','Paraguay':'Paraguay','Australia':'Australia','Turkey':'Turquía','Türkiye':'Turquía','Germany':'Alemania','Curacao':'Curazao','Curaçao':'Curazao','Ivory Coast':'C. de Marfil','Ecuador':'Ecuador','Netherlands':'Países Bajos','Japan':'Japón','Sweden':'Suecia','Tunisia':'Túnez','Belgium':'Bélgica','Iran':'Irán','New Zealand':'Nueva Zelanda','Egypt':'Egipto','Spain':'España','Cape Verde':'Cabo Verde','Saudi Arabia':'Arabia Saudita','Uruguay':'Uruguay','France':'Francia','Senegal':'Senegal','Iraq':'Irak','Norway':'Noruega','Argentina':'Argentina','Algeria':'Argelia','Austria':'Austria','Jordan':'Jordania','Portugal':'Portugal','DR Congo':'R.D. del Congo','Uzbekistan':'Uzbekistán','Colombia':'Colombia','England':'Inglaterra','Croatia':'Croacia','Ghana':'Ghana','Panama':'Panamá'};
 const es=n=>EN2ES[n]||n;
-const FT=s=>['FT','AET','PEN'].includes((s||'').toUpperCase());
 
-// ── Construir real={groups,thirds,picks,goleador} desde eventos ──
+// ── Construir real={groups,thirds,picks,goleador} desde eventos ESPN ──
 function buildRealFromEvents(events){
   const tbl={};Object.keys(GS).forEach(g=>{tbl[g]={};GS[g].teams.forEach(t=>tbl[g][t.n]={pts:0,gf:0,ga:0,pj:0});});
   const GROUP_OF={};Object.keys(GS).forEach(g=>GS[g].teams.forEach(t=>GROUP_OF[t.n]=g));
   for(const e of events){
-    if(!FT(e.strStatus))continue;
-    const h=es(e.strHomeTeam),a=es(e.strAwayTeam),g=GROUP_OF[h];
+    if(!e.status||!e.status.type||!e.status.type.completed)continue;
+    const comp=(e.competitions||[])[0];if(!comp)continue;
+    const teams=comp.competitors||[];if(teams.length<2)continue;
+    const home=teams.find(t=>t.homeAway==='home')||teams[0];
+    const away=teams.find(t=>t.homeAway==='away')||teams[1];
+    const h=es(home.team.displayName),a=es(away.team.displayName),g=GROUP_OF[h];
     if(!g||GROUP_OF[a]!==g)continue;
-    const hs=Number(e.intHomeScore),as=Number(e.intAwayScore);
+    const hs=Number(home.score),as=Number(away.score);
     if(Number.isNaN(hs)||Number.isNaN(as))continue;
     const T=tbl[g];if(!T[h]||!T[a])continue;
     T[h].pj++;T[a].pj++;T[h].gf+=hs;T[h].ga+=as;T[a].gf+=as;T[a].ga+=hs;
