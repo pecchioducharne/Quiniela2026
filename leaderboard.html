@@ -88,26 +88,58 @@ const r16ToQF={p74:'qf_p89',p77:'qf_p89',p73:'qf_p90',p75:'qf_p90',p83:'qf_p93',
 const qfToCF={qf_p89:'cf_p97',qf_p90:'cf_p97',qf_p93:'cf_p98',qf_p94:'cf_p98',qf_p91:'cf_p99',qf_p92:'cf_p99',qf_p95:'cf_p100',qf_p96:'cf_p100'};
 const cfToSF={cf_p97:'sf_p101',cf_p98:'sf_p101',cf_p99:'sf_p102',cf_p100:'sf_p102'};
 
-const EN2ES={'Mexico':'México','South Africa':'Sudáfrica','South Korea':'Corea del Sur','Czech Republic':'Chequia','Czechia':'Chequia','Canada':'Canadá','Bosnia-Herzegovina':'Bosnia y Herz.','Bosnia and Herzegovina':'Bosnia y Herz.','Qatar':'Qatar','Switzerland':'Suiza','Brazil':'Brasil','Morocco':'Marruecos','Haiti':'Haití','Scotland':'Escocia','USA':'Estados Unidos','United States':'Estados Unidos','Paraguay':'Paraguay','Australia':'Australia','Turkey':'Turquía','Türkiye':'Turquía','Germany':'Alemania','Curacao':'Curazao','Curaçao':'Curazao','Ivory Coast':'C. de Marfil','Ecuador':'Ecuador','Netherlands':'Países Bajos','Japan':'Japón','Sweden':'Suecia','Tunisia':'Túnez','Belgium':'Bélgica','Iran':'Irán','New Zealand':'Nueva Zelanda','Egypt':'Egipto','Spain':'España','Cape Verde':'Cabo Verde','Saudi Arabia':'Arabia Saudita','Uruguay':'Uruguay','France':'Francia','Senegal':'Senegal','Iraq':'Irak','Norway':'Noruega','Argentina':'Argentina','Algeria':'Argelia','Austria':'Austria','Jordan':'Jordania','Portugal':'Portugal','DR Congo':'R.D. del Congo','Uzbekistan':'Uzbekistán','Colombia':'Colombia','England':'Inglaterra','Croatia':'Croacia','Ghana':'Ghana','Panama':'Panamá'};
+const EN2ES={'Mexico':'México','South Africa':'Sudáfrica','South Korea':'Corea del Sur','Czech Republic':'Chequia','Czechia':'Chequia','Canada':'Canadá','Bosnia-Herzegovina':'Bosnia y Herz.','Bosnia and Herzegovina':'Bosnia y Herz.','Qatar':'Qatar','Switzerland':'Suiza','Brazil':'Brasil','Morocco':'Marruecos','Haiti':'Haití','Scotland':'Escocia','USA':'Estados Unidos','United States':'Estados Unidos','Paraguay':'Paraguay','Australia':'Australia','Turkey':'Turquía','Türkiye':'Turquía','Germany':'Alemania','Curacao':'Curazao','Curaçao':'Curazao','Ivory Coast':'C. de Marfil','Ecuador':'Ecuador','Netherlands':'Países Bajos','Japan':'Japón','Sweden':'Suecia','Tunisia':'Túnez','Belgium':'Bélgica','Iran':'Irán','New Zealand':'Nueva Zelanda','Egypt':'Egipto','Spain':'España','Cape Verde':'Cabo Verde','Saudi Arabia':'Arabia Saudita','Uruguay':'Uruguay','France':'Francia','Senegal':'Senegal','Iraq':'Irak','Norway':'Noruega','Argentina':'Argentina','Algeria':'Argelia','Austria':'Austria','Jordan':'Jordania','Portugal':'Portugal','DR Congo':'R.D. del Congo','Congo DR':'R.D. del Congo','Uzbekistan':'Uzbekistán','Colombia':'Colombia','England':'Inglaterra','Croatia':'Croacia','Ghana':'Ghana','Panama':'Panamá'};
 const es=n=>EN2ES[n]||n;
 
-// ── Construir real={groups,thirds,picks,goleador} desde eventos ESPN ──
+// Home team (por posicion de grupo) de cada partido de R16 (round-of-32 en ESPN)
+const R16_HOME={p74:['E',0],p77:['I',0],p73:['A',1],p75:['F',0],p83:['K',1],p84:['H',0],p81:['D',0],p82:['G',0],p78:['E',1],p76:['C',0],p79:['A',0],p80:['L',0],p88:['D',1],p86:['J',0],p85:['B',0],p87:['K',0]};
+// Que dos partidos previos alimentan cada partido de la siguiente ronda
+const QF_FEED={qf_p89:['p74','p77'],qf_p90:['p73','p75'],qf_p93:['p83','p84'],qf_p94:['p81','p82'],qf_p91:['p78','p76'],qf_p92:['p79','p80'],qf_p95:['p88','p86'],qf_p96:['p85','p87']};
+const CF_FEED={cf_p97:['qf_p89','qf_p90'],cf_p98:['qf_p93','qf_p94'],cf_p99:['qf_p91','qf_p92'],cf_p100:['qf_p95','qf_p96']};
+const SF_FEED={sf_p101:['cf_p97','cf_p98'],sf_p102:['cf_p99','cf_p100']};
+
+// ── ESPN helpers ──
+function evStage(e){return (e.season&&e.season.slug)||'';}
+function evDone(e){return !!(e.status&&e.status.type&&e.status.type.completed);}
+function evTeams(e){
+  const c=(e.competitions||[])[0];if(!c)return null;
+  const ts=c.competitors||[];if(ts.length<2)return null;
+  const home=ts.find(t=>t.homeAway==='home')||ts[0];
+  const away=ts.find(t=>t.homeAway==='away')||ts[1];
+  const hn=es(home.team&&home.team.displayName),an=es(away.team&&away.team.displayName);
+  const hs=Number(home.score),as=Number(away.score);
+  const note=(c.notes&&c.notes[0]&&c.notes[0].headline)||'';
+  return {hn,an,hs,as,note,set:new Set([hn,an])};
+}
+// Ganador de un partido de eliminatoria (respeta penales via nota "X advance ... on penalties")
+function evWinner(t){
+  if(!t)return null;
+  const nl=t.note.toLowerCase();
+  if(nl.includes('advance')||nl.includes('penalt')){
+    // el equipo nombrado en la nota es el que avanza
+    for(const team of [t.hn,t.an]){
+      const ens=Object.keys(EN2ES).filter(k=>EN2ES[k]===team);
+      if(t.note.includes(team)||ens.some(en=>t.note.includes(en)))return team;
+    }
+  }
+  if(Number.isNaN(t.hs)||Number.isNaN(t.as))return null;
+  if(t.hs>t.as)return t.hn;if(t.as>t.hs)return t.an;return null;
+}
+
+// ── Construir TODO el "real" (grupos, thirds y ganadores de eliminatorias) desde ESPN ──
+// Cero intervencion manual: si ESPN tiene el resultado, aca aparece.
 function buildRealFromEvents(events){
+  // 1) Tabla de grupos
   const tbl={};Object.keys(GS).forEach(g=>{tbl[g]={};GS[g].teams.forEach(t=>tbl[g][t.n]={pts:0,gf:0,ga:0,pj:0});});
   const GROUP_OF={};Object.keys(GS).forEach(g=>GS[g].teams.forEach(t=>GROUP_OF[t.n]=g));
   for(const e of events){
-    if(!e.status||!e.status.type||!e.status.type.completed)continue;
-    const comp=(e.competitions||[])[0];if(!comp)continue;
-    const teams=comp.competitors||[];if(teams.length<2)continue;
-    const home=teams.find(t=>t.homeAway==='home')||teams[0];
-    const away=teams.find(t=>t.homeAway==='away')||teams[1];
-    const h=es(home.team.displayName),a=es(away.team.displayName),g=GROUP_OF[h];
-    if(!g||GROUP_OF[a]!==g)continue;
-    const hs=Number(home.score),as=Number(away.score);
-    if(Number.isNaN(hs)||Number.isNaN(as))continue;
-    const T=tbl[g];if(!T[h]||!T[a])continue;
-    T[h].pj++;T[a].pj++;T[h].gf+=hs;T[h].ga+=as;T[a].gf+=as;T[a].ga+=hs;
-    if(hs>as)T[h].pts+=3;else if(as>hs)T[a].pts+=3;else{T[h].pts++;T[a].pts++;}
+    if(evStage(e)!=='group-stage'||!evDone(e))continue;
+    const t=evTeams(e);if(!t)continue;
+    const g=GROUP_OF[t.hn];if(!g||GROUP_OF[t.an]!==g)continue;
+    if(Number.isNaN(t.hs)||Number.isNaN(t.as))continue;
+    const T=tbl[g];if(!T[t.hn]||!T[t.an])continue;
+    T[t.hn].pj++;T[t.an].pj++;T[t.hn].gf+=t.hs;T[t.hn].ga+=t.as;T[t.an].gf+=t.as;T[t.an].ga+=t.hs;
+    if(t.hs>t.as)T[t.hn].pts+=3;else if(t.as>t.hs)T[t.an].pts+=3;else{T[t.hn].pts++;T[t.an].pts++;}
   }
   const groups={};
   Object.keys(GS).forEach(g=>{
@@ -115,8 +147,52 @@ function buildRealFromEvents(events){
     arr.sort((x,y)=>{const X=tbl[g][x],Y=tbl[g][y];return(Y.pts-X.pts)||((Y.gf-Y.ga)-(X.gf-X.ga))||(Y.gf-X.gf)||arr.indexOf(x)-arr.indexOf(y);});
     groups[g]=arr;
   });
-  return{groups,thirds:[],picks:{},goleador:''};
+
+  // 2) Partidos de eliminatoria por ronda (ESPN slug -> lista de {teams,winner})
+  const byStage={};
+  for(const e of events){
+    const st=evStage(e);if(st==='group-stage'||!st)continue;
+    if(!evDone(e))continue;
+    const t=evTeams(e);if(!t)continue;
+    (byStage[st]=byStage[st]||[]).push({set:t.set,w:evWinner(t)});
+  }
+  const findMatch=(stage,teams)=>{
+    const list=byStage[stage]||[];
+    // buscar el partido que contenga cualquiera de los equipos esperados
+    return list.find(m=>teams.some(tm=>tm&&m.set.has(tm)))||null;
+  };
+
+  const picks={};
+  // 3) R16 (round-of-32): home team por posicion de grupo
+  Object.keys(R16_HOME).forEach(pid=>{
+    const [g,pos]=R16_HOME[pid];const home=groups[g]&&groups[g][pos];if(!home)return;
+    const m=findMatch('round-of-32',[home]);
+    if(m&&m.w)picks[pid]={n:m.w,f:flagOf(m.w)};
+  });
+  // 4) thirds que avanzaron (aparecen en round-of-32)
+  const r32teams=new Set();(byStage['round-of-32']||[]).forEach(m=>m.set.forEach(x=>r32teams.add(x)));
+  const thirds=Object.keys(GS).filter(g=>groups[g]&&groups[g][2]&&r32teams.has(groups[g][2]));
+  // 5) QF (round-of-16), CF (quarterfinals), SF (semifinals)
+  const resolveRound=(feed,stage)=>{
+    Object.keys(feed).forEach(id=>{
+      const [a,b]=feed[id];const wa=picks[a]&&picks[a].n,wb=picks[b]&&picks[b].n;
+      const m=findMatch(stage,[wa,wb]);
+      if(m&&m.w)picks[id]={n:m.w,f:flagOf(m.w)};
+    });
+  };
+  resolveRound(QF_FEED,'round-of-16');
+  resolveRound(CF_FEED,'quarterfinals');
+  resolveRound(SF_FEED,'semifinals');
+  // 6) Final (p104 campeon) y 3er lugar (p103)
+  const finalTeams=[picks['sf_p101']&&picks['sf_p101'].n,picks['sf_p102']&&picks['sf_p102'].n];
+  const fm=findMatch('final',finalTeams);
+  if(fm&&fm.w)picks['p104']={n:fm.w,f:flagOf(fm.w)};
+  const tm=findMatch('3rd-place-match',[]);
+  if(tm&&tm.w)picks['p103']={n:tm.w,f:flagOf(tm.w)};
+
+  return{groups,thirds,picks,goleador:''};
 }
+function flagOf(name){for(const g of Object.keys(GS)){const t=GS[g].teams.find(x=>x.n===name);if(t)return t.f;}return '🏳';}
 
 // ── OFICIAL: scoreQ (copia exacta de tabla.html) ──
 function mRes(id,pts,R,q){const rw=(R.picks||{})[id],qw=(q.picks||{})[id];return(rw&&qw&&rw.n===qw.n)?pts:0;}
@@ -193,15 +269,15 @@ async function load(){
     const allRows=await qRes.json();
     const realRow=allRows.find(r=>r.name==='__real__');
     const rows=allRows.filter(r=>r.name!=='__real__');
-    // Fuente de verdad: los resultados oficiales cargados en admin (__real__),
-    // igual que tabla.html. TheSportsDB solo completa los grupos que el admin
-    // aun no haya cargado, para que el leaderboard refleje los ultimos scores.
+    // Fuente de verdad: ESPN, en tiempo real y sin intervencion manual.
+    // Grupos, thirds y ganadores de eliminatorias se resuelven solos desde ESPN.
+    // El goleador (unico dato que ESPN no da directo) se toma del __real__ si el admin lo cargo.
     const fromEvents=buildRealFromEvents(events);
     const rd=(realRow&&realRow.data)||{};
     real={
-      groups:{...fromEvents.groups,...(rd.groups||{})},
-      thirds:rd.thirds||[],
-      picks:rd.picks||{},
+      groups:fromEvents.groups,
+      thirds:fromEvents.thirds,
+      picks:fromEvents.picks,
       goleador:rd.goleador||''
     };
     const board=rows.map(r=>({name:r.name,...scoreQ(r.data||{})})).sort((a,b)=>b.total-a.total||a.name.localeCompare(b.name));

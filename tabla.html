@@ -236,6 +236,81 @@ const r16ToQF={p74:'qf_p89',p77:'qf_p89',p73:'qf_p90',p75:'qf_p90',p83:'qf_p93',
 const qfToCF={qf_p89:'cf_p97',qf_p90:'cf_p97',qf_p93:'cf_p98',qf_p94:'cf_p98',qf_p91:'cf_p99',qf_p92:'cf_p99',qf_p95:'cf_p100',qf_p96:'cf_p100'};
 const cfToSF={cf_p97:'sf_p101',cf_p98:'sf_p101',cf_p99:'sf_p102',cf_p100:'sf_p102'};
 
+// ══ ESPN: fuente de verdad AUTOMATICA (grupos + terceros + ganadores R16→Final) ══
+const ESPN_SCORES_API='https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=2026&limit=500';
+const EN2ES={'Mexico':'México','South Africa':'Sudáfrica','South Korea':'Corea del Sur','Czech Republic':'Chequia','Czechia':'Chequia','Canada':'Canadá','Bosnia-Herzegovina':'Bosnia y Herz.','Bosnia and Herzegovina':'Bosnia y Herz.','Qatar':'Qatar','Switzerland':'Suiza','Brazil':'Brasil','Morocco':'Marruecos','Haiti':'Haití','Scotland':'Escocia','USA':'Estados Unidos','United States':'Estados Unidos','Paraguay':'Paraguay','Australia':'Australia','Turkey':'Turquía','Türkiye':'Turquía','Germany':'Alemania','Curacao':'Curazao','Curaçao':'Curazao','Ivory Coast':'C. de Marfil','Ecuador':'Ecuador','Netherlands':'Países Bajos','Japan':'Japón','Sweden':'Suecia','Tunisia':'Túnez','Belgium':'Bélgica','Iran':'Irán','New Zealand':'Nueva Zelanda','Egypt':'Egipto','Spain':'España','Cape Verde':'Cabo Verde','Saudi Arabia':'Arabia Saudita','Uruguay':'Uruguay','France':'Francia','Senegal':'Senegal','Iraq':'Irak','Norway':'Noruega','Argentina':'Argentina','Algeria':'Argelia','Austria':'Austria','Jordan':'Jordania','Portugal':'Portugal','DR Congo':'R.D. del Congo','Congo DR':'R.D. del Congo','Uzbekistan':'Uzbekistán','Colombia':'Colombia','England':'Inglaterra','Croatia':'Croacia','Ghana':'Ghana','Panama':'Panamá'};
+const esN=n=>EN2ES[n]||n;
+const R16_HOME={p74:['E',0],p77:['I',0],p73:['A',1],p75:['F',0],p83:['K',1],p84:['H',0],p81:['D',0],p82:['G',0],p78:['E',1],p76:['C',0],p79:['A',0],p80:['L',0],p88:['D',1],p86:['J',0],p85:['B',0],p87:['K',0]};
+const QF_FEED={qf_p89:['p74','p77'],qf_p90:['p73','p75'],qf_p93:['p83','p84'],qf_p94:['p81','p82'],qf_p91:['p78','p76'],qf_p92:['p79','p80'],qf_p95:['p88','p86'],qf_p96:['p85','p87']};
+const CF_FEED={cf_p97:['qf_p89','qf_p90'],cf_p98:['qf_p93','qf_p94'],cf_p99:['qf_p91','qf_p92'],cf_p100:['qf_p95','qf_p96']};
+const SF_FEED={sf_p101:['cf_p97','cf_p98'],sf_p102:['cf_p99','cf_p100']};
+function espnFlag(name){for(const g of Object.keys(GS)){const t=GS[g].teams.find(x=>x.n===name);if(t)return t.f;}return '🏳';}
+function espnStage(e){return (e.season&&e.season.slug)||'';}
+function espnDone(e){return !!(e.status&&e.status.type&&e.status.type.completed);}
+function espnTeams(e){
+  const c=(e.competitions||[])[0];if(!c)return null;
+  const ts=c.competitors||[];if(ts.length<2)return null;
+  const home=ts.find(t=>t.homeAway==='home')||ts[0];
+  const away=ts.find(t=>t.homeAway==='away')||ts[1];
+  const note=(c.notes&&c.notes[0]&&c.notes[0].headline)||'';
+  return {hn:esN(home.team&&home.team.displayName),an:esN(away.team&&away.team.displayName),hs:Number(home.score),as:Number(away.score),note,set:[esN(home.team&&home.team.displayName),esN(away.team&&away.team.displayName)]};
+}
+function espnWinner(t){
+  if(!t)return null;
+  const nl=(t.note||'').toLowerCase();
+  if(nl.includes('advance')||nl.includes('penalt')){
+    for(const team of [t.hn,t.an]){
+      const ens=Object.keys(EN2ES).filter(k=>EN2ES[k]===team);
+      if(t.note.includes(team)||ens.some(en=>t.note.includes(en)))return team;
+    }
+  }
+  if(Number.isNaN(t.hs)||Number.isNaN(t.as))return null;
+  if(t.hs>t.as)return t.hn;if(t.as>t.hs)return t.an;return null;
+}
+function buildRealFromEvents(events){
+  events=events||[];
+  const GROUP_OF={};Object.keys(GS).forEach(g=>GS[g].teams.forEach(t=>GROUP_OF[t.n]=g));
+  const tbl={};Object.keys(GS).forEach(g=>{tbl[g]={};GS[g].teams.forEach(t=>tbl[g][t.n]={pts:0,gf:0,ga:0});});
+  events.forEach(e=>{
+    if(espnStage(e)!=='group-stage'||!espnDone(e))return;
+    const t=espnTeams(e);if(!t)return;
+    const g=GROUP_OF[t.hn];if(!g||GROUP_OF[t.an]!==g)return;
+    if(Number.isNaN(t.hs)||Number.isNaN(t.as))return;
+    const T=tbl[g];if(!T[t.hn]||!T[t.an])return;
+    T[t.hn].gf+=t.hs;T[t.hn].ga+=t.as;T[t.an].gf+=t.as;T[t.an].ga+=t.hs;
+    if(t.hs>t.as)T[t.hn].pts+=3;else if(t.as>t.hs)T[t.an].pts+=3;else{T[t.hn].pts++;T[t.an].pts++;}
+  });
+  const groups={};
+  Object.keys(GS).forEach(g=>{
+    const arr=GS[g].teams.map(t=>t.n);
+    arr.sort((x,y)=>{const X=tbl[g][x],Y=tbl[g][y];return(Y.pts-X.pts)||((Y.gf-Y.ga)-(X.gf-X.ga))||(Y.gf-X.gf)||arr.indexOf(x)-arr.indexOf(y);});
+    groups[g]=arr;
+  });
+  const byStage={};
+  events.forEach(e=>{
+    const st=espnStage(e);if(st==='group-stage'||!st||!espnDone(e))return;
+    const t=espnTeams(e);if(!t)return;
+    (byStage[st]=byStage[st]||[]).push({set:t.set,w:espnWinner(t)});
+  });
+  const findMatch=(stage,teams)=>{const list=byStage[stage]||[];return list.find(m=>teams.some(tm=>tm&&m.set.indexOf(tm)>=0))||null;};
+  const picks={};
+  Object.keys(R16_HOME).forEach(pid=>{
+    const g=R16_HOME[pid][0],pos=R16_HOME[pid][1],home=groups[g]&&groups[g][pos];if(!home)return;
+    const m=findMatch('round-of-32',[home]);if(m&&m.w)picks[pid]={n:m.w,f:espnFlag(m.w)};
+  });
+  const r32set={};(byStage['round-of-32']||[]).forEach(m=>m.set.forEach(x=>r32set[x]=1));
+  const thirds=Object.keys(GS).filter(g=>groups[g]&&groups[g][2]&&r32set[groups[g][2]]);
+  const resolveRound=(feed,stage)=>{Object.keys(feed).forEach(id=>{const a=feed[id][0],b=feed[id][1],wa=picks[a]&&picks[a].n,wb=picks[b]&&picks[b].n;const m=findMatch(stage,[wa,wb]);if(m&&m.w)picks[id]={n:m.w,f:espnFlag(m.w)};});};
+  resolveRound(QF_FEED,'round-of-16');
+  resolveRound(CF_FEED,'quarterfinals');
+  resolveRound(SF_FEED,'semifinals');
+  const fm=findMatch('final',[picks['sf_p101']&&picks['sf_p101'].n,picks['sf_p102']&&picks['sf_p102'].n]);
+  if(fm&&fm.w)picks['p104']={n:fm.w,f:espnFlag(fm.w)};
+  const tm=findMatch('3rd-place-match',[]);
+  if(tm&&tm.w)picks['p103']={n:tm.w,f:espnFlag(tm.w)};
+  return {groups,thirds,picks,goleador:''};
+}
+
 const SCHEDULE={
   p73:{d:'28 jun',t:'15:00'},p74:{d:'29 jun',t:'16:30'},p75:{d:'29 jun',t:'21:00'},p76:{d:'29 jun',t:'13:00'},
   p77:{d:'30 jun',t:'17:00'},p78:{d:'30 jun',t:'13:00'},p79:{d:'30 jun',t:'21:00'},p80:{d:'1 jul',t:'12:00'},
@@ -253,15 +328,24 @@ let rows=[],qs=[],view='overview',selIdx=0;
 
 function load(){
   document.getElementById('upd').textContent='Actualizando…';
-  supaGet().then(data=>{
+  Promise.all([
+    supaGet(),
+    fetch(ESPN_SCORES_API,{cache:'no-store'}).then(r=>r.ok?r.json():{events:[]}).catch(()=>({events:[]}))
+  ]).then(([data,espn])=>{
+    const events=(espn&&espn.events)||[];
     const realRow=data.find(r=>r.name==='__real__');
-    if(realRow&&realRow.data){real={groups:{},thirds:[],picks:{},scores:{},goleador:'',...realRow.data};}
+    // Fuente de verdad: ESPN en tiempo real (grupos + terceros + ganadores).
+    // El goleador (unico dato que ESPN no entrega) se toma del __real__ si el admin lo cargo.
+    const fromEspn=buildRealFromEvents(events);
+    const gol=(realRow&&realRow.data&&realRow.data.goleador)||'';
+    real={groups:fromEspn.groups,thirds:fromEspn.thirds,picks:fromEspn.picks,scores:{},goleador:gol};
     rows=data.filter(r=>r.name!=='__real__');
     qs=rows.map(r=>({...r.data,_id:r.id,_created:r.created_at}));
     const grpCount=Object.keys(real.groups||{}).length;
     const pickCount=Object.keys(real.picks||{}).length;
+    const ftN=events.filter(e=>e&&e.status&&e.status.type&&e.status.type.completed).length;
     document.getElementById('tot').textContent=qs.length+' quinela'+(qs.length!==1?'s':'');
-    document.getElementById('upd').textContent='Actualizado: '+new Date().toLocaleTimeString('es')+(realRow?` · DB: ${grpCount}g/${pickCount}p`:' · sin datos reales');
+    document.getElementById('upd').textContent='Actualizado: '+new Date().toLocaleTimeString('es')+` · ${ftN} partidos · ${grpCount}g/${pickCount}p`;
     render();
   }).catch(err=>{
     document.getElementById('main').innerHTML=`<div style="color:#c53030;background:#fff5f5;border-radius:8px;padding:1rem">Error: ${err.message}</div>`;
